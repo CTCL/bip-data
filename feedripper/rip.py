@@ -37,41 +37,58 @@ class Bump:
 	primary_entities = set([
 		"source",
 		"election",
-		"state",
 		"locality",
 		"precinct",
 		"street_segment",
 		"polling_location"
 	])
-
-
+	tables = set(list(related_entities) + list(primary_entities))
 
 	def __init__(self):
-		self.data = dict()
-		self.stack = []
-		#self.open = False
+		self.data = None
+		self.stack = dict()
+		self.mount = self.stack
 		self.buffer = ''
-	def _bump(self)
-		pass
+		self.i = 0
+	def _bump(self):
+		print '\nBUMPING\n',self.stack,'\n\n\n'
 	def start_element(self, name, attrs):
-		#print 'Start element:', name, attrs
-		if name not in self.toss_entities:
-			self.stack.append(name)
+		print '<%s %s>' % (name, ' '.join('%s="%s"' % (k,v)for k,v in attrs.iteritems())),
+		#if name not in self.toss_entities:
+		#	self.stack.append(name)
+		if name in self.tables:
+			print ''
+			pref = self.mount
+			self.mount[name] = dict(attrs)
+			self.mount = self.mount[name]
+			self.mount['_parent'] = pref
+
+
 	def char_data(self, 	data):
-		if data.strip() != '':
-			#print 'Character data:', repr(data)
+		x = data.strip()
+		if x != '':
+			print x,
 			self.buffer += data
+
 	def end_element(self, name):
-		#print 'End element:', name
-		key = '.'.join(self.stack)
+		data = self.mount
+		#print '\n\n\nSTACK\n',self.stack
+		assert name not in data
 		
-		assert key not in self.data
-		self.data[key] = self.buffer
-		closing_entity = self.stack.pop()
-		self.buffer = ''
-		if self.stack == []:
+		
+		if name in self.tables:
+			print ''
+			self.mount = self.mount.pop('_parent')
+		else:
+			data[name] = self.buffer
+			self.buffer = ''
+
+		print '</%s>' % name
+
+		if '_parent' not in self.mount:
 			self._bump()
 			self.__init__()
+		
 
 
 def do_expat():
@@ -82,7 +99,7 @@ def do_expat():
 	p.CharacterDataHandler = bump.char_data
 
 	p.ParseFile(open(fname))
-	return p1
+	return p
 
 IPython.embed()
 
