@@ -26,7 +26,7 @@ all_data = list()
 
 class Bump:
 	'''
-		Bump up entities off the wire
+		Bump up entities off the wire as dicts from expat handlers
 	'''
 	related_entities = set(simpleAddressTypes + detailAddressTypes)
 	toss_entities = set(['vip_object'])
@@ -44,7 +44,9 @@ class Bump:
 		self.mount = self.stack
 		self.buffer = ''
 	def _bump(self):
-		all_data.append(self.stack)#print '\nBUMPING\n',self.stack
+		#set.send(self.stack)
+		all_data.append(self.stack)
+		#print '\nBUMPING\n',self.stack
 		#http://www.dabeaz.com/coroutines/cosax.py
 	def start_element(self, name, attrs):
 		#print '<%s %s>' % (name, ' '.join('%s="%s"' % (k,v)for k,v in attrs.iteritems())),
