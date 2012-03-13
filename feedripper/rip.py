@@ -22,7 +22,18 @@ def do_lxml():
 				yield t.strip('.')
 	#keys = set(tag_ripper(root,''))
 
-all_data = list()
+
+class Set:
+
+	@coroutine
+	def data(self):
+		try:
+			while True:
+				data = (yield)
+		except GeneratorExit:
+			pass
+
+
 
 class Bump:
 	'''
@@ -39,13 +50,14 @@ class Bump:
 		"polling_location"
 	])
 	tables = set(list(related_entities) + list(primary_entities))
+	setter = Set().data()
 	def __init__(self):
 		self.stack = dict()
 		self.mount = self.stack
 		self.buffer = ''
 	def _bump(self):
 		#set.send(self.stack)
-		all_data.append(self.stack)
+		self.setter.send(self.stack)
 		#print '\nBUMPING\n',self.stack
 		#http://www.dabeaz.com/coroutines/cosax.py
 	def start_element(self, name, attrs):
@@ -74,14 +86,18 @@ class Bump:
 
 @coroutine
 def do_expat():
-	fname = (yield)
-	print "Ripping %s..." % fname
-	bump = Bump()
-	p = xml.parsers.expat.ParserCreate()
-	p.StartElementHandler = bump.start_element
-	p.EndElementHandler = bump.end_element
-	p.CharacterDataHandler = bump.char_data
-	p.ParseFile(open(fname))
+	try:
+		while True:
+			fname = (yield)
+			print "Ripping %s..." % fname
+			bump = Bump()
+			p = xml.parsers.expat.ParserCreate()
+			p.StartElementHandler = bump.start_element
+			p.EndElementHandler = bump.end_element
+			p.CharacterDataHandler = bump.char_data
+			p.ParseFile(open(fname))
+	except GeneratorExit:
+		pass
 
 def main():
 	"""
