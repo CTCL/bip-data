@@ -6,6 +6,8 @@ import os.path,sys
 schema_fname  = os.path.abspath('src/schema/bip_model_0.4.sql')
 schema = open(schema_fname).read()
 def get_things_to_drop():
+	"""Looks at schema and extracts things that need to be explicitly dropped.
+	"""
 	data = schema.split()
 	tname = None
 	for i in xrange(len(data)):
