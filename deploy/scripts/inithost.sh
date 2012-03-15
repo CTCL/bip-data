@@ -13,7 +13,10 @@ git clone https://github.com/votinginfoproject/tools.git
 git clone https://github.com/votinginfoproject/VAVE.git
 cd /var/bip
 bip-compile-requirements
-. py/bipdata/bin/activate
+cd py
+virtualenv --no-site-packages bipdata
+. bipdata/bin/activate
+cd /var/bip
 pip install -r _compiledrequirements.txt
 cd data
 bip-download-vipfeeds
