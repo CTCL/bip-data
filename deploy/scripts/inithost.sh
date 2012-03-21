@@ -11,14 +11,14 @@ git clone https://github.com/votinginfoproject/scripts.git
 git clone https://github.com/votinginfoproject/twitterbot.git
 git clone https://github.com/votinginfoproject/tools.git
 git clone https://github.com/votinginfoproject/VAVE.git
-cd /var/bip
-bip-compile-requirements
-cd py
+cd /var/bip/py
 virtualenv --no-site-packages bipdata
 . bipdata/bin/activate
 cd /var/bip
+bip-compile-requirements
 pip install -r _compiledrequirements.txt
 cd data
 bip-download-vipfeeds
+find . -name '*.html*' -exec rm {} \;
 cd /var/bip
 echo "All done!"

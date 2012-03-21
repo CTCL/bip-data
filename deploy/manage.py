@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 Need a centralized place for initiating code. Fiddles with path 
 and allows a lo fi way for modules to register commands. 
@@ -16,6 +17,7 @@ commands = {
 	'ripfeed':feedripper.rip.main,
 	'cleandb':deploy.database.clean,
 	'initdb':deploy.database.init,
+	'makedb':deploy.database.make,
 	'shell':IPython.embed
 }
 
@@ -29,8 +31,8 @@ if __name__ == "__main__":
 		commands_listed = '\n\t'.join(["%s: %s" % (k,v.func_doc.strip().split('\n').pop(0) if v.func_doc != None else '') for k,v in commands.iteritems()])
 		print "Must invoke one of the following commands:\n\n\t%s\n\n" % commands_listed
 		exit()
-	data = commands[command]()
-	#each module should export a main() function that inspects sys.argv itself
+	data = commands[command]()#commands should inspect sys.argv themselves
+
 	#IPython.embed(
 	#	banner1 = 'Finished running %s. Explore results by inspecting "data"' % command
-	#)
+	# )

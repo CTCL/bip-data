@@ -19,3 +19,7 @@ def open_versioned_file(path,mode):
 	    for chunk in iter(lambda: f.read(128*h.block_size), ''): 
 	         h.update(chunk)
 	return (h.hexdigest(),open(path,mode)
+
+
+def unpack_all_files(root):
+	pass

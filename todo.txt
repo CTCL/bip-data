@@ -1,0 +1,5 @@
+Map in mem objects to db
+Split out coroutines to run in parallel
+Add state specific hangler hooks
+Rip OH Cand data
+Rip OH Ballot info

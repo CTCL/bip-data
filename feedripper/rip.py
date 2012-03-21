@@ -1,35 +1,36 @@
 import IPython
 import os.path
-from lxml import etree
+import pprint as pp
 import xml.parsers.expat
 import timeit
 from util.coroutine import coroutine
+from util.colors import	blue,green,warn,fail
 t = timeit.Timer()
 
 simpleAddressTypes = ["address", "physical_address", "mailing_address", "filed_mailing_address"]
 detailAddressTypes = ["non_house_address"]
-def do_lxml():
-	vip_id = 32
-	xmlparser = etree.XMLParser()
-	data = etree.parse(open(fname), xmlparser)
-	root = data.getroot()
-	elements = root.getchildren()
-	def tag_ripper(elem,prefix):
-		tag = "%s.%s" % (prefix,elem.tag)
-		yield tag
-		for c in elem.getchildren():
-			for t in tag_ripper(c,tag):
-				yield t.strip('.')
-	#keys = set(tag_ripper(root,''))
+
+def sanitize_dict_vals(data):
+	for k,v in data.iteritems():
+		if type(v) == dict:
+			data[k] = sanitize_dict_vals(v)
+		else:
+			data[k] = None
+	data = tuple(sorted([(k,v) for k,v in data.iteritems()]))
 
 
+	return data
+
+found = set()
 class Set:
-
 	@coroutine
 	def data(self):
 		try:
 			while True:
 				data = (yield)
+				data = sanitize_dict_vals(data)
+				found.add(data)	
+				#print warn(pp.pformat(data))
 		except GeneratorExit:
 			pass
 
@@ -46,8 +47,11 @@ class Bump:
 		"election",
 		"locality",
 		"precinct",
+		"precinct_split",
 		"street_segment",
-		"polling_location"
+		"polling_location",
+		"election_official",
+		"electoral_district"
 	])
 	tables = set(list(related_entities) + list(primary_entities))
 	setter = Set().data()
@@ -56,14 +60,11 @@ class Bump:
 		self.mount = self.stack
 		self.buffer = ''
 	def _bump(self):
-		#set.send(self.stack)
 		self.setter.send(self.stack)
-		#print '\nBUMPING\n',self.stack
 		#http://www.dabeaz.com/coroutines/cosax.py
 	def start_element(self, name, attrs):
-		#print '<%s %s>' % (name, ' '.join('%s="%s"' % (k,v)for k,v in attrs.iteritems())),
+		#print green('<%s %s>' % (name, ' '.join('%s="%s"' % (k,v)for k,v in attrs.iteritems()))),
 		if name in self.tables:
-			#print ''
 			pref = self.mount
 			self.mount[name] = dict(attrs)
 			self.mount = self.mount[name]
@@ -72,17 +73,21 @@ class Bump:
 		self.buffer += data.strip()
 	def end_element(self, name):
 		data = self.mount
+		#print self.buffer,
+		#print  green('</%s>' % name)
+		##print warn(name),blue(data)
 		assert name not in data
 		if name in self.tables:
 			#print ''
 			self.mount = self.mount.pop('_parent')
+			if '_parent' not in self.mount:
+				self._bump()
+				self.__init__()
 		else:
 			data[name] = self.buffer
 			self.buffer = ''
-		#print '</%s>' % name
-		if '_parent' not in self.mount:
-			self._bump()
-			self.__init__()
+
+
 
 @coroutine
 def do_expat():
@@ -108,3 +113,4 @@ def main():
 	ripper = do_expat()
 	for fname in fnames:
 		ripper.send(fname)
+	IPython.embed()
