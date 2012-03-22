@@ -157,7 +157,7 @@ found_VA = [
  ((u'vip_object', None),)]
 
 
- found_OH = [
+found_OH = [
  ((u'election_administration', None),
   (u'election_official',
    ((u'email', None),
@@ -277,3 +277,7 @@ found_VA = [
     (u'state_id', None),
     (u'statewide', None))),)]
 
+
+if __name__ == "__main__":
+	import IPython
+	IPython.embed()
