@@ -1,4 +1,4 @@
-from feedripper.rip import do_expat
+from pipeline.feedripper import do_expat
 #from pipeline.candidate import via_dict
 
 
@@ -30,72 +30,6 @@ class State:
 		clean_state_from_db()
 		push_state_data()
 		push_candidate_data()
-
-class StateBase:
-
-	processing_steps = list()
-
-
-	def add_step(self, step):
-		processing_steps.add(step);
-
-	def process(self, start_input):
-		final_process = start_input
-
-		for right in processing_steps.reverse:
-			final_process = right(final_process)
-
-
-ohio = StateBase()
-ohio.add_step(mysql_qm)
-ohio.add_step(convert_to_sql)
-ohio.process(conn)
-
-
-def mysql_qm(connection):
-	try:
-		while True:
-			q = (yield)
-			connection.cursor.execute(q)
-	except GeneratorExit:
-		connection.close()
-
-def convert_to_sql(querymachine):
-	try:
-		while True:
-			data = (yield)
-			#transform logic
-			q = make_query(data)
-			querymachine.send(q)
-	except GeneratorExit:
-		connection.close()
-
-
-pipeline = convert_to_sql(mysql_qm(conn))
-
-
-
-
-
-wwwlog     = open("access-log")
-bytecolumn = (line.rsplit(None,1)[1] for line in wwwlog)
-bytes      = (int(x) for x in bytecolumn if x != '-')
-bytes = (2*x for x in bytes)
-
-print "Total", sum(bytes)
-
-
-
-class Step:
-
-	def act(*arg, **kwargs):
-		pass
-
-
-class GetCandidateDataStep(Step):
-	def act(*arg, **kwargs):
-		super(Step, self, *arg, **kwargs)
-		return 
 
 
 

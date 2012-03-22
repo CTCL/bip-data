@@ -9,12 +9,12 @@ sys.path.append(os.path.abspath('./'))
 from deploy.conf import settings
 import IPython
 #Command imports	
-import feedripper.rip
+import pipeline.feedripper
 import deploy.database
 
 #map command names
 commands = {
-	'ripfeed':feedripper.rip.main,
+	'ripfeed':pipeline.feedripper.main,
 	'cleandb':deploy.database.clean,
 	'initdb':deploy.database.init,
 	'makedb':deploy.database.make,
