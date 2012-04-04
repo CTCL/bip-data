@@ -4,6 +4,7 @@ Need a centralized place for initiating code. Fiddles with path
 and allows a lo fi way for modules to register commands. 
 '''
 import sys,os.path,IPython
+os.chdir('/var/bip')
 sys.path.insert(0,os.path.abspath('./src'))
 sys.path.append(os.path.abspath('./'))
 from deploy.conf import settings
@@ -11,14 +12,26 @@ import IPython
 #Command imports	
 import pipeline.feedripper
 import deploy.database
+from states.base import buildstates
 
 #map command names
+
+
+def shell():
+	"""Import some things and drop into an IPython shell."""
+	from deploy.connections import get_cursor
+	cursor = get_cursor()
+	IPython.embed()
+
+
 commands = {
 	'ripfeed':pipeline.feedripper.main,
 	'cleandb':deploy.database.clean,
+	'dropdb':deploy.database.drop,
 	'initdb':deploy.database.init,
 	'makedb':deploy.database.make,
-	'shell':IPython.embed
+	'shell':shell,#allow targets for shell? (i.e. 'bip shell deploy/database.py' would drop you in the scope for the database file?)
+	'buildstates':buildstates
 }
 
 
@@ -29,10 +42,7 @@ if __name__ == "__main__":
 		assert command in commands
 	except:
 		commands_listed = '\n\t'.join(["%s: %s" % (k,v.func_doc.strip().split('\n').pop(0) if v.func_doc != None else '') for k,v in commands.iteritems()])
-		print "Must invoke one of the following commands:\n\n\t%s\n\n" % commands_listed
+		print "\nMust invoke one of the following commands:\n\n\t%s\n\n" % commands_listed
 		exit()
 	data = commands[command]()#commands should inspect sys.argv themselves
 
-	#IPython.embed(
-	#	banner1 = 'Finished running %s. Explore results by inspecting "data"' % command
-	# )

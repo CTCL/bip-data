@@ -4,7 +4,7 @@ DATABASES = {
     'default': {
         'NAME': 'bip',
         'USER': 'bip_user',
-        'PASSWORD': 'oi22%uPn6x2W9S8JeuT54', 
+        'PASSWORD': 'securityftw', 
         'HOST': 'localhost',
     },
 

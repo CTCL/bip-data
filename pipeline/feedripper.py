@@ -5,6 +5,8 @@ import xml.parsers.expat
 import timeit
 from util.coroutine import coroutine
 from util.colors import	blue,green,warn,fail
+from pipeline.maps import VipRM
+from deploy.database import connection
 t = timeit.Timer()
 
 simpleAddressTypes = ["address", "physical_address", "mailing_address", "filed_mailing_address"]
@@ -17,22 +19,28 @@ def sanitize_dict_vals(data):
 		else:
 			data[k] = None
 	data = tuple(sorted([(k,v) for k,v in data.iteritems()]))
-
-
 	return data
 
 found = set()
-class Set:
-	@coroutine
-	def data(self):
-		try:
-			while True:
-				data = (yield)
-				data = sanitize_dict_vals(data)
-				found.add(data)	
-				#print warn(pp.pformat(data))
-		except GeneratorExit:
-			pass
+
+@coroutine
+def setq():
+
+	cursor = connection().cursor()
+	vrm = VipRM(cursor)
+	try:
+		while True:
+			(name,data) = (yield).items().pop()
+			print blue(name),warn(data)
+			f = vrm.get_mapper(name)
+			result = f(data)
+
+
+				#IPython.embed()
+
+			#	cursor.execute(query)
+	except GeneratorExit:
+		pass
 
 
 
@@ -42,6 +50,7 @@ class Bump:
 	'''
 	related_entities = set(simpleAddressTypes + detailAddressTypes)
 	toss_entities = set(['vip_object'])
+	#This part is important vv
 	primary_entities = set([
 		"source",
 		"election",
@@ -51,16 +60,18 @@ class Bump:
 		"street_segment",
 		"polling_location",
 		"election_official",
-		"electoral_district"
+		"electoral_district",
+		"election_administration"
 	])
 	tables = set(list(related_entities) + list(primary_entities))
-	setter = Set().data()
+	
 	def __init__(self):
 		self.stack = dict()
 		self.mount = self.stack
 		self.buffer = ''
+		self.set = setq()
 	def _bump(self):
-		self.setter.send(self.stack)
+		self.set.send(self.stack)
 		#http://www.dabeaz.com/coroutines/cosax.py
 	def start_element(self, name, attrs):
 		#print green('<%s %s>' % (name, ' '.join('%s="%s"' % (k,v)for k,v in attrs.iteritems()))),
@@ -75,7 +86,7 @@ class Bump:
 		data = self.mount
 		#print self.buffer,
 		#print  green('</%s>' % name)
-		##print warn(name),blue(data)
+		#print warn(name),blue(self.stack)
 		assert name not in data
 		if name in self.tables:
 			#print ''
@@ -101,6 +112,7 @@ def do_expat():
 			p.EndElementHandler = bump.end_element
 			p.CharacterDataHandler = bump.char_data
 			p.ParseFile(open(fname))
+			IPython.embed()
 	except GeneratorExit:
 		pass
 

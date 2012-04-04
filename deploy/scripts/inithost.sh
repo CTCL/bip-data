@@ -3,6 +3,7 @@ sudo chown $USER:$USER /var/bip
 cd /var/bip
 git clone git@github.com:neworganizing/bip-data.git src
 ln -s src/deploy/manage.py ./manage.py
+ln src/deploy/manage.py /usr/bin/bip
 . src/deploy/scripts/commands.sh
 mkdir data exports py vip
 cd vip

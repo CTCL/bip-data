@@ -1,7 +1,7 @@
 from deploy.conf import settings
 from fabric.api import local
 import os.path,sys
-
+import psycopg2
 
 schema_fname  = os.path.abspath('src/schema/bip_model_0.4.sql')
 schema = open(schema_fname).read()
@@ -14,7 +14,7 @@ def get_things_to_drop():
 
 		x = data[i-1]
 		if x.strip() in ['ALTER','CREATE'] and data[i].strip() == 'TABLE':
-			print 'HIT'
+			#print 'HIT'
 			tname = data[i+1]
 
 		if x in ['CONSTRAINT']:
@@ -46,11 +46,11 @@ def get_drop_sql(db):
 	''' % (db['NAME'],db['USER']) + '\n'.join([x for x in get_things_to_drop()])
 
 def get_db_conf():
-	if len(sys.argv) > 1:
-		name = sys.argv[1]
-	else:
-		name = 'default'
+	name = 'default'
 	return settings.DATABASES[name]
+
+def connection(db=get_db_conf()):
+	return psycopg2.connect(database=db['NAME'],user=db['USER'],password=db['PASSWORD'])
 
 def init():
 	"""Add named database user and database"""
@@ -60,13 +60,24 @@ def init():
 
 def make():
 	"""Take the current schema and exe it on the named database"""
-	db = get_db_conf()
-	local('sudo -u postgres psql %s < %s' % (db['NAME'],schema_fname))
-def clean():
-	""""Drop named database and initdb and makedb"""
+
+	sql = open(schema_fname).read()
+	print sql
+	cursor = connection().cursor()
+	cursor.execute('BEGIN;')
+	cursor.execute(sql)
+	cursor.execute('END;')
+	#db = get_db_conf()
+	#local('sudo -u postgres psql %s < %s' % (db['NAME'],schema_fname))
+def drop():
+	""""Drop named database"""
 	db = get_db_conf()
 	sql = get_drop_sql(db)
 	local('echo "%s" | sudo -u postgres psql' % sql)
+def clean():
+	""""Drop named database and initdb and makedb"""
+	drop()
 	init()
-	
+	make()
+
 
