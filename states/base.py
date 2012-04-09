@@ -27,7 +27,7 @@ class StateBase:
 	def push_feed_data(self):
 		ripper = do_expat()
 		ripper.send(self._get_feed_path())
-
+	
 	def push_candidate_data(self):
 		for cdata in self._get_candidate_data():
 			via_dict.send(cdata)
