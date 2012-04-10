@@ -13,7 +13,7 @@ import IPython
 import pipeline.feedripper
 import deploy.database
 from states.base import buildstates
-
+import util.modelgeneration
 #map command names
 
 
@@ -31,7 +31,8 @@ commands = {
 	'initdb':deploy.database.init,
 	'makedb':deploy.database.make,
 	'shell':shell,#allow targets for shell? (i.e. 'bip shell deploy/database.py' would drop you in the scope for the database file?)
-	'buildstates':buildstates
+	'buildstates':buildstates,
+	'generatemodels':util.modelgeneration.go
 }
 
 

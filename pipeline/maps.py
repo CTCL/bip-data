@@ -104,6 +104,7 @@ fk_map = {
 	#'physical_address': 'geo_address',
 	'polling_location_id': 'polling_location',
 	'precinct_id': 'precinct',
+	'parent_id': 'precinct',
 	'precinct_split_id': 'precinct',
 	'state_id': 'state',
 	#'vip_id': 'source'
@@ -137,12 +138,14 @@ class VipRM:
 			fields = ['source_pk']
 		else:
 			fields = []
-
+		#the next line is terrible: fix me
 		fields.extend([k for k in data.keys() if ("%s.%s" % (name,k) in key_map and key_map["%s.%s" % (name,k)] != None) or (name=='geo_address')])
 		#fk transformations
 		fks = [x for x in fields if x in fk_map]
+		print fks,data
 		for fk in fks:
 			data = self._fix_fk0(data,fk,fk_map[fk])
+
 		values = ['\'%s\'' % data[k] if data[k] != None else 'NULL' for k in fields]
 		return "insert into %s (%s) VALUES (%s) RETURNING id;" % (name,', '.join(fields),', '.join(values))
 
@@ -168,8 +171,8 @@ class VipRM:
 		return self._insert_address(data,name,'address')
 
 	def _push_precinct_split_to_db(self,data,name='precinct'):
-		self._fix_fk0(data,'precinct_id','precinct')
-		self._fix_fk0(data,'polling_location_id','polling_location')
+		#self._fix_fk0(data,'precinct_id','precinct')
+		#self._fix_fk0(data,'polling_location_id','polling_location')
 		return self._insert(data,name)
 
 	def _push_locality_to_db(self,data,name='electoral_district'):
