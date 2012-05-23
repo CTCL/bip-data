@@ -1,5 +1,8 @@
 from util.colors import *
-
+from util.patterns import named_zip
+import logging
+from collections import defaultdict
+#this is a relic from when it was unclear what was required
 #make tighter mapping data structures than this one once the mapping needs are clearer
 key_map = {
 	'election': 'election',
@@ -104,6 +107,7 @@ fk_map = {
 	#'physical_address': 'geo_address',
 	'polling_location_id': 'polling_location',
 	'precinct_id': 'precinct',
+	'precinct_split_id':'precinct',
 	'parent_id': 'precinct',
 	'precinct_split_id': 'precinct',
 	'state_id': 'state',
@@ -114,83 +118,122 @@ fk_map = {
 #map fk identifiers to table names
 #queue refs needing actual pk's
 #2nd pass
+
+
+def sqlescape(x):
+	if type(x) in (unicode, str):
+		x = x.replace('\'','\'\'')
+	else:
+		x = str(x)
+	return '\'' + x + '\'' if x != '' else 'NULL'
+
+
 class VipRM:
+	"""
+		Relational Mapping for VIP XML: Used to insert data.
+	"""
 	pk = {}#index of all source pk's to actual pk's
-	fk_q = []#
+	fk_q = []#holds orphaned foriegn key information
+	errors = []#not that important, handy when debugging
+	valid_fields = dict()
 	def __init__(self,cursor):
 		self.cursor = cursor
-	def _insert(self,data,name):
-		sql = self._dict_to_sql(data,name)
+	def _insert(self,data,name,table_override=None):
+		store_pk = 'id' in data##$
+		sql = self._dict_to_sql(data,name,table_override)
+		logging.info(sql)
 		self.cursor.execute('BEGIN;')
-		print sql
 		self.cursor.execute(sql)
 		pk = self.cursor.fetchone()[0]
+		data['id'] = pk
 		self.cursor.execute('END;')
-		if 'id' in data:
-			local_key = (name,data['id'])
+		if store_pk:##$
+			local_key = (name,data['source_pk'])
+			logging.info((local_key,pk,self.pk[local_key] if local_key in self.pk else None))
 			assert local_key not in self.pk
 			self.pk[local_key] = pk#need to do fk's in a 2nd pass
 		return pk
-	def _dict_to_sql(self,data,name):
-		#pk transformations
+	def _dict_to_sql(self,data,name,table_override):
 		if 'id' in data:
 			data['source_pk'] = data.pop('id')
-			fields = ['source_pk']
-		else:
-			fields = []
-		#the next line is terrible: fix me
-		fields.extend([k for k in data.keys() if ("%s.%s" % (name,k) in key_map and key_map["%s.%s" % (name,k)] != None) or (name=='geo_address')])
-		#fk transformations
+		fields = data.keys()
 		fks = [x for x in fields if x in fk_map]
-		print fks,data
+		logging.info((name,fields))
+		logging.info((fks,data))
 		for fk in fks:
-			data = self._fix_fk0(data,fk,fk_map[fk])
-
-		values = ['\'%s\'' % data[k] if data[k] != None else 'NULL' for k in fields]
+			data = self._fix_fk(data,fk,fk_map[fk],name)
+		if table_override != None:
+			name = table_override
+		values = [sqlescape(data[k]) if data[k] != None else 'NULL' for k in data.iterkeys()]
 		return "insert into %s (%s) VALUES (%s) RETURNING id;" % (name,', '.join(fields),', '.join(values))
 
-	def _fix_fk0(self,data,fk_name,model_name):
+	def _fix_fk(self,data,fk_name,dest_model_name,home_model_name):
 		fk_val = data[fk_name]
-		local_key = (model_name,fk_val)
-		print green(local_key)
+		local_key = (dest_model_name,fk_val)
+		logging.info(green(local_key))
 		if local_key in self.pk:
 			data[fk_name] = self.pk[local_key]
 		else:#the referenced object has not been seen yet
+			fk_val = data[fk_name]
 			data[fk_name] = None
-			self.fk_q.append((data,fk_name,model_name))
+			self.fk_q.append((data,fk_name,fk_val,dest_model_name,home_model_name))
 		return data
-	def _fix_fk1(self,(data,fk_name,model_name)):
-		pass#for all queued fk things issue an alter
+
 			 
-	def _insert_address(self,data,model_name,address_field_name):
-		address = data[address_field_name]
-		data[address_field_name] = self._insert(address,'geo_address')
-		self._insert(data,model_name)
+	def _insert_address(self,address_data):
+		zips = named_zip.match(address_data['zip'])
+		if zips != None:
+			zips = dict(((k,v) for k,v in zips.groupdict().iteritems() if v != None and v in ['zip','zip4']))
+			address_data.pop('zip')
+			address_data.update(zips)
+		return self._insert(address_data,'geo_address')
+		
+	def _insert_addresses(self,data):
+		address_fields = ((k.split('.'),data.pop(k)) for k in data.keys() if 'address.' in k)
+		address_fields = ((k[0],k[1],v) for k,v in address_fields)
+		addresses = defaultdict(lambda: dict())
+		for k1,k2,v in address_fields:
+			addresses[k1][k2] = v
+		logging.info(blue(addresses))
+
+		for k,address_data in addresses.iteritems():
+			data[k] = self._insert_address(address_data)
+		return data
 
 	def _push_polling_location_to_db(self,data,name='polling_location'):
-		return self._insert_address(data,name,'address')
-
-	def _push_precinct_split_to_db(self,data,name='precinct'):
-		#self._fix_fk0(data,'precinct_id','precinct')
-		#self._fix_fk0(data,'polling_location_id','polling_location')
+		data = self._insert_addresses(data)
 		return self._insert(data,name)
+	def _push_precinct_split_to_db(self,data,name='precinct_split'):
+		#data['parent_id'] = data.pop('precinct_id')
+		return self._insert(data,name,table_override='precinct')
 
 	def _push_locality_to_db(self,data,name='electoral_district'):
+		data.pop('election_administration_id')
+		data.pop('early_vote_site_id')
+		return self._insert(data,name)
+
+	def _push_state_to_db(self,data,name='state'):
+		data.pop('election_administration_id')
+		data.pop('early_vote_site_id')
 		return self._insert(data,name)
 
 	def _push_electoral_district_to_db(self,data,name='electoral_district'):
 		return self._insert(data,name)
 
 	def _push_source_to_db(self,data,name='source'):
-		data['acquired'] = data.pop('datetime')
+		#data['acquired'] = data.pop('datetime')
+		data['id'] = data.pop('vip_id')
+		data.pop('feed_contact_id')
+		data.pop('tou_url')
 		return self._insert(data,name)
 
 	def _push_street_segment_to_db(self,data,name='street_segment'):
-		return self._insert_address(data,name,'non_house_address')
+		data = self._insert_addresses(data)
+		return self._insert(data,name)
 
 	def _push_precinct_to_db(self,data,name='precinct'):
-		data['electoral_district_id'] = data.pop('locality_id')#natural id's less likely to be unique across entities!
-
+		print data
+		#data['electoral_district_id'] = data.pop('locality_id')#natural id's less likely to be unique across entities!
 		return self._insert(data,name)
 
 	def _push_election_official_to_db(self,data,name='election_official'):
@@ -200,7 +243,35 @@ class VipRM:
 		return self._insert(data,name)
 
 	def _push_election_administration_to_db(self,data,name='election_administration'):
-		return self._insert_address(data,name,'physical_address')
+		data = self._insert_addresses(data)
+
+		return self._insert(data,name)
 
 	def get_mapper(self,name):
 		return getattr(self,'_push_%s_to_db' % name)
+
+	def flush(self):
+		
+		for data,fk_name,fk_val,dest_model_name,home_model_name in self.fk_q:
+			try:
+				logging.info(warn(data))
+				for k,v in data.iteritems():
+					if v == None:
+						local_key_via_fk = (dest_model_name,fk_val)
+						logging.info(local_key_via_fk)
+						if local_key_via_fk not in self.pk:
+							logging.info(fail('Does not compute. Inspect \'self\'.'))
+							self.errors.append(('Key Not Found',data,fk_name,fk_val,dest_model_name,home_model_name))
+						#ISSUE ALTER TABLE
+						fk_val_global = self.pk[local_key_via_fk]
+						q = '''UPDATE %s SET %s = %s WHERE id = %s;''' % (
+							home_model_name,
+							fk_name,
+							fk_val_global,
+							data['id']
+						)
+						logging.info(green(q))
+						self.cursor.execute(q)
+						assert local_key_via_fk in self.pk
+			except:
+				self.errors.append(('Exception',data,fk_name,fk_val,dest_model_name,home_model_name))

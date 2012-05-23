@@ -184,5 +184,9 @@ from deploy.conf import settings
 #	org_id
 
 
+from pipeline.feedripper import do_viacsv
+
 class State(StateBase):
-	pass
+	ripper = do_viacsv()
+	def _get_feed_path(self):
+		return 'data/vip_feeds/vipFeed-39-2012-03-06.xml'

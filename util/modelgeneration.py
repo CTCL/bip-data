@@ -3,10 +3,10 @@
 
 
 import re
+
 fk_re = re.compile('ForeignKey\([a-zA-Z]+')
+
 collection = {}
-
-
 
 def get_class(text):
     return text.split('(')[0].replace('class','').strip()
@@ -28,13 +28,7 @@ class Node:
     def edges(self):
         for dep in self.deps:
             yield self.collection[dep]
-        
-        
-
-
-
-
-    
+         
 def dep_resolve(node, resolved, seen):
    """modified http://www.electricmonk.nl/log/2008/08/07/dependency-resolving-algorithm/"""
    seen.append(node)
@@ -75,9 +69,9 @@ class""")]
   for k in sorted(collection.keys()):
     if k == '': continue
     done += [x for x in dep_resolve(collection[k], resolved, [])]
-  #done += [x for x in dep_resolve(collection['Contest'], resolved, [])]
+
   outfile = open(out_fname,'w')
-  outfile.write('#THIS FILE IS GENERATED, DO NOT EDIT BY HAND\n' + header)
+  outfile.write(header.replace('''Rearrange models' order''','''Rearrange models' order (DONE)'''))
   outfile.write("from django.db import models\n")
   outfile.write('\n\n'.join(done))
   outfile.close()

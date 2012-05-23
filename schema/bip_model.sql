@@ -104,10 +104,11 @@ CREATE TABLE "source" (
 "source" text,
 "user_id" int4,
 "source_data_file_url" varchar(255),
+"organization_url" varchar(255),
 "name" varchar(255),
 "description" text,
 "hash" varchar(255),
-"aquired" timestamp,
+"acquired" timestamp,
 "reviewed" bool,
 "reviewing_user_id" int4,
 PRIMARY KEY ("id") 
@@ -139,6 +140,7 @@ CREATE TABLE "electoral_district" (
 "name" varchar(255),
 "type" varchar(255),
 "number" int4,
+"state_id" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -285,7 +287,7 @@ CREATE TABLE "geo_address" (
 "is_geocoded" bool,
 "house_number" int4,
 "house_number_prefix" varchar(50),
-"hosue_number_suffix" varchar(50),
+"house_number_suffix" varchar(50),
 "street_name" varchar(50),
 "street_direction" varchar(50),
 "street_suffix" varchar(50),
@@ -349,3 +351,4 @@ ALTER TABLE "election_administration" ADD CONSTRAINT "fk_election_administration
 ALTER TABLE "contest" ADD CONSTRAINT "fk_contest_electoral_district_1" FOREIGN KEY ("electoral_district_id") REFERENCES "electoral_district" ("id");
 ALTER TABLE "candidate" ADD CONSTRAINT "fk_candidate_geo_address_1" FOREIGN KEY ("filed_mailing_address") REFERENCES "geo_address" ("id");
 ALTER TABLE "precinct" ADD CONSTRAINT "fk_precinct_split_precinct_1" FOREIGN KEY ("parent_id") REFERENCES "precinct" ("id");
+ALTER TABLE "electoral_district" ADD CONSTRAINT "fk_electoral_district_state_1" FOREIGN KEY ("state_id") REFERENCES "state" ("id");

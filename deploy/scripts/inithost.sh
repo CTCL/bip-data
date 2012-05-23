@@ -11,10 +11,16 @@ git clone https://github.com/votinginfoproject/pythonvalidator.git
 git clone https://github.com/votinginfoproject/scripts.git
 git clone https://github.com/votinginfoproject/twitterbot.git
 git clone https://github.com/votinginfoproject/tools.git
-git clone https://github.com/votinginfoproject/VAVE.git
+git clone https://github.com/ballotinfo/VAVE.git vave
 cd /var/bip/py
 virtualenv --no-site-packages bipdata
-. bipdata/bin/activate
+#not sure if this block is necessary
+virtualenv --no-site-packages vave
+. /var/bip/py/vave/bin/activate
+cd /var/bip/vip/vave
+pip install -r requirements.txt
+####################################
+. /var/bip/py/bipdata/bin/activate
 cd /var/bip
 bip-compile-requirements
 pip install -r _compiledrequirements.txt

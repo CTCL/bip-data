@@ -1,6 +1,6 @@
-from pipeline.feedripper import do_expat
+from pipeline.feedripper import do_expat, do_viacsv
 import importlib
-import IPython
+
 from pipeline.candidate import via_dict
 
 
@@ -16,6 +16,7 @@ class StateBase:
 	Not sure about this concept: It feels turbulent. -SF
 	"""
 	#Designed to be configurable
+	ripper = None#configure this
 	def _get_feed_path(self):
 		return 'data/vip_feeds/vipFeed-testva.xml'
 	def _get_candidate_data(self):
@@ -25,17 +26,22 @@ class StateBase:
 		pass
 	#Things for adding data
 	def push_feed_data(self):
-		ripper = do_expat()
-		ripper.send(self._get_feed_path())
+		self.ripper.send(self._get_feed_path())
 	
 	def push_candidate_data(self):
 		for cdata in self._get_candidate_data():
 			via_dict.send(cdata)
 	#Go
+	def _pre_build_hook(self):
+		pass
+	def _post_build_hook(self):
+		pass
 	def build(self):
+		self._pre_build_hook()
 		self.clean_state_from_db()
 		self.push_feed_data()
 		self.push_candidate_data()
+		self._post_build_hook()
 
 
 def buildstates():

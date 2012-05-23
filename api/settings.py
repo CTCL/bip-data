@@ -1,5 +1,7 @@
 # Django settings for api project.
-
+import sys,os.path
+sys.path.insert(0,os.path.abspath('./'))#Might not need this
+sys.path.append(os.path.abspath('../'))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -118,6 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.data',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

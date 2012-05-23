@@ -2,8 +2,8 @@ from deploy.conf import settings
 from fabric.api import local
 import os.path,sys
 import psycopg2
-
-schema_fname  = os.path.abspath('src/schema/bip_model_0.4.sql')
+from util.colors import *
+schema_fname  = settings.SCHEMA_FILE
 schema = open(schema_fname).read()
 def get_things_to_drop():
 	"""Looks at schema and extracts things that need to be explicitly dropped.
@@ -46,10 +46,13 @@ def get_drop_sql(db):
 	''' % (db['NAME'],db['USER']) + '\n'.join([x for x in get_things_to_drop()])
 
 def get_db_conf():
+
 	name = 'default'
 	return settings.DATABASES[name]
 
 def connection(db=get_db_conf()):
+	"""Dont ever call this on import"""
+	print fail('Open %s database connection' % db['NAME'])
 	return psycopg2.connect(database=db['NAME'],user=db['USER'],password=db['PASSWORD'])
 
 def init():

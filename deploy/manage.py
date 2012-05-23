@@ -4,6 +4,7 @@ Need a centralized place for initiating code. Fiddles with path
 and allows a lo fi way for modules to register commands. 
 '''
 import sys,os.path,IPython
+start_dir = os.curdir
 os.chdir('/var/bip')
 sys.path.insert(0,os.path.abspath('./src'))
 sys.path.append(os.path.abspath('./'))
@@ -15,7 +16,8 @@ import deploy.database
 from states.base import buildstates
 import util.modelgeneration
 #map command names
-
+import logging
+logging.basicConfig(filename='manage.log',level=logging.INFO)
 
 def shell():
 	"""Import some things and drop into an IPython shell."""
@@ -23,18 +25,17 @@ def shell():
 	cursor = get_cursor()
 	IPython.embed()
 
-
+#todo: convert this to only import necessary code
 commands = {
 	'ripfeed':pipeline.feedripper.main,
 	'cleandb':deploy.database.clean,
 	'dropdb':deploy.database.drop,
 	'initdb':deploy.database.init,
 	'makedb':deploy.database.make,
-	'shell':shell,#allow targets for shell? (i.e. 'bip shell deploy/database.py' would drop you in the scope for the database file?)
+	'shell':shell,#todo: allow targets for shell? (i.e. 'bip shell deploy/database.py' would drop you in the scope for the database file?)
 	'buildstates':buildstates,
-	'generatemodels':util.modelgeneration.go
+	'generatemodels':util.modelgeneration.go,
 }
-
 
 if __name__ == "__main__":
 	try:
@@ -47,3 +48,4 @@ if __name__ == "__main__":
 		exit()
 	data = commands[command]()#commands should inspect sys.argv themselves
 
+os.chdir(start_dir)
