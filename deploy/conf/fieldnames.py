@@ -1,6 +1,7 @@
 from collections import defaultdict
 
-vip_to_bip_names = defaultdict(lambda: None,{'election.absentee_ballot_info': 'absentee_ballot_info',
+vip_to_bip_names = defaultdict(lambda: None,{
+ 'election.absentee_ballot_info': 'absentee_ballot_info',
  'election.absentee_request_deadline': 'absentee_request_deadline',
  'election.date': 'date',
  'election.election_day_registration': 'election_day_registration',
@@ -97,22 +98,23 @@ vip_to_bip_names = defaultdict(lambda: None,{'election.absentee_ballot_info': 'a
  'street_segment.end_apartment_number': 'end_apartment_number',
  'street_segment.end_house_number': 'end_house_number',
  'street_segment.id': 'id',
- 'street_segment.non_house_address_address_direction': 'non_house_address.address_direction',
- 'street_segment.non_house_address_apartment': 'non_house_address.apartment',
- 'street_segment.non_house_address_city': 'non_house_address.city',
- 'street_segment.non_house_address_house_number': 'non_house_address.house_number',
- 'street_segment.non_house_address_house_number_prefix': 'non_house_address.house_number_prefix',
- 'street_segment.non_house_address_house_number_suffix': 'non_house_address.house_number_suffix',
- 'street_segment.non_house_address_state': 'non_house_address.state',
- 'street_segment.non_house_address_street_direction': 'non_house_address.street_direction',
- 'street_segment.non_house_address_street_name': 'non_house_address.street_name',
- 'street_segment.non_house_address_street_suffix': 'non_house_address.street_suffix',
- 'street_segment.non_house_address_zip': 'non_house_address.zip',
+ 'street_segment.non_house_address_address_direction': 'nha_address_direction',
+ 'street_segment.non_house_address_apartment': 'nha_apartment',
+ 'street_segment.non_house_address_city': 'nha_city',
+ 'street_segment.non_house_address_house_number': 'nha_house_number',
+ 'street_segment.non_house_address_house_number_prefix': 'nha_house_number_prefix',
+ 'street_segment.non_house_address_house_number_suffix': 'nha_house_number_suffix',
+ 'street_segment.non_house_address_state': 'nha_state',
+ 'street_segment.non_house_address_street_direction': 'nha_street_direction',
+ 'street_segment.non_house_address_street_name': 'nha_street_name',
+ 'street_segment.non_house_address_street_suffix': 'nha_street_suffix',
+ 'street_segment.non_house_address_zip': 'nha_zip',
  'street_segment.odd_even_both': 'odd_even_both',
  'street_segment.precinct_id': 'precinct_id',
  'street_segment.precinct_split_id': 'precinct_split_id',
  'street_segment.start_apartment_number': 'start_apartment_number',
- 'street_segment.start_house_number': 'start_house_number'}
+ 'street_segment.start_house_number': 'start_house_number'
+ }
 )
 
 

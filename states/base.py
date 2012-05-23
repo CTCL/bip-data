@@ -1,6 +1,5 @@
-from pipeline.feedripper import do_expat, do_viacsv
+from pipeline.feedripper import do_viacsv
 import importlib
-
 from pipeline.candidate import via_dict
 
 
@@ -31,11 +30,11 @@ class StateBase:
 	def push_candidate_data(self):
 		for cdata in self._get_candidate_data():
 			via_dict.send(cdata)
-	#Go
 	def _pre_build_hook(self):
 		pass
 	def _post_build_hook(self):
 		pass
+	#Go
 	def build(self):
 		self._pre_build_hook()
 		self.clean_state_from_db()

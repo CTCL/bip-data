@@ -1,3 +1,6 @@
+#was using these data structures to generate more useful mapping data structures
+#file can probably be tossed now
+
 keys = [ 
 	'election ',
 	'election.absentee_ballot_info',

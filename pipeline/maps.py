@@ -2,125 +2,33 @@ from util.colors import *
 from util.patterns import named_zip
 import logging
 from collections import defaultdict
-#this is a relic from when it was unclear what was required
-#make tighter mapping data structures than this one once the mapping needs are clearer
-key_map = {
-	'election': 'election',
-	'election.absentee_ballot_info': 'election.absentee_ballot_info',
-	'election.absentee_request_deadline': 'election.absentee_request_deadline',
-	'election.date': 'election.date',
-	'election.election_day_registration': 'election.election_day_registration',
-	'election.election_type': 'election.election_type',
-	'election.id': 'election.id',
-	'election.polling_hours': 'election.polling_hours',
-	'election.registration_deadline': 'election.registration_deadline',
-	'election.registration_info': 'election.registration_info',
-	'election.results_url': 'election.results_url',
-	'election.state_id': 'election.state_id',
-	'election.statewide': 'election.statewide',
-	'election_administration': 'election_administration',
-	'election_administration.elections_url': 'election_administration.elections_url',
-	'election_administration.eo_id': 'election_administration.eo_id',
-	'election_administration.hours': 'election_administration.hours',
-	'election_administration.id': 'election_administration.id',
-	'election_administration.name': 'election_administration.name',
-	'election_administration.physical_address': 'election_administration.physical_address',
-	'election_administration.physical_address.city': None,
-	'election_administration.physical_address.line1': None,
-	'election_administration.physical_address.line2': None,
-	'election_administration.physical_address.line3': None,
-	'election_administration.physical_address.state': None,
-	'election_administration.physical_address.zip': None,
-	'election_official': 'election_official',
-	'election_official.email': 'election_official.email',
-	'election_official.fax': 'election_official.fax',
-	'election_official.id': 'election_official.id',
-	'election_official.name': 'election_official.name',
-	'election_official.phone': 'election_official.phone',
-	'election_official.title': 'election_official.title',
-	'electoral_district': 'electoral_district',
-	'electoral_district.id': 'electoral_district.id',
-	'electoral_district.name': 'electoral_district.name',
-	'electoral_district.type': 'electoral_district.type',
-	'locality': None,
-	'locality.election_administration_id': 'precinct.election_administration_id',
-	'locality.name': 'electoral_district.name',
-	'locality.state_id': None,
-	'locality.type': 'electoral_district.type',
-	'polling_location': 'polling_location',
-	'polling_location.address': 'polling_location.address',
-	'polling_location.address.city': None,
-	'polling_location.address.line1': None,
-	'polling_location.address.line2': None,
-	'polling_location.address.location_name': None,
-	'polling_location.address.state': None,
-	'polling_location.address.zip': None,
-	'polling_location.id': 'polling_location.id',
-	'precinct': 'precinct',
-	'precinct.id': 'precinct.id',
-	'precinct.locality_id': 'precinct.electoral_district_id',
-	'precinct.name': 'precinct.name',
-	'precinct.polling_location_id': 'precinct.polling_location_id',
-	'precinct.electoral_district_id': 'precinct.electoral_district_id',
-	'precinct_split': 'precinct',
-	'precinct_split.id': 'precinct.id',
-	'precinct_split.name': 'precinct.name',
-	'precinct_split.polling_location_id': 'precinct.polling_location_id',
-	'precinct_split.precinct_id': 'precinct.parent_id',
-	'source': 'source',
-	'source.datetime': 'source.acquired',
-	'source.description': 'source.description',
-	'source.feed_contact_id': None,
-	'source.id': 'source.id',
-	'source.name': 'source.name',
-	'source.organization_url': None,
-	'source.vip_id': None,
-	'state': 'state',
-	'state.id': 'state.id',
-	'state.name': 'state.name',
-	'street_segment': 'street_segment',
-	'street_segment.end_house_number': 'street_segment.end_house_number',
-	'street_segment.id': 'street_segment.id',
-	'street_segment.non_house_address': 'street_segment.non_house_address',
-	'street_segment.non_house_address.address_direction': None,
-	'street_segment.non_house_address.city': None,
-	'street_segment.non_house_address.state': None,
-	'street_segment.non_house_address.street_direction': None,
-	'street_segment.non_house_address.street_name': None,
-	'street_segment.non_house_address.street_suffix': None,
-	'street_segment.non_house_address.zip': None,
-	'street_segment.odd_even_both': 'street_segment.odd_even_both',
-	'street_segment.precinct_id': 'street_segment.precinct_id',
-	'street_segment.precinct_split_id': 'street_segment.precinct_id**',
-	'street_segment.start_house_number': 'street_segment.start_house_number'
-}
+
 
 
 fk_map = {
-	#'address': 'geo_address',
+
 	'election_administration_id': 'election_administration',
 	'electoral_district_id': 'electoral_district',
 	'eo_id': 'election_official',
 	'feed_contact_id': 'election_official',#is this right?
 	'locality_id': 'electoral_district',
-	#'non_house_address': 'geo_address',
-	#'physical_address': 'geo_address',
 	'polling_location_id': 'polling_location',
 	'precinct_id': 'precinct',
 	'precinct_split_id':'precinct',
 	'parent_id': 'precinct',
 	'precinct_split_id': 'precinct',
 	'state_id': 'state',
-	#'vip_id': 'source'
+
 }
-#id -> source_pk
-#identify fk's 
-#map fk identifiers to table names
-#queue refs needing actual pk's
-#2nd pass
+
 
 
 def sqlescape(x):
+	'''
+	Escapes specific values withing the context of an insert statement
+	room to get much fancier here'
+	'''
+
 	if type(x) in (unicode, str):
 		x = x.replace('\'','\'\'')
 	else:
@@ -128,7 +36,7 @@ def sqlescape(x):
 	return '\'' + x + '\'' if x != '' else 'NULL'
 
 
-class VipRM:
+class VipInserter:
 	"""
 		Relational Mapping for VIP XML: Used to insert data.
 	"""
@@ -136,23 +44,53 @@ class VipRM:
 	fk_q = []#holds orphaned foriegn key information
 	errors = []#not that important, handy when debugging
 	valid_fields = dict()
+	insert_queue = list()
+	transaction_open = False
 	def __init__(self,cursor):
 		self.cursor = cursor
-	def _insert(self,data,name,table_override=None):
-		store_pk = 'id' in data##$
+	def _flush_inserts(self):
+		if not self.transaction_open:
+			self.cursor.execute('BEGIN;')
+			self.transaction_open = True
+		for sql in self.insert_queue:
+			self.cursor.execute(sql)
+		self.cursor.execute('END;')
+		self.transaction_open = False
+		self.insert_queue = list()
+
+	def _insert(self,data,name,table_override=None,store_pk=None):
+		if store_pk == None:
+			store_pk = 'id' in data##$
 		sql = self._dict_to_sql(data,name,table_override)
 		logging.info(sql)
-		self.cursor.execute('BEGIN;')
-		self.cursor.execute(sql)
-		pk = self.cursor.fetchone()[0]
-		data['id'] = pk
-		self.cursor.execute('END;')
-		if store_pk:##$
+
+
+		logging.info(('WAT?',(store_pk,len(self.insert_queue))))
+		if not store_pk and len(self.insert_queue) < 100:
+			#no need to spend a transaction on this
+			self.insert_queue.append(sql)
+			logging.info(('queueing',sql))
+			return
+		elif not store_pk and len(self.insert_queue) >= 100:
+			logging.info('######FLUSHING INSERTS####')
+			self.insert_queue.append(sql)
+			self._flush_inserts()
+			return
+		elif store_pk:##$
+			if not self.transaction_open:
+				self.cursor.execute('BEGIN;')
+				self.transaction_open = True
+			self.cursor.execute(sql)
+			pk = self.cursor.fetchone()[0]
+			self.cursor.execute('END;')
+			self.transaction_open = False
+			data['id'] = pk
 			local_key = (name,data['source_pk'])
 			logging.info((local_key,pk,self.pk[local_key] if local_key in self.pk else None))
 			assert local_key not in self.pk
 			self.pk[local_key] = pk#need to do fk's in a 2nd pass
-		return pk
+			return pk
+
 	def _dict_to_sql(self,data,name,table_override):
 		if 'id' in data:
 			data['source_pk'] = data.pop('id')
@@ -162,7 +100,7 @@ class VipRM:
 		logging.info((fks,data))
 		for fk in fks:
 			data = self._fix_fk(data,fk,fk_map[fk],name)
-		if table_override != None:
+		if table_override != None:#this can probably be done better before here
 			name = table_override
 		values = [sqlescape(data[k]) if data[k] != None else 'NULL' for k in data.iterkeys()]
 		return "insert into %s (%s) VALUES (%s) RETURNING id;" % (name,', '.join(fields),', '.join(values))
@@ -229,7 +167,7 @@ class VipRM:
 
 	def _push_street_segment_to_db(self,data,name='street_segment'):
 		data = self._insert_addresses(data)
-		return self._insert(data,name)
+		return self._insert(data,name,store_pk=False)
 
 	def _push_precinct_to_db(self,data,name='precinct'):
 		print data
@@ -251,7 +189,7 @@ class VipRM:
 		return getattr(self,'_push_%s_to_db' % name)
 
 	def flush(self):
-		
+		self._flush_inserts()
 		for data,fk_name,fk_val,dest_model_name,home_model_name in self.fk_q:
 			try:
 				logging.info(warn(data))
