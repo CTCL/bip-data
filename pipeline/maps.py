@@ -36,7 +36,7 @@ def sqlescape(x):
 	return '\'' + x + '\'' if x != '' else 'NULL'
 
 
-class VipInserter:
+class VipRM:
 	"""
 		Relational Mapping for VIP XML: Used to insert data.
 	"""
