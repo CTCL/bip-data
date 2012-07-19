@@ -3,8 +3,8 @@ import sys,os.path
 DATABASES = {
     'default': {
         'NAME': 'bip3',
-        'USER': 'bip_user3',
-        'PASSWORD': 'securityftw', 
+        'USER': 'postgres',
+        'PASSWORD': '|-|3lp3rb34r', 
         'HOST': 'localhost',
     },
     'ohio2': {
@@ -23,7 +23,7 @@ DATABASES = {
 
 
 
-SCHEMA_FILE = os.path.abspath('src/schema/bip_model.sql')
+SCHEMA_FILE = os.path.abspath('src/schema/bip_model_long.sql')
 CACHE_FLATTENING = True
 
 

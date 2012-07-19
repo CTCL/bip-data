@@ -1,2 +1,5 @@
 *.pyc
 _compiled*
+*~
+data
+vip

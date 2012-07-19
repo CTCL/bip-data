@@ -1,0 +1,27 @@
+
+CREATE TABLE "precinct_long" (
+"id" int4 DEFAULT nextval('pksq'),
+"source_pk" varchar(255),
+"source" text,
+"is_split" bool,
+"parent_id" int4,
+"parent_id_long" varchar(255),
+"name" varchar(255),
+"number" varchar(20),
+"electoral_district_id" int4,
+"electoral_district_id_long" varchar(255),
+"locality_id" int4,
+"locality_id_long" varchar(255),
+"ward" varchar(50),
+"mail_only" bool,
+"polling_location_id" int4,
+"polling_location_id_long" varchar(255),
+"early_vote_site_id" int4,
+"early_vote_site_id_long" varchar(255),
+"ballot_style_image_url" varchar(255),
+"election_administration_id" int4,
+"election_administration_id_long" varchar(255),
+"state_id" int4,
+"state_id_long" varchar(255),
+PRIMARY KEY ("id") 
+);

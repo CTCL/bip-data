@@ -1,7 +1,11 @@
 sudo mkdir /var/bip
 sudo chown $USER:$USER /var/bip
+. ./commands.sh
+mkdir /var/bip/src
+cp -r ../../ /var/bip/src
+touch /var/bip/src/__init__.py
 cd /var/bip
-git clone git@github.com:neworganizing/bip-data.git src
+#git clone https://github.com/neworganizing/bip-data.git src
 ln -s src/deploy/manage.py ./manage.py
 ln src/deploy/manage.py /usr/bin/bip
 . src/deploy/scripts/commands.sh
@@ -12,6 +16,7 @@ git clone https://github.com/votinginfoproject/scripts.git
 git clone https://github.com/votinginfoproject/twitterbot.git
 git clone https://github.com/votinginfoproject/tools.git
 git clone https://github.com/ballotinfo/VAVE.git vave
+touch __init__.py
 cd /var/bip/py
 virtualenv --no-site-packages bipdata
 #not sure if this block is necessary

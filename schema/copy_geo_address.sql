@@ -1,0 +1,1 @@
+copy geo_address(house_number,house_number_prefix,house_number_suffix,street_direction,street_name,street_suffix,address_direction,apartment,city,state,zip,source_pk) from '/var/bip/data/vip_feeds/vipFeed-39-2012-03-06.xml.flattened/street_segment_addys.txt' CSV HEADER

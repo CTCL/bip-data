@@ -14,6 +14,7 @@ import IPython
 import pipeline.feedripper
 import deploy.database
 from states.base import buildstates
+from states.base import bulkbuildstates
 import util.modelgeneration
 #map command names
 import logging
@@ -25,6 +26,12 @@ def shell():
 	cursor = get_cursor()
 	IPython.embed()
 
+def bulkbuild():
+    deploy.database.drop_fks()
+    bulkbuildstates()
+#TODO    states.base.resolvefks()
+#TODO    deploy.database.buildfks()
+
 #todo: convert this to only import necessary code
 commands = {
 	'ripfeed':pipeline.feedripper.main,
@@ -34,6 +41,7 @@ commands = {
 	'makedb':deploy.database.make,
 	'shell':shell,#todo: allow targets for shell? (i.e. 'bip shell deploy/database.py' would drop you in the scope for the database file?)
 	'buildstates':buildstates,
+    'bulkbuildstates':bulkbuild,
 	'generatemodels':util.modelgeneration.go,
 }
 

@@ -7,7 +7,6 @@ CREATE SEQUENCE pksq START 1;
 
 CREATE TABLE "election" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "date" date,
 "election_type" electionenum,
@@ -25,7 +24,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "contest" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "election_id" int4,
 "electoral_district_id" int4,
@@ -47,7 +45,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "candidate" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "name" varchar(255),
 "party" varchar(255),
@@ -67,7 +64,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "referendum" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "title" varchar(255),
 "subtitle" varchar(255),
@@ -83,7 +79,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "ballot_response" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "contest_id" int4,
 "sort_order" varchar(255),
@@ -100,7 +95,6 @@ PRIMARY KEY ("contest_id", "candidate_id")
 
 CREATE TABLE "source" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "user_id" int4,
 "source_data_file_url" varchar(255),
@@ -116,7 +110,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "precinct" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "is_split" bool,
 "parent_id" int4,
@@ -136,7 +129,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "electoral_district" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "name" varchar(255),
 "type" varchar(255),
@@ -147,7 +139,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "street_segment" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "start_house_number" int4,
 "end_house_number" int4,
@@ -157,34 +148,12 @@ CREATE TABLE "street_segment" (
 "non_house_address" int4,
 "precinct_id" int4,
 "precinct_split_id" int4,
--- Having non-house-addresses keyed out was creating far too many transactions on import
-"nha_is_standardized" bool,
-"nha_is_geocoded" bool,
-"nha_house_number" int4,
-"nha_house_number_prefix" varchar(50),
-"nha_house_number_suffix" varchar(50),
-"nha_street_name" varchar(50),
-"nha_street_direction" varchar(50),
-"nha_street_suffix" varchar(50),
-"nha_address_direction" varchar(50),
-"nha_location_name" varchar(255),
-"nha_line3" varchar(255),
-"nha_line2" varchar(255),
-"nha_line1" varchar(255),
-"nha_city" varchar(255),
-"nha_state" varchar(255),
-"nha_zip4" varchar(4),
-"nha_zip" varchar(10),
-"nha_xcoord" varchar(255),
-"nha_ycoord" varchar(255),
-"nha_apartment" varchar(255),
 PRIMARY KEY ("id") ,
 CONSTRAINT "street_segment__id" UNIQUE ("id")
 );
 
 CREATE TABLE "geo_cd" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "electoral_district_id" int4,
 PRIMARY KEY ("id") 
@@ -207,15 +176,12 @@ PRIMARY KEY ("parent_id", "source_pk")
 
 CREATE TABLE "election_administration" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "name" varchar(255),
 "ovc_id" int4,
 "eo_id" int4,
 "physical_address" int4,
 "mailing_address" int4,
-"physical_address_key" varchar(100),
-"mailing_address_key" varchar(100),
 "elections_url" varchar(255),
 "type" varchar(255),
 "state_id" int4,
@@ -232,7 +198,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "state" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "name" varchar(50),
 "postal_code" varchar(2),
@@ -249,7 +214,6 @@ PRIMARY KEY ("precinct_id", "early_vote_site_id")
 
 CREATE TABLE "early_vote_site" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "name" varchar(255),
 "address" int4,
@@ -264,10 +228,8 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "polling_location" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "address" int4,
-"address_key" varchar(100),
 "directions" varchar(255),
 "polling_hours" varchar(255),
 "photo_url" varchar(255),
@@ -282,7 +244,6 @@ PRIMARY KEY ("precinct_id", "polling_location_id")
 
 CREATE TABLE "geo_county" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "electoral_district_id" int4,
 PRIMARY KEY ("id") 
@@ -290,7 +251,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "geo_ss" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "electoral_district_id" int4,
 PRIMARY KEY ("id") 
@@ -298,7 +258,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "geo_sh" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "electoral_district_id" int4,
 PRIMARY KEY ("id") 
@@ -306,7 +265,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "geo_address" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "is_standardized" bool,
 "is_geocoded" bool,
@@ -333,7 +291,6 @@ PRIMARY KEY ("id")
 
 CREATE TABLE "election_official" (
 "id" int4 DEFAULT nextval('pksq'),
-"source_pk" varchar(255),
 "source" text,
 "title" varchar(255),
 "phone" varchar(50),
