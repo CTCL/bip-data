@@ -99,13 +99,15 @@ extra_long_keys = defaultdict(lambda:list(), {'precinct':['polling_location_id']
 def create_table_sql(table):
     return '\n'.join([table[0]]+[str(n+' '+t) for (n,t) in table[1].iteritems()]+table[2]+[table[3]])
 
-def rekey_sql(name, columns, relations):
+def rekey_sql(name, columns, relations, extra_long):
     sql = 'CREATE TABLE %s as select ' + ','.join('fromtable.%s' for c in columns if not c.endswith('_long'))
     sql += ',' if len(relations) > 0 and len([c for c in columns if not c.endswith('_long')]) > 0 else ''
-    sql += ','.join('%s_long_%s.%s as %s' for fk in relations)+' \n'
-    sql += 'from %s_long as fromtable' + ' left join %s_long as %s_long_%s on fromtable.%s_long = %s_long_%s.%s_long'*len(relations)+';\n'
+    sql += ','.join('%s_long%s.%s as %s' for i in relations)
+    sql += ',' if len(relations) >0 and len(extra_long) > 0 else ''
+    sql += ','.join('fromtable.%s as %s' for i in extra_long) + '\n'
+    sql += 'from %s_long as fromtable' + ' left join %s_long as %s_long%s on fromtable.%s_long = %s_long%s.%s_long'*len(relations)+';\n'
     data = [name] + [c for c in columns if not c.endswith('_long')]
-    data+=[i for a in [[relations[key][0], j, relations[key][1],key] for (key,j) in zip(relations, range(len(relations)))] for i in a] + [name] + [i for a in [[relations[key][0], relations[key][0], j, key, relations[key][0], j, relations[key][1]] for (key,j) in zip(relations, range(len(relations)))] for i in a]
+    data+=[i for a in [[relations[key][0], j, relations[key][1],key] for (key,j) in zip(relations, range(len(relations)))] for i in a] + [i for a in [[key+'_long', key] for key in extra_long] for i in a]  + [name] + [i for a in [[relations[key][0], relations[key][0], j, key, relations[key][0], j, relations[key][1]] for (key,j) in zip(relations, range(len(relations)))] for i in a]
     return sql % tuple(data)
 
 def table_statement_gen(first_line, schema_file):
@@ -187,7 +189,8 @@ with open(sys.argv[1], 'r') as schema_file, open(sys.argv[2], 'w') as new_schema
                 constraint_fields[i] = table_column_map[table][constraint_fields[i].strip()[1:-1]]
             tables[table][2][j] = cs[0] + '(' + ','.join(constraint_fields) + ')' + cs[2]
         new_schema_file.write(create_table_sql(tables[table]) + '\n\n')
-        rekey_file.write(rekey_sql(table, tables[table][1].keys(),from_tables[table]))
+        rekey_file.write(rekey_sql(table, tables[table][1].keys(),from_tables[table], extra_long_keys[table]))
         table_file = data_dir + os.sep + table+'.txt'
         if os.path.exists(table_file):
+            #This can take a while, since it regenerates split address files TODO make regeneration of files a separate function
             copy_file.write(copy_statement_functions[table](table,table_file,from_tables[table], to_tables[table], extra_long_keys[table], remove_keys[table], rename_keys[table]))
