@@ -71,9 +71,7 @@ def process_data(row, numbered_columns, transformed_columns,udcs):
 def process_table(table_conf, univ_conf, connection):
     numbered_columns, transformed_columns, udcs = process_columns(table_conf, univ_conf['reformat_path'])
     table_def = "%s(%s)" % (table_conf['table'],','.join([name for name, i in numbered_columns]+[n for names, f, i in transformed_columns for n in names] + [name for name, t in udcs]))
-    force_not_null = ''
-    if table_conf.has_key('force_not_null'):
-        force_not_null = 'FORCE NOT NULL ' + ','.join(s.strip() for s in table_conf['force_not_null'].split(','))
+    force_not_null = force_not_null = 'FORCE NOT NULL ' + ','.join(s.strip() for s in table_conf['force_not_null'].split(',')) if table.conf.has_key('force_not_null') else ''
     sql = "COPY %s from STDOUT WITH CSV DELIMITER '%s' QUOTE '%s' %s" % (table_def, table_conf['field_sep'], table_conf['quotechar'], force_not_null)
     field_sep = table_conf['field_sep']
     copy_every = int(table_conf['copy_every'])

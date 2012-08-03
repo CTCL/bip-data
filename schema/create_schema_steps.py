@@ -108,7 +108,11 @@ def rekey_sql(name, columns, relations, extra_long):
     sql += 'from %s_long as fromtable' + ' left join %s_long as %s_long%s on fromtable.%s_long = %s_long%s.%s_long'*len(relations)+';\n'
     data = [name] + [c for c in columns if not c.endswith('_long')]
     data+=[i for a in [[relations[key][0], j, relations[key][1],key] for (key,j) in zip(relations, range(len(relations)))] for i in a] + [i for a in [[key+'_long', key] for key in extra_long] for i in a]  + [name] + [i for a in [[relations[key][0], relations[key][0], j, key, relations[key][0], j, relations[key][1]] for (key,j) in zip(relations, range(len(relations)))] for i in a]
-    return sql % tuple(data)
+    return sql % tuple(data), sql, data
+
+def do_rekey_sql(name, columns, relations, extra_long, db_conn):
+    sql_data, sql, data = rekey_sql(name, columns, relations, extra_long)
+    db_conn.cursor().execute(sql, data)
 
 def table_statement_gen(first_line, schema_file):
     yield first_line
