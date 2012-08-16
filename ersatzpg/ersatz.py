@@ -106,8 +106,6 @@ def process_data(row, numbered_columns, transformed_columns,udcs, key_values = [
 def create_keys(used_keys, keys, sources):
     key_values = {}
     for k in used_keys:
-        if k == 'locality' and sources[keys[k]] == 331269:
-            import pdb; pdb.set_trace()
         key_values[k] = sources[keys[k]]
         sources[keys[k]]+=1
     return key_values
@@ -162,8 +160,6 @@ def process_parallel(p_conf, keys, univ_conf, connection):
                 ptime[table] -= time.time()
                 l = lines[table_conf['filename']]
                 try:
-                    if table == 'locality' and key_values['locality'] == 331269:
-                        import pdb; pdb.set_trace()
                     csvw[table].writerow(process_data(l, numbered_columns[table], transformed_columns[table], udcs[table], [key_values[k] for n,k in key_columns[table]]))
                 except Exception, error:
                     if univ_conf['debug']:
