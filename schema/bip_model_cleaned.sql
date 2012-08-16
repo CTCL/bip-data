@@ -19,6 +19,7 @@ CREATE TABLE "election" (
 "election_day_registration" bool,
 "registration_deadline" varchar(255),
 "absentee_request_deadline" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -40,6 +41,7 @@ CREATE TABLE "contest" (
 "contest_type" contestenum,
 "write_in" bool,
 "custom_ballot_heading" text,
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -59,6 +61,7 @@ CREATE TABLE "candidate" (
 "twitter_name" varchar(255),
 "facebook_url" varchar(255),
 "wiki_word" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -74,6 +77,7 @@ CREATE TABLE "referendum" (
 "contest_id" int4,
 "passage_threshold" varchar(255),
 "effect_of_abstain" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -83,6 +87,7 @@ CREATE TABLE "ballot_response" (
 "contest_id" int4,
 "sort_order" varchar(255),
 "text" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -105,6 +110,8 @@ CREATE TABLE "source" (
 "acquired" timestamp,
 "reviewed" bool,
 "reviewing_user_id" int4,
+"election_key" int4,
+"vip_id" text,
 PRIMARY KEY ("id") 
 );
 
@@ -116,7 +123,8 @@ CREATE TABLE "precinct" (
 "name" varchar(255),
 "number" varchar(20),
 "electoral_district_id" varchar(255),
-"locality_id" varchar(255),
+--"locality_id" varchar(255),
+"locality_id" int4,
 "ward" varchar(50),
 "mail_only" bool,
 "polling_location_id" int4,
@@ -124,7 +132,17 @@ CREATE TABLE "precinct" (
 "ballot_style_image_url" varchar(255),
 "election_administration_id" int4,
 "state_id" int4,
+"election_key" int4,
 PRIMARY KEY ("id") 
+);
+
+CREATE TABLE "locality" (
+"id" int4 DEFAULT nextval('pksq')
+"source" text,
+"election_key" int4,
+"name" varchar(255),
+"type" varchar(255),
+PRIMARY KEY ("id")
 );
 
 CREATE TABLE "electoral_district" (
@@ -134,6 +152,7 @@ CREATE TABLE "electoral_district" (
 "type" varchar(255),
 "number" int4,
 "state_id" int4,
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -148,6 +167,7 @@ CREATE TABLE "street_segment" (
 "non_house_address" int4,
 "precinct_id" int4,
 "precinct_split_id" int4,
+"election_key" int4,
 PRIMARY KEY ("id") ,
 CONSTRAINT "street_segment__id" UNIQUE ("id")
 );
@@ -171,6 +191,7 @@ CREATE TABLE "org_custom_field" (
 "value" varchar(255),
 "type" CFenum,
 "org_id" int4,
+"election_key" int4,
 PRIMARY KEY ("parent_id", "source_pk") 
 );
 
@@ -193,6 +214,7 @@ CREATE TABLE "election_administration" (
 "absentee_url" varchar(255),
 "am_i_registered_url" varchar(255),
 "registration_url" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -223,6 +245,7 @@ CREATE TABLE "early_vote_site" (
 "end_date" date,
 "state_id" int4,
 "days_time_open" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -233,6 +256,7 @@ CREATE TABLE "polling_location" (
 "directions" varchar(255),
 "polling_hours" varchar(255),
 "photo_url" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 
@@ -297,6 +321,7 @@ CREATE TABLE "election_official" (
 "fax" varchar(50),
 "email" varchar(255),
 "name" varchar(255),
+"election_key" int4,
 PRIMARY KEY ("id") 
 );
 

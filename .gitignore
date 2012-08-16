@@ -1,6 +1,6 @@
 *.pyc
 _compiled*
 *~
-data
+data/voterfiles
 vip
 *.swp

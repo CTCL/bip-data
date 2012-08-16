@@ -94,6 +94,7 @@ copy_statement_functions = defaultdict(lambda:convert_to_long, {'street_segment'
 
 remove_keys = defaultdict(lambda:list(), {'state':['election_administration_id', 'early_vote_site_id'],'locality':['election_administration_id', 'early_vote_site_id'],'source':['feed_contact_id','tou_url']})
 rename_keys = defaultdict(lambda:dict(), {'source':{'vip_id':'id'}})
+#THIS IS UNNECESSARY IF THE DB FILES ARE CREATED WITH JOIN TABLES
 extra_long_keys = defaultdict(lambda:list(), {'precinct':['polling_location_id']})
 
 def create_table_sql(table):

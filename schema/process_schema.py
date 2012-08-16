@@ -1,20 +1,64 @@
 import re, sys
 
+
+LONG_TYPE = 'varchar(255)'
 class field:
     def __init__(self, name, stype, default=None):
         self.name = name
         self.type = stype
         self.default = default
+        self.long_from = False
+        self.long_to = False
+
+    def sql(self, long_fields=False):
+        sql, data = self.sql_data(long_fields)
+        return sql % data
+
+    def sql_data(self, long_fields=False):
+        if long_fields and self.long_to:
+            return '%s %s%s,%s %s', (self.name, self.type, (' DEFAULT %s' % self.default) if self.default else '',self.name+'_long', LONG_TYPE)
+        elif long_fields and self.long_from:
+            return '%s %s', (self.name+'_long', LONG_TYPE)
+        else:
+            return '%s %s%s', (self.name, self.type, (' DEFAULT %s' % self.default) if self.default else '')
 
 class table:
-    t_re = re.compile(r'(?P<constraint>\s*CONSTRAINT\s+(?:"?(?P<cname>\w+)"?)\s+UNIQUE\s+\((?P<ckeys>.+)\)\s*,?)|(?P<pk>\s*PRIMARY\s+KEY\s*\((?P<pkeys>.+)\)\s*,?)|(?P<field>\s*"?(?P<fname>\w+)"?\s+(?P<type>\w+)(?:\s+DEFAULT\s+(?P<default>.+))?,?)')
+    t_re = re.compile(r'(?P<constraint>\s*CONSTRAINT\s+(?:"?(?P<cname>\w+)"?)\s+UNIQUE\s+\((?P<ckeys>(?:\s*"?\w+"?\s*,?\s*)+)\)\s*,?)|(?P<pk>\s*PRIMARY\s+KEY\s*\((?P<pkeys>(?:\s*"?\w+"?\s*,?\s*)+)\)\s*,?)|(?P<field>\s*"?(?P<fname>\w+)"?\s+(?P<type>\w+(?:\(\d+\))?)(?:\s+DEFAULT\s+(?P<default>\w+(?:\(\'\w+\'\))?))?,?)')
     create_re = re.compile(r'\s*CREATE\s+TABLE\s+"?(\w+)"?\s*\((.+)\)')
     field_re = re.compile(r'\s*"?(?P<name>\w+)"?\s+(?P<type>\w+)(?:\s+DEFAULT\s+(?P<default>.+))?')
     pk_re = re.compile(r'\s*PRIMARY\s+KEY\s*\((.+)\)')
     def __init__(self):
+        self.name = None
         self.fields = {} #dict of field objects
         self.primary_keys = [] #list of tuples. A tuple with multiple entries is a primary key on more than one field
-        self.constraints = [] #unique and foreign key constraints
+        self.constraints = [] #unique constraints
+
+    def has_long(self):
+        return any(f.long_from or f.long_to for f in self.fields.values())
+
+    def sql(self, long_fields=False, drop_keys=False):
+        if long_fields:
+            return 'CREATE TABLE %s_long (%s);' % (self.name, ','.join([f.sql(long_fields) for f in self.fields.values()]))
+        else:
+            return 'CREATE TABLE %s (%s);' % (self.name, ','.join([f.sql(long_fields) for f in self.fields.values()] + (['PRIMARY KEY (%s)' % (','.join(pk)) for pk in self.primary_keys] if not drop_keys else '') + [c.sql() for c in self.constraints]))
+
+    def sql_data(self, long_fields=False, drop_keys=False):
+        fsql = ','.join(f.sql_data(long_fields)[0] for f in self.fields.values())
+        fdata = tuple(d for f in self.fields.values() for d in f.sql_data(long_fields)[1])
+        if long_fields:
+            return 'CREATE TABLE %%s_long (%s);' % fsql, (self.name,) + fdata
+        else:
+            csql = ','.join(c.sql_data()[0] for c in self.constraints)
+            cdata = tuple(d for c in self.constraints for d in c.sql_data()[1])
+            return 'CREATE TABLE %%s (%s);' % ','.join([fsql] + (['PRIMARY KEY (%s)' for pk in self.primary_keys] if not drop_keys else []) + ([csql] if csql else [])), (self.name,) + fdata + (tuple(','.join(pk) for pk in self.primary_keys)if not drop_keys else ()) + cdata
+
+    def pk_sql_data(self):
+        return 'ALTER TABLE {table_name} ADD PRIMARY KEY ({pk});', {'table_name':self.name, 'pk':','.join(self.primary_keys[0])}
+
+    def rekey(self, fks):
+        sql = 'CREATE TABLE %s as SELECT ' + ','.join('fromtable.%s' for f in self.fields.values() if not f.long_from and not f.long_to) +(',' if len(fks) > 0 and len([f for f in self.fields.values() if not f.long_from and not f.long_to]) else '') +','.join('totable%s.%s as %s' for fk in fks for a in fk.reference_fields) + ' from %s_long as fromtable' + ''.join(' left join %s_long as totable%s on ' + ' and '.join('fromtable.%s_long = totable%s.%s_long' for a in fk.reference_fields) for fk in fks)+';\n'
+        data = [self.name] + [f.name for f in self.fields.values() if not f.long_from and not f.long_to] + [a for b in [[i, fks[i].reference_fields[fks[i].reference_fields.keys()[j]], fks[i].reference_fields.keys()[j]] for i in range(len(fks)) for j in range(len(fks[i].reference_fields))] for a in b] + [self.name] + [a for b in [[fks[i].reference_table,i] + [c for d in [[fks[i].reference_fields.keys()[j],i,fks[i].reference_fields[fks[i].reference_fields.keys()[j]]] for j in range(len(fks[i].reference_fields))] for c in d] for i in range(len(fks))] for a in b]
+        return sql, tuple(data)
 
 class fk_constraint:
     fk_alter_re = re.compile(r'\s*ALTER\s+TABLE\s+?"(?P<from_table>\w+)"?\s+ADD\s+CONSTRAINT\s+(?:"?(?P<name>\w+)"?\s+)FOREIGN\s+KEY\s+\((?P<froms>.+)\)\s+REFERENCES\s+"?(?P<to_table>\w+)"?\s+\((?P<tos>.+)\)')
@@ -30,6 +74,12 @@ class unique_constraint:
         self.table = None #table that the constraint is on
         self.name = None #possibly empty name of constraint
         self.fields = () #tuple of fields which must together be unique
+
+    def sql(self):
+        return 'CONSTRAINT%s UNIQUE (%s)' % (' '+self.name if self.name else '', ','.join(self.fields))
+
+    def sql_data(self):
+        return 'CONSTRAINT%s UNIQUE (%s)', (' '+self.name if self.name else '', ','.join(self.fields))
 
 class enum:
     enum_re = re.compile(r'\s*CREATE\s+TYPE\s+"?(\w+)"?\s+AS\s+ENUM\s+\((.+)\)')
@@ -90,8 +140,6 @@ def objectify_statement(statement, tables, enums, fks, seqs):
     if m:
         t = table()
         t.name = m.groups()[0]
-        if t.name == 'electoral_district__precinct':
-            import pdb; pdb.set_trace()
         for n in table.t_re.finditer(m.groups()[1]):
             if n.groupdict()['pk']:
                 t.primary_keys.append(tuple(o.groups()[0] for o in choice_re.finditer(n.groupdict()['pkeys'])))
@@ -102,7 +150,7 @@ def objectify_statement(statement, tables, enums, fks, seqs):
                 uc.fields = tuple(o.groups()[0] for o in choice_re.finditer(n.groupdict()['ckeys']))
                 t.constraints.append(uc)
             elif n.groupdict()['field']:
-                t.fields[n.groupdict()['fname'] = field(n.groupdict()['fname'], n.groupdict()['type'], n.groupdict()['default'])
+                t.fields[n.groupdict()['fname']] = field(n.groupdict()['fname'], n.groupdict()['type'], n.groupdict()['default'])
         """
         for s in split_no_parens(m.groups()[1]):
             m = table.pk_re.match(s.strip())
@@ -142,7 +190,7 @@ def rip_schema(schema_file_name):
                 l = l.split(';')
                 for s in l[:-1]:
                     statement += ' '+s
-                    objectify_statement(statement, tables, enums, fks)
+                    objectify_statement(statement, tables, enums, fks, seqs)
                     statement = ''
                 statement += ' '+l[-1]
             else:
