@@ -182,6 +182,8 @@ PRIMARY KEY ("id")
 CREATE TABLE "electoral_district__precinct" (
 "electoral_district_id" int4,
 "precinct_id" int4,
+"source" text,
+"election_key" int4,
 PRIMARY KEY ("electoral_district_id", "precinct_id") 
 );
 

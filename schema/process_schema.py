@@ -52,8 +52,8 @@ class table:
             cdata = tuple(d for c in self.constraints for d in c.sql_data()[1])
             return 'CREATE TABLE %%s (%s);' % ','.join([fsql] + (['PRIMARY KEY (%s)' for pk in self.primary_keys] if not drop_keys else []) + ([csql] if csql else [])), (self.name,) + fdata + (tuple(','.join(pk) for pk in self.primary_keys)if not drop_keys else ()) + cdata
 
-    def pk_sql_data(self):
-        return 'ALTER TABLE {table_name} ADD PRIMARY KEY ({pk});', {'table_name':self.name, 'pk':','.join(self.primary_keys[0])}
+    def pk_sql_data(self, state, election):
+        return 'ALTER TABLE {table_name}_{state}_{election} ADD PRIMARY KEY ({pk});', {'table_name':self.name, 'state':state,'election':election, 'pk':','.join(self.primary_keys[0])}
 
     def rekey(self, fks):
         sql = 'CREATE TABLE %s as SELECT ' + ','.join('fromtable.%s' for f in self.fields.values() if not f.long_from and not f.long_to) +(',' if len(fks) > 0 and len([f for f in self.fields.values() if not f.long_from and not f.long_to]) else '') +','.join('totable%s.%s as %s' for fk in fks for a in fk.reference_fields) + ' from %s_long as fromtable' + ''.join(' left join %s_long as totable%s on ' + ' and '.join('fromtable.%s_long = totable%s.%s_long' for a in fk.reference_fields) for fk in fks)+';\n'

@@ -2,5 +2,8 @@
 _compiled*
 *~
 data/voterfiles
+data/vipfeeds
+districts*
+precincts*
 vip
 *.swp
