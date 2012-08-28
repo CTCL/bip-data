@@ -138,7 +138,7 @@ def process_parallel(p_conf, keys, univ_conf, connection):
     try:
         for table, table_conf in p_conf['tables'].iteritems():
             if not fs.has_key(table_conf['filename']):
-                fs[table_conf['filename']] = utffile(table_conf, 'rb') if univ_conf['use_utf'] else open(table_conf['filename'],'rb')
+                fs[table_conf['filename']] = utffile(table_conf['filename'], 'rb') if univ_conf['use_utf'] else open(table_conf['filename'],'rb')
             buf[table] = StringIO()
             if not csvr.has_key(table_conf['filename']):
                 csvr[table_conf['filename']] = csv.reader(fs[table_conf['filename']], quotechar=quote_char[table], delimiter=field_sep[table])

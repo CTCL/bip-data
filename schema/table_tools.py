@@ -102,6 +102,14 @@ def rekey_imports(actual_tables, unions, table_dict, connection, split_names):
             print sql
             connection.cursor().execute(sql)
 
+def export_candidate_tables(state, election, out_dir, connection):
+    import os
+    sql = "COPY {table}_{source}_{election} TO '{out_dir}{ossep}{table}.csv' CSV HEADER;"
+    connection.cursor().execute(sql.format(table='candidate', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
+    connection.cursor().execute(sql.format(table='candidate_in_contest', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
+    connection.cursor().execute(sql.format(table='contest', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
+    connection.cursor().execute(sql.format(table='electoral_district', out_dir=out_dir, source=state+'VF', election=election, ossep = os.sep))
+
 def create_long_tables(table_dict, connection):
     for t in table_dict.values():
         sql, data = t.sql_data(True)

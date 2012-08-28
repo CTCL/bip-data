@@ -1,5 +1,6 @@
 from ersatzpg import ersatz
 from schema import process_schema, table_tools, create_partitions, create_precinct_to_ed
+import determine_districts
 from state_abbr import states
 import time, sys, imp, os
 
@@ -24,6 +25,11 @@ if '-clean_keyed' in sys.argv:
     table_tools.create_tables(tables, connection)
     connection.commit()
     connection.close()
+    t = time.time() - t
+    print "Elapsed: %s" % (t,)
+if '-compress' in sys.argv:
+    t = time.time()
+    determine_districts.main(state)
     t = time.time() - t
     print "Elapsed: %s" % (t,)
 
@@ -151,3 +157,7 @@ if '-r' in sys.argv:
     connection.close()
     t = time.time() - t
     print "Elapsed: %s" % (t,)
+
+if '-export' in sys.argv:
+    connection = ersatz.db_connect(state_conf.ERSATZPG_CONFIG)
+    table_tools.export_candidate_tables(state, ELECTION, os.path.join(*[os.getcwd(),'data','voterfiles',state,'out']), connection)
