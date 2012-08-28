@@ -87,7 +87,7 @@ def new_process_columns(table_conf):
         if type(v) == int and type(k) == str:
             numbered_columns.append((k,v-1))
         elif type(v) == dict and v.has_key('function') and (type(k) == str or type(k) == tuple):
-            transformed_columns.append(((k,) if type(k) == str else k, v['function'], [i-1 for i in v['columns']]))
+            transformed_columns.append(((k,) if type(k) == str else k, v['function'], [i-1 for i in v['columns']], v['defaults'] if v.has_key('defaults') else {}))
         elif type(v) == dict and v.has_key('key'):
             key_columns.append((k,v['key']))
         else:
@@ -101,7 +101,7 @@ def function_lookup(module_name, func_name, reformat_path):
     return module.__dict__[func_name]
 
 def process_data(row, numbered_columns, transformed_columns,udcs, key_values = []):
-    return [row[i] for name,i in numbered_columns] + [v for tr in transformed_columns for v in tr[1](*[row[i] for i in tr[2]])] + [i for name, i in udcs] + key_values
+    return [row[i] for name,i in numbered_columns] + [v for tr in transformed_columns for v in tr[1](*([row[i] for i in tr[2]] + (tr[3] if type(tr[3]) == list else [])), **(tr[3] if type(tr[3]) == dict else {}) )] + [i for name, i in udcs] + key_values
 
 def create_keys(used_keys, keys, sources):
     key_values = {}
@@ -128,7 +128,7 @@ def process_parallel(p_conf, keys, univ_conf, connection):
     for table, table_conf in p_conf['tables'].iteritems():
         numbered_columns[table], transformed_columns[table], udcs[table], key_columns[table] = new_process_columns(table_conf)
         used_keys.update((v for (k,v) in key_columns[table]))
-        table_def[table] = "%s(%s)" % (table_conf['table'],','.join([name for name, i in numbered_columns[table]]+[n for names, f, i in transformed_columns[table] for n in names] + [name for name, t in udcs[table]] + [name for name, t in key_columns[table]]))
+        table_def[table] = "%s(%s)" % (table_conf['table'],','.join([name for name, i in numbered_columns[table]]+[n for names, f, i, d in transformed_columns[table] for n in names] + [name for name, t in udcs[table]] + [name for name, t in key_columns[table]]))
         force_not_null[table] = 'FORCE NOT NULL ' + ','.join(s.strip() for s in table_conf['force_not_null']) if table_conf.has_key('force_not_null') else ''
         sql[table] = "COPY %s from STDOUT WITH CSV %s" % (table_def[table], force_not_null[table])
         field_sep[table] = table_conf['field_sep']
@@ -163,6 +163,7 @@ def process_parallel(p_conf, keys, univ_conf, connection):
                     csvw[table].writerow(process_data(l, numbered_columns[table], transformed_columns[table], udcs[table], [key_values[k] for n,k in key_columns[table]]))
                 except Exception, error:
                     if univ_conf['debug']:
+                        import traceback; print traceback.format_exc()
                         import pdb; pdb.set_trace()
                     else:
                         raise error
@@ -176,6 +177,7 @@ def process_parallel(p_conf, keys, univ_conf, connection):
                         ctime += time.time()
                     except Exception, error:
                         if univ_conf['debug']:
+                            import traceback; print traceback.format_exc()
                             import pdb; pdb.set_trace()
                         else:
                             raise error
@@ -195,6 +197,7 @@ def process_parallel(p_conf, keys, univ_conf, connection):
                 ctime += time.time()
             except Exception, error:
                 if univ_conf['debug']:
+                    import traceback; print traceback.format_exc()
                     import pdb; pdb.set_trace()
                 else:
                     raise error
@@ -208,7 +211,7 @@ def process_parallel(p_conf, keys, univ_conf, connection):
 
 def process_table(table_conf, univ_conf, connection):
     numbered_columns, transformed_columns, udcs, keys = new_process_columns(table_conf)
-    table_def = "%s(%s)" % (table_conf['table'],','.join([name for name, i in numbered_columns]+[n for names, f, i in transformed_columns for n in names] + [name for name, t in udcs]))
+    table_def = "%s(%s)" % (table_conf['table'],','.join([name for name, i in numbered_columns]+[n for names, f, i, d in transformed_columns for n in names] + [name for name, t in udcs]))
     force_not_null = 'FORCE NOT NULL ' + ','.join(s.strip() for s in table_conf['force_not_null']) if table_conf.has_key('force_not_null') else ''
     sql = "COPY %s from STDOUT WITH CSV %s" % (table_def, force_not_null)
     field_sep = table_conf['field_sep']
@@ -232,6 +235,7 @@ def process_table(table_conf, univ_conf, connection):
                 csvw.writerow(process_data(l, numbered_columns, transformed_columns, udcs))
             except Exception, error:
                 if univ_conf['debug']:
+                    import traceback; print traceback.format_exc()
                     import pdb; pdb.set_trace()
                 else:
                     raise error
@@ -246,6 +250,7 @@ def process_table(table_conf, univ_conf, connection):
                     ctime += time.time()
                 except Exception, error:
                     if univ_conf['debug']:
+                        import traceback; print traceback.format_exc()
                         import pdb; pdb.set_trace()
                     else:
                         raise error
@@ -264,6 +269,7 @@ def process_table(table_conf, univ_conf, connection):
             ctime += time.time()
         except Exception, error:
             if univ_conf['debug']:
+                import traceback; print traceback.format_exc()
                 import pdb; pdb.set_trace()
             else:
                 raise error

@@ -18,16 +18,27 @@ vf_precincts = (
         #('township', VOTER_FILE['columns']['township']-1),
         ('precinct_code',VOTER_FILE['columns']['precinct_code']-1),
         ('precinct_name',VOTER_FILE['columns']['precinct_name']-1))
-with open(VOTER_FILE_LOCATION,'r') as f:
+with open(VOTER_FILE_LOCATION,'r') as f, open(os.path.join(*['data','voterfiles',state,'vf_compressed']),'w') as g:
     csvr = csv.reader(f, delimiter=VOTER_FILE['field_sep'])
-    csvr.next()
+    csvw = csv.writer(g, delimiter=VOTER_FILE['field_sep'])
+    csvw.writerow(csvr.next())
     x = 1
     t = time.time()
+    precinct_ed = set()
     for line in csvr:
         precinct_code = tuple(line[i] for n,i in vf_precincts)
         for k,v in vf_districts.iteritems():
             precincts[precinct_code][k][line[v]] += 1
-            district_entries[k].add(line[v])
+            if k == 'county_council':
+                ed = line[VOTER_FILE['columns']['county_id']-1] + ' ' + line[v]
+                district_entries[k].add(line[VOTER_FILE['columns']['county_id']-1] + ' ' + line[v])
+            else:
+                ed = line[v]
+                district_entries[k].add(line[v])
+        ped = precinct_code + (ed,)
+        if ped not in precinct_ed:
+            precinct_ed.add(ped)
+            csvw.writerow(line)
         if x % 100000 == 0:
             print len(precincts)
             print sys.getsizeof(district_entries)
@@ -35,7 +46,7 @@ with open(VOTER_FILE_LOCATION,'r') as f:
             print "{count}, {time}".format(count=x, time=time.time() - t)
             t = time.time()
         x+=1
-with open('precincts','w') as f, open('districts','w') as g:
+with open('precincts_'+state,'w') as f, open('districts_'+state,'w') as g:
     print len(precincts)
     num_undet = defaultdict(lambda:0)
     for k,v in precincts.iteritems():
@@ -49,4 +60,6 @@ with open('precincts','w') as f, open('districts','w') as g:
     for k,v in num_undet.iteritems():
         print "NUM PRECINCTS WITH UNDETERMINED {district}: {num}".format(district=k, num=v)
     for k,v in district_entries.iteritems():
-        g.write("{district} takes values: {values}\n".format(district=k, values=','.join(v)))
+        lv = list(v)
+        lv.sort()
+        g.write("{district} takes values: {values}\n".format(district=k, values=lv))

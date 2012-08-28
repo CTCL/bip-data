@@ -36,6 +36,12 @@ class table:
     def has_long(self):
         return any(f.long_from or f.long_to for f in self.fields.values())
 
+    def sql_import(self, actual_table, name_override=None):
+        return 'CREATE TABLE {name} ({fields});'.format(name=(actual_table['import_table']['table'] if not name_override else name_override), fields=','.join([f.sql() for f in self.fields.values()] + ['{name} text'.format(name=f['long']) for f in actual_table['long_fields']] ))
+
+    def sql_fields(self, actual_table, prefix):
+        return '{fields}'.format(fields=','.join([prefix+'_'+f.sql() for f in self.fields.values()] + ['{prefix}_{name} text'.format(prefix=prefix, name=f['long']) for f in actual_table['long_fields']]))
+
     def sql(self, long_fields=False, drop_keys=False):
         if long_fields:
             return 'CREATE TABLE %s_long (%s);' % (self.name, ','.join([f.sql(long_fields) for f in self.fields.values()]))
@@ -54,6 +60,28 @@ class table:
 
     def pk_sql_data(self, state, election):
         return 'ALTER TABLE {table_name}_{state}_{election} ADD PRIMARY KEY ({pk});', {'table_name':self.name, 'state':state,'election':election, 'pk':','.join(self.primary_keys[0])}
+
+#NOTE ONLY HANDLES SINGLE FIELD FKS RIGHT NOW
+    def rekey_imports(self, actual_table, rekey_table_dict, **split_keys):
+        long_field_dict = dict([(a['long'],a['real']) for a in actual_table['long_fields']])
+        sql = 'INSERT INTO {name}'.format(name=self.name) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_keys).format(**split_keys)
+        sql += '(' + ','.join([f.name for f in self.fields.values() if not f.name in long_field_dict.values()] + [long_field_dict[a['local_key']] for a in actual_table['long_to']] + [long_field_dict[a] for a in actual_table['long_from']]) +')'
+        sql += ' SELECT ' + ','.join(['fromtable.{name}'.format(name=f.name) for f in self.fields.values() if not f.name in long_field_dict.values()] + ['totable{i}.{to_key} as {from_key}'.format(i=i, to_key=actual_table['long_to'][i]['real_to_key'], from_key=long_field_dict[actual_table['long_to'][i]['local_key']]) for i in range(len(actual_table['long_to']))] + ['fromtable.{name}'.format(name=long_field_dict[a]) for a in actual_table['long_from']])
+        sql += ' from {rekey_table_name}'.format(rekey_table_name=actual_table['rekey_table_name'] if actual_table.has_key('rekey_table_name') else actual_table['import_table']['table']) + ' as fromtable '
+        sql += ''.join(' left join {name}'.format(name=rekey_table_dict[actual_table['long_to'][i]['to_table']]) + ' as totable{i} on '.format(i=i) + 'lower(fromtable.{from_key}) = lower(totable{i}.{to_key})'.format(i=i,from_key=actual_table['long_to'][i]['local_key'],to_key=actual_table['long_to'][i]['to_key']) for i in range(len(actual_table['long_to'])))+';\n'
+        return sql
+
+    def rekey_insert(self, fks, **split_keys):
+        fks = [fk for fk in fks if fk.table == self.name]
+        sql = 'INSERT INTO {name}'.format(name=self.name) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_keys).format(**split_keys) 
+        sql += '(' + ','.join([f.name for f in self.fields.values() if not f.long_from and not f.long_to] + [a for fk in fks for a in fk.reference_fields])
+        sql += ') SELECT ' + ','.join('fromtable.{name}'.format(name=f.name) for f in self.fields.values() if not f.long_from and not f.long_to) 
+        sql +=(',' if len(fks) > 0 and len([f for f in self.fields.values() if not f.long_from and not f.long_to]) else '') 
+        sql +=','.join('totable{i}.{to_key} as {from_key}'.format(i=i,to_key=fk.reference_fields[a],from_key=a) for i,fk in zip(range(len(fks)),fks) for a in fk.reference_fields) 
+        sql += ' from {name}_long'.format(name=self.name) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_keys).format(**split_keys) + ' as fromtable' 
+        sql += ''.join(' left join {name}_long'.format(name=fk.reference_table) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_keys).format(**split_keys) + ' as totable{i} on '.format(i=i) + ' and '.join('fromtable.{from_key}_long = totable{i}.{to_key}_long'.format(i=i,from_key=a,to_key=fk.reference_fields[a]) for a in fk.reference_fields) for i,fk in zip(range(len(fks)),fks))+';\n'
+        data = [self.name] + [f.name for f in self.fields.values() if not f.long_from and not f.long_to] + [a for b in [[i, fks[i].reference_fields[fks[i].reference_fields.keys()[j]], fks[i].reference_fields.keys()[j]] for i in range(len(fks)) for j in range(len(fks[i].reference_fields))] for a in b] + [self.name] + [a for b in [[fks[i].reference_table,i] + [c for d in [[fks[i].reference_fields.keys()[j],i,fks[i].reference_fields[fks[i].reference_fields.keys()[j]]] for j in range(len(fks[i].reference_fields))] for c in d] for i in range(len(fks))] for a in b]
+        return sql, tuple(data)
 
     def rekey(self, fks):
         sql = 'CREATE TABLE %s as SELECT ' + ','.join('fromtable.%s' for f in self.fields.values() if not f.long_from and not f.long_to) +(',' if len(fks) > 0 and len([f for f in self.fields.values() if not f.long_from and not f.long_to]) else '') +','.join('totable%s.%s as %s' for fk in fks for a in fk.reference_fields) + ' from %s_long as fromtable' + ''.join(' left join %s_long as totable%s on ' + ' and '.join('fromtable.%s_long = totable%s.%s_long' for a in fk.reference_fields) for fk in fks)+';\n'

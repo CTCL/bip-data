@@ -28,6 +28,8 @@ CREATE TABLE "contest" (
 "source" text,
 "election_id" int4,
 "electoral_district_id" int4,
+"electoral_district_name" varchar(255),
+"electoral_district_type" varchar(255),
 "partisan" bool,
 "type" varchar(255),
 "primary_party" varchar(255),
@@ -42,6 +44,7 @@ CREATE TABLE "contest" (
 "write_in" bool,
 "custom_ballot_heading" text,
 "election_key" int4,
+"state" varchar(5),
 PRIMARY KEY ("id") 
 );
 
@@ -55,12 +58,14 @@ CREATE TABLE "candidate" (
 "phone" varchar(255),
 "photo_url" varchar(255),
 "filed_mailing_address" int4,
+"mailing_address" text,
 "email" varchar(255),
 "incumbent" bool,
 "google_plus_url" varchar(255),
 "twitter_name" varchar(255),
 "facebook_url" varchar(255),
 "wiki_word" varchar(255),
+"youtube" text,
 "election_key" int4,
 PRIMARY KEY ("id") 
 );
@@ -92,6 +97,8 @@ PRIMARY KEY ("id")
 );
 
 CREATE TABLE "candidate_in_contest" (
+"source" text,
+"election_key" int4,
 "sort_order" int4,
 "contest_id" int4,
 "candidate_id" int4,
@@ -122,7 +129,7 @@ CREATE TABLE "precinct" (
 "parent_id" int4,
 "name" varchar(255),
 "number" varchar(20),
-"electoral_district_id" varchar(255),
+"electoral_district_id" int4,
 --"locality_id" varchar(255),
 "locality_id" int4,
 "ward" varchar(50),
@@ -330,7 +337,7 @@ PRIMARY KEY ("id")
 
 ALTER TABLE "candidate_in_contest" ADD CONSTRAINT "fk_candidate__contest_contest_1" FOREIGN KEY ("contest_id") REFERENCES "contest" ("id");
 ALTER TABLE "candidate_in_contest" ADD CONSTRAINT "fk_candidate__contest_candidate_1" FOREIGN KEY ("candidate_id") REFERENCES "candidate" ("id");
-ALTER TABLE "contest" ADD CONSTRAINT "fk_contest_election_1" FOREIGN KEY ("election_id") REFERENCES "election" ("id");
+--ALTER TABLE "contest" ADD CONSTRAINT "fk_contest_election_1" FOREIGN KEY ("election_id") REFERENCES "election" ("id");
 ALTER TABLE "ballot_response" ADD CONSTRAINT "fk_ballot_response_contest_1" FOREIGN KEY ("contest_id") REFERENCES "contest" ("id");
 ALTER TABLE "referendum" ADD CONSTRAINT "fk_referendum_contest" FOREIGN KEY ("contest_id") REFERENCES "contest" ("id");
 ALTER TABLE "street_segment" ADD CONSTRAINT "street_segment__fk__precinct_id" FOREIGN KEY ("precinct_id") REFERENCES "precinct" ("id");
@@ -358,6 +365,6 @@ ALTER TABLE "election_administration" ADD CONSTRAINT "fk_election_administration
 ALTER TABLE "election_administration" ADD CONSTRAINT "fk_election_administration_election_official_1" FOREIGN KEY ("ovc_id") REFERENCES "election_official" ("id");
 ALTER TABLE "election_administration" ADD CONSTRAINT "fk_election_administration_election_official_2" FOREIGN KEY ("eo_id") REFERENCES "election_official" ("id");
 ALTER TABLE "contest" ADD CONSTRAINT "fk_contest_electoral_district_1" FOREIGN KEY ("electoral_district_id") REFERENCES "electoral_district" ("id");
-ALTER TABLE "candidate" ADD CONSTRAINT "fk_candidate_geo_address_1" FOREIGN KEY ("filed_mailing_address") REFERENCES "geo_address" ("id");
+--ALTER TABLE "candidate" ADD CONSTRAINT "fk_candidate_geo_address_1" FOREIGN KEY ("filed_mailing_address") REFERENCES "geo_address" ("id");
 ALTER TABLE "precinct" ADD CONSTRAINT "fk_precinct_split_precinct_1" FOREIGN KEY ("parent_id") REFERENCES "precinct" ("id");
-ALTER TABLE "electoral_district" ADD CONSTRAINT "fk_electoral_district_state_1" FOREIGN KEY ("state_id") REFERENCES "state" ("id");
+--ALTER TABLE "electoral_district" ADD CONSTRAINT "fk_electoral_district_state_1" FOREIGN KEY ("state_id") REFERENCES "state" ("id");
