@@ -28,7 +28,11 @@ def get_edmap(map_location):
         def __missing__(self,key):
             return {'name':key,'type':''}
     ed_map = passdict(ed_map.ed_map)
+    patt = re.compile(r'(?P<name>\D+)(?P<number>\d+)') 
     def edmap(electoral_district):
+        m = patt.match(electoral_district)
+        if m:
+            electoral_district = '{name}{number}'.format(name=m.groupdict()['name'], number=int(m.groupdict()['number']))
         t = ed_map[electoral_district.lower().strip()]
         return t['name'],t['type'], '{name}_{type}'.format(**t)
     return edmap

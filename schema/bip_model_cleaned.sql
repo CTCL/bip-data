@@ -128,7 +128,7 @@ CREATE TABLE "precinct" (
 "is_split" bool,
 "parent_id" int4,
 "name" varchar(255),
-"number" varchar(20),
+"number" varchar(255),
 "electoral_district_id" int4,
 --"locality_id" varchar(255),
 "locality_id" int4,

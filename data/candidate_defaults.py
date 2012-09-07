@@ -1,18 +1,20 @@
-from data.state_specific import *
-from data.table_defaults import *
+from data import state_specific as ss
+ss = reload(ss)
+from data import table_defaults as td
+td = reload(td)
 
-CONTEST_IMPORT = dict(DEFAULT_CANDIDATE_TABLE)
+CONTEST_IMPORT = dict(td.DEFAULT_CANDIDATE_TABLE)
 CONTEST_IMPORT.update({
     'table':'contest_import',
     'columns':{
-        'id_long':{'function':reformat.contest_id,'columns':(2,4,5)},
+        'id_long':{'function':td.reformat.contest_id,'columns':(2,4,5)},
         'state':2,
         'office':5,
-        ('electoral_district_name', 'electoral_district_type','electoral_district_id_long'):{'function': STATE_EDMAP, 'columns':(4,)},
+        ('electoral_district_name', 'electoral_district_type','electoral_district_id_long'):{'function': ss.STATE_EDMAP, 'columns':(4,)},
         }
     })
 
-CONTEST_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+CONTEST_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 CONTEST_ACTUAL.update({
     'schema_table':'contest',
     'import_table':CONTEST_IMPORT,
@@ -29,16 +31,16 @@ CONTEST_ACTUAL.update({
         ),
     })
 
-CANDIDATE_IN_CONTEST_IMPORT = dict(DEFAULT_CANDIDATE_TABLE)
+CANDIDATE_IN_CONTEST_IMPORT = dict(td.DEFAULT_CANDIDATE_TABLE)
 CANDIDATE_IN_CONTEST_IMPORT.update({
     'table':'candidate_in_contest_import',
     'columns':{
         'candidate_id_long':1,
-        'contest_id_long':{'function':reformat.contest_id,'columns':(2,4,5)},
+        'contest_id_long':{'function':td.reformat.contest_id,'columns':(2,4,5)},
         },
     })
 
-CANDIDATE_IN_CONTEST_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+CANDIDATE_IN_CONTEST_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 CANDIDATE_IN_CONTEST_ACTUAL.update({
     'schema_table':'candidate_in_contest',
     'import_table':CANDIDATE_IN_CONTEST_IMPORT,
@@ -59,7 +61,7 @@ CANDIDATE_IN_CONTEST_ACTUAL.update({
         )
     })
 
-CANDIDATE_IMPORT = dict(DEFAULT_CANDIDATE_TABLE)
+CANDIDATE_IMPORT = dict(td.DEFAULT_CANDIDATE_TABLE)
 CANDIDATE_IMPORT.update({
     'table':'candidate_import',
     'columns':{
@@ -81,7 +83,7 @@ CANDIDATE_IMPORT.update({
         },
     })
 
-CANDIDATE_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+CANDIDATE_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 CANDIDATE_ACTUAL.update({
     'schema_table':'candidate',
     'import_table':CANDIDATE_IMPORT,

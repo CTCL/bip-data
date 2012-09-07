@@ -1,6 +1,8 @@
 from data import univ_settings
-from data.state_specific import *
-from data.table_defaults import *
+from data import state_specific as ss
+ss = reload(ss)
+from data import table_defaults as td
+td = reload(td)
 import os
 VIP_TABLES = {
         'election_administration':None,
@@ -17,8 +19,8 @@ VIP_TABLES = {
         'candidiate':None #'full',part_cat','part_col','part_cat_col',
         }
 
-PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
-PRECINCT_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
+PRECINCT_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 PRECINCT_IMPORT['udcs'].update({'is_split':False})
 PRECINCT_IMPORT.update({
     'table':'precinct_import',
@@ -27,13 +29,13 @@ PRECINCT_IMPORT.update({
         'number':28,
         'ward':27,
         'locality_id_long':22,
-        'id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #        'locality_id':{'key':'locality'},
         #'id':{'key':'precinct'},
         }
     })
 
-PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 PRECINCT_ACTUAL.update({
     'schema_table':'precinct',
     'import_table':PRECINCT_IMPORT,
@@ -50,8 +52,8 @@ PRECINCT_ACTUAL.update({
         )
     })
 
-LOCALITY_IMPORT = dict(DEFAULT_VF_TABLE)
-LOCALITY_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+LOCALITY_IMPORT = dict(td.DEFAULT_VF_TABLE)
+LOCALITY_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 LOCALITY_IMPORT['udcs'].update({'type':'COUNTY'})
 LOCALITY_IMPORT.update({
     'table':'locality_import',
@@ -62,7 +64,7 @@ LOCALITY_IMPORT.update({
         }
     })
 
-LOCALITY_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+LOCALITY_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 LOCALITY_ACTUAL.update({
     'schema_table':'locality',
     'import_table':LOCALITY_IMPORT,
@@ -71,19 +73,19 @@ LOCALITY_ACTUAL.update({
     'long_from':('id_long',),
     })
 
-CONGRESSIONAL_DISTRICT_IMPORT = dict(DEFAULT_VF_TABLE)
-CONGRESSIONAL_DISTRICT_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+CONGRESSIONAL_DISTRICT_IMPORT = dict(td.DEFAULT_VF_TABLE)
+CONGRESSIONAL_DISTRICT_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 CONGRESSIONAL_DISTRICT_IMPORT['udcs'].update({'type':'congressional_district'})
 CONGRESSIONAL_DISTRICT_IMPORT.update({
     'table':'electoral_district_cd_import',
     'columns':{
         #'id':{'key':'congressional_district'},
         'name':23,
-        'id_long':{'function':reformat.concat_us,'columns':(23,),'defaults':{'type':'congressional_district'}}
+        'id_long':{'function':td.reformat.concat_us,'columns':(23,),'defaults':{'type':'congressional_district'}}
         },
     })
 
-CONGRESSIONAL_DISTRICT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+CONGRESSIONAL_DISTRICT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 CONGRESSIONAL_DISTRICT_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':CONGRESSIONAL_DISTRICT_IMPORT,
@@ -92,19 +94,19 @@ CONGRESSIONAL_DISTRICT_ACTUAL.update({
     'distinct_on':('id_long',),
     })
 
-JUDICIAL_DISTRICT_IMPORT = dict(DEFAULT_VF_TABLE)
-JUDICIAL_DISTRICT_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+JUDICIAL_DISTRICT_IMPORT = dict(td.DEFAULT_VF_TABLE)
+JUDICIAL_DISTRICT_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 JUDICIAL_DISTRICT_IMPORT['udcs'].update({'type':'judicial_district'})
 JUDICIAL_DISTRICT_IMPORT.update({
     'table':'electoral_district_jd_import',
     'columns':{
         #'id':{'key':'judicial_district'},
         'name':34,
-        'id_long':{'function':reformat.concat_us,'columns':(34,),'defaults':{'type':'judicial_district'}}
+        'id_long':{'function':td.reformat.concat_us,'columns':(34,),'defaults':{'type':'judicial_district'}}
         },
     })
 
-JUDICIAL_DISTRICT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+JUDICIAL_DISTRICT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 JUDICIAL_DISTRICT_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':JUDICIAL_DISTRICT_IMPORT,
@@ -113,19 +115,19 @@ JUDICIAL_DISTRICT_ACTUAL.update({
     'distinct_on':('id_long',),
     })
 
-STATE_REP_DISTRICT_IMPORT = dict(DEFAULT_VF_TABLE)
-STATE_REP_DISTRICT_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+STATE_REP_DISTRICT_IMPORT = dict(td.DEFAULT_VF_TABLE)
+STATE_REP_DISTRICT_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 STATE_REP_DISTRICT_IMPORT['udcs'].update({'type':'state_representative_district'})
 STATE_REP_DISTRICT_IMPORT.update({
     'table':'electoral_district_srd_import',
     'columns':{
         #'id':{'key':'state_rep_district'},
         'name':25,
-        'id_long':{'function':reformat.concat_us,'columns':(25,),'defaults':{'type':'state_rep_district'}}
+        'id_long':{'function':td.reformat.concat_us,'columns':(25,),'defaults':{'type':'state_rep_district'}}
         },
     })
 
-STATE_REP_DISTRICT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+STATE_REP_DISTRICT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 STATE_REP_DISTRICT_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':STATE_REP_DISTRICT_IMPORT,
@@ -134,19 +136,19 @@ STATE_REP_DISTRICT_ACTUAL.update({
     'distinct_on':('id_long',),
     })
 
-STATE_SENATE_DISTRICT_IMPORT = dict(DEFAULT_VF_TABLE)
-STATE_SENATE_DISTRICT_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+STATE_SENATE_DISTRICT_IMPORT = dict(td.DEFAULT_VF_TABLE)
+STATE_SENATE_DISTRICT_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 STATE_SENATE_DISTRICT_IMPORT['udcs'].update({'type':'state_senate_district'})
 STATE_SENATE_DISTRICT_IMPORT.update({
     'table':'electoral_district_ssd_import',
     'columns':{
         #'id':{'key':'state_senate_district'},
         'name':24,
-        'id_long':{'function':reformat.concat_us,'columns':(24,),'defaults':{'type':'state_senate_district'}}
+        'id_long':{'function':td.reformat.concat_us,'columns':(24,),'defaults':{'type':'state_senate_district'}}
         },
     })
 
-STATE_SENATE_DISTRICT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+STATE_SENATE_DISTRICT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 STATE_SENATE_DISTRICT_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':STATE_SENATE_DISTRICT_IMPORT,
@@ -155,19 +157,19 @@ STATE_SENATE_DISTRICT_ACTUAL.update({
     'distinct_on':('id_long',),
     })
 
-COUNTY_COUNCIL_IMPORT = dict(DEFAULT_VF_TABLE)
-COUNTY_COUNCIL_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+COUNTY_COUNCIL_IMPORT = dict(td.DEFAULT_VF_TABLE)
+COUNTY_COUNCIL_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 COUNTY_COUNCIL_IMPORT['udcs'].update({'type':'county_council'})
 COUNTY_COUNCIL_IMPORT.update({
     'table':'electoral_district_cc_import',
     'columns':{
         #'id':{'key':'county_council'},
-        'name':{'function':reformat.concat_us, 'columns':(22,30,)},
-        'id_long':{'function':reformat.concat_us,'columns':(22,30,),'defaults':{'type':'county_council'}}
+        'name':{'function':td.reformat.concat_us, 'columns':(22,30,)},
+        'id_long':{'function':td.reformat.concat_us,'columns':(22,30,),'defaults':{'type':'county_council'}}
         },
     })
 
-COUNTY_COUNCIL_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+COUNTY_COUNCIL_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 COUNTY_COUNCIL_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':COUNTY_COUNCIL_IMPORT,
@@ -176,19 +178,19 @@ COUNTY_COUNCIL_ACTUAL.update({
     'distinct_on':('id_long',),
     })
 
-COUNTY_IMPORT = dict(DEFAULT_VF_TABLE)
-COUNTY_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+COUNTY_IMPORT = dict(td.DEFAULT_VF_TABLE)
+COUNTY_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 COUNTY_IMPORT['udcs'].update({'type':'county'})
 COUNTY_IMPORT.update({
     'table':'electoral_district_c_import',
     'columns':{
         #'id':{'key':'county_council'},
         'name':22,
-        'id_long':{'function':reformat.concat_us,'columns':(22,),'defaults':{'type':'county'}}
+        'id_long':{'function':td.reformat.concat_us,'columns':(22,),'defaults':{'type':'county'}}
         },
     })
 
-COUNTY_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+COUNTY_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 COUNTY_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':COUNTY_IMPORT,
@@ -197,19 +199,19 @@ COUNTY_ACTUAL.update({
     'distinct_on':('id_long',),
     })
 
-STATE_IMPORT = dict(DEFAULT_VF_TABLE)
-STATE_IMPORT['udcs'] = dict(DEFAULT_VF_TABLE['udcs'])
+STATE_IMPORT = dict(td.DEFAULT_VF_TABLE)
+STATE_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
 STATE_IMPORT['udcs'].update({'type':'state'})
 STATE_IMPORT.update({
     'table':'electoral_district_s_import',
     'columns':{
         #'id':{'key':'county_council'},
         'name':20,
-        'id_long':{'function':reformat.concat_us,'columns':(20,),'defaults':{'type':'state'}}
+        'id_long':{'function':td.reformat.concat_us,'columns':(20,),'defaults':{'type':'state'}}
         },
     })
 
-STATE_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+STATE_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 STATE_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':STATE_IMPORT,
@@ -218,19 +220,19 @@ STATE_ACTUAL.update({
     'distinct_on':('id_long',),
     })
 
-CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
+CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_cd_import',
-    'filename':VOTER_FILE_LOCATION,
+    'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'congressional_district'},
-        'electoral_district_id_long':{'function':reformat.concat_us,'columns':(23,),'defaults':{'type':'congressional_district'}},
-        'precinct_id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(23,),'defaults':{'type':'congressional_district'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
     })
 
-CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
     'import_table':CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT,
@@ -246,19 +248,19 @@ CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL.update({
         ),
     })
 
-JUDICIAL_DISTRICT__PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
+JUDICIAL_DISTRICT__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 JUDICIAL_DISTRICT__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_jd_import',
-    'filename':VOTER_FILE_LOCATION,
+    'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #        'electoral_district_id':{'key':'judicial_district'},
-        'electoral_district_id_long':{'function':reformat.concat_us,'columns':(34,),'defaults':{'type':'judicial_district'}},
-        'precinct_id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(34,),'defaults':{'type':'judicial_district'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
     })
 
-JUDICIAL_DISTRICT__PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+JUDICIAL_DISTRICT__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 JUDICIAL_DISTRICT__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
     'import_table':JUDICIAL_DISTRICT__PRECINCT_IMPORT,
@@ -274,19 +276,19 @@ JUDICIAL_DISTRICT__PRECINCT_ACTUAL.update({
         ),
     })
 
-STATE_REP_DISTRICT__PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
+STATE_REP_DISTRICT__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 STATE_REP_DISTRICT__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_srd_import',
-    'filename':VOTER_FILE_LOCATION,
+    'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'state_rep_district'},
-        'electoral_district_id_long':{'function':reformat.concat_us,'columns':(25,),'defaults':{'type':'state_rep_district'}},
-        'precinct_id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(25,),'defaults':{'type':'state_rep_district'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
     })
 
-STATE_REP_DISTRICT__PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+STATE_REP_DISTRICT__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 STATE_REP_DISTRICT__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
     'import_table':STATE_REP_DISTRICT__PRECINCT_IMPORT,
@@ -302,19 +304,19 @@ STATE_REP_DISTRICT__PRECINCT_ACTUAL.update({
         ),
     })
 
-STATE_SENATE_DISTRICT__PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
+STATE_SENATE_DISTRICT__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 STATE_SENATE_DISTRICT__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_ssd_import',
-    'filename':VOTER_FILE_LOCATION,
+    'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'state_senate_district'},
-        'electoral_district_id_long':{'function':reformat.concat_us,'columns':(24,),'defaults':{'type':'state_senate_district'}},
-        'precinct_id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(24,),'defaults':{'type':'state_senate_district'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
     })
 
-STATE_SENATE_DISTRICT__PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+STATE_SENATE_DISTRICT__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 STATE_SENATE_DISTRICT__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
     'import_table':STATE_SENATE_DISTRICT__PRECINCT_IMPORT,
@@ -330,19 +332,19 @@ STATE_SENATE_DISTRICT__PRECINCT_ACTUAL.update({
         ),
     })
 
-COUNTY_COUNCIL__PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
+COUNTY_COUNCIL__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 COUNTY_COUNCIL__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_cc_import',
-    'filename':VOTER_FILE_LOCATION,
+    'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'county_council'},
-        'electoral_district_id_long':{'function':reformat.concat_us,'columns':(22,30,),'defaults':{'type':'county_council'}},
-        'precinct_id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(22,30,),'defaults':{'type':'county_council'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
     })
 
-COUNTY_COUNCIL__PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+COUNTY_COUNCIL__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 COUNTY_COUNCIL__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
     'import_table':COUNTY_COUNCIL__PRECINCT_IMPORT,
@@ -358,19 +360,19 @@ COUNTY_COUNCIL__PRECINCT_ACTUAL.update({
         ),
     })
 
-COUNTY__PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
+COUNTY__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 COUNTY__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_c_import',
-    'filename':VOTER_FILE_LOCATION,
+    'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'county_council'},
-        'electoral_district_id_long':{'function':reformat.concat_us,'columns':(22,),'defaults':{'type':'county'}},
-        'precinct_id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(22,),'defaults':{'type':'county'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
     })
 
-COUNTY__PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+COUNTY__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 COUNTY__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
     'import_table':COUNTY__PRECINCT_IMPORT,
@@ -386,19 +388,19 @@ COUNTY__PRECINCT_ACTUAL.update({
         ),
     })
 
-STATE__PRECINCT_IMPORT = dict(DEFAULT_VF_TABLE)
+STATE__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 STATE__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_s_import',
-    'filename':VOTER_FILE_LOCATION,
+    'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'county_council'},
-        'electoral_district_id_long':{'function':reformat.concat_us,'columns':(20,),'defaults':{'type':'state'}},
-        'precinct_id_long':{'function':reformat.concat_us,'columns':(22,29,28)},
+        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(20,),'defaults':{'type':'state'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
     })
 
-STATE__PRECINCT_ACTUAL = dict(DEFAULT_ACTUAL_TABLE)
+STATE__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 STATE__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
     'import_table':STATE__PRECINCT_IMPORT,
@@ -427,14 +429,14 @@ ELECTORAL_DISTRICT_UNION = {
             )
         }
 
-VOTER_FILE = dict(DEFAULT_TABLE)
+VOTER_FILE = dict(td.DEFAULT_TABLE)
 VOTER_FILE.update({
         'table':'voter_file',
-        'filename':VOTER_FILE_LOCATION,
+        'filename':ss.VOTER_FILE_LOCATION,
         'field_sep':'\t',
         'udcs':{
-            'source':VF_SOURCE,
-            'election_key':univ_settings.ELECTION,
+            'source':ss.VF_SOURCE,
+            'election_key':ss.ELECTION,
             'residential_country':'USA',
             'mailing_country':'USA'
             },
@@ -442,13 +444,13 @@ VOTER_FILE.update({
             'sos_voterid':1,
             'county_number':21,
             'county_id':22,
-            ('residential_address1', 'residential_secondary_addr'):{'function':reformat.create_vf_address,'columns':(80,81,82,83,84,85,86)},
+            ('residential_address1', 'residential_secondary_addr'):{'function':td.reformat.create_vf_address,'columns':(80,81,82,83,84,85,86)},
             'residential_city':76,
             'residential_state':77,
             'residential_zip':78,
             'residential_zip_plus4':79,
             #'residential_postalcode':18,
-            ('mailing_address1', 'mailing_secondary_address'):{'function':reformat.create_vf_address,'columns':(96,97,98,99,100,101,102)},
+            ('mailing_address1', 'mailing_secondary_address'):{'function':td.reformat.create_vf_address,'columns':(96,97,98,99,100,101,102)},
             'mailing_city':92,
             'mailing_state':93,
             'mailing_zip':94,
@@ -507,7 +509,7 @@ VOTER_FILE_DISTRICTS = (
 'county_council',
 #'city_council',
 #'municipal_district',
-#'school_district',
+'school_district',
 'judicial_district',
 'congressional_district',
 'state_representative_district',
@@ -518,7 +520,7 @@ VOTER_FILE_DISTRICTS = (
 
 
 TABLE_GROUP = {
-        'default':DEFAULT_VF_TABLE,
+        'default':td.DEFAULT_VF_TABLE,
         'tables':
         (
         PRECINCT_ACTUAL,
