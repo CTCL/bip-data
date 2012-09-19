@@ -88,16 +88,23 @@ def distinct_imports(actual_tables, connection):
 def rekey_imports(actual_tables, unions, table_dict, connection, split_names):
     actual_table_dict = dict([(a['import_table']['table'],a) for a in actual_tables])
     rekey_table_dict = dict([(a['import_table']['table'],a['import_table']['table']+('_distinct' if a.has_key('distinct_on') else '')) for a in actual_tables] +[(u['name'],u['name']) for u in unions])
+    cleared_tables = set()
     for table in actual_tables:
         if table.has_key('distinct_on'):
             table['rekey_table_name'] = table['import_table']['table']+'_distinct'
     for table in actual_tables:
         if len(table['long_fields']) > 0:
             split_keys = dict([(tkey,tval) for tkey, tval in table['import_table']['udcs'].iteritems() if tkey in split_names])
+            if table['schema_table'] not in cleared_tables:
+                clear_sql = 'DELETE from {name}'.format(name=table['schema_table']) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_names).format(**split_keys) + ';'
+                print clear_sql
+                connection.cursor().execute(clear_sql)
+                cleared_tables.add(table['schema_table'])
             sql = table_dict[table['schema_table']].rekey_imports(table, rekey_table_dict, **split_keys)
             print sql
             connection.cursor().execute(sql)
         else:
+            split_keys = dict([(tkey,tval) for tkey, tval in table['import_table']['udcs'].iteritems() if tkey in split_names])
             sql = 'CREATE TABLE {name}'.format(name=table['schema_table']) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_names).format(**split_keys) + ';'
             print sql
             connection.cursor().execute(sql)

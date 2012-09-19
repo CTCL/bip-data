@@ -3,6 +3,7 @@ _compiled*
 *~
 data/voterfiles
 data/ams
+data/vf_scripts
 z4*
 data/vipfeeds
 districts*
@@ -10,3 +11,6 @@ precincts*
 vip
 *.swp
 mv_vfs.sh
+ams/
+*.csv
+*.html

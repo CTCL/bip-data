@@ -81,7 +81,7 @@ CONGRESSIONAL_DISTRICT_IMPORT.update({
     'columns':{
         #'id':{'key':'congressional_district'},
         'name':23,
-        'id_long':{'function':td.reformat.concat_us,'columns':(23,),'defaults':{'type':'congressional_district'}}
+        'id_long':{'function':td.reformat.ed_concat,'columns':(23,),'defaults':{'type':'congressional_district'}}
         },
     })
 
@@ -102,7 +102,7 @@ JUDICIAL_DISTRICT_IMPORT.update({
     'columns':{
         #'id':{'key':'judicial_district'},
         'name':34,
-        'id_long':{'function':td.reformat.concat_us,'columns':(34,),'defaults':{'type':'judicial_district'}}
+        'id_long':{'function':td.reformat.ed_concat,'columns':(34,),'defaults':{'type':'judicial_district'}}
         },
     })
 
@@ -110,6 +110,26 @@ JUDICIAL_DISTRICT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
 JUDICIAL_DISTRICT_ACTUAL.update({
     'schema_table':'electoral_district',
     'import_table':JUDICIAL_DISTRICT_IMPORT,
+    'long_fields':({'long':'id_long','real':'id'},),
+    'long_from':('id_long',),
+    'distinct_on':('id_long',),
+    })
+
+SCHOOL_DISTRICT_IMPORT = dict(td.DEFAULT_VF_TABLE)
+SCHOOL_DISTRICT_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
+SCHOOL_DISTRICT_IMPORT['udcs'].update({'type':'school_district'})
+SCHOOL_DISTRICT_IMPORT.update({
+    'table':'electoral_district_schd_import',
+    'columns':{
+        'name':33,
+        'id_long':{'function':td.reformat.ed_concat,'columns':(33,),'defaults':{'type':'school_district'}}
+        },
+    })
+
+SCHOOL_DISTRICT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
+SCHOOL_DISTRICT_ACTUAL.update({
+    'schema_table':'electoral_district',
+    'import_table':SCHOOL_DISTRICT_IMPORT,
     'long_fields':({'long':'id_long','real':'id'},),
     'long_from':('id_long',),
     'distinct_on':('id_long',),
@@ -123,7 +143,7 @@ STATE_REP_DISTRICT_IMPORT.update({
     'columns':{
         #'id':{'key':'state_rep_district'},
         'name':25,
-        'id_long':{'function':td.reformat.concat_us,'columns':(25,),'defaults':{'type':'state_rep_district'}}
+        'id_long':{'function':td.reformat.ed_concat,'columns':(25,),'defaults':{'type':'state_rep_district'}}
         },
     })
 
@@ -144,7 +164,7 @@ STATE_SENATE_DISTRICT_IMPORT.update({
     'columns':{
         #'id':{'key':'state_senate_district'},
         'name':24,
-        'id_long':{'function':td.reformat.concat_us,'columns':(24,),'defaults':{'type':'state_senate_district'}}
+        'id_long':{'function':td.reformat.ed_concat,'columns':(24,),'defaults':{'type':'state_senate_district'}}
         },
     })
 
@@ -165,7 +185,7 @@ COUNTY_COUNCIL_IMPORT.update({
     'columns':{
         #'id':{'key':'county_council'},
         'name':{'function':td.reformat.concat_us, 'columns':(22,30,)},
-        'id_long':{'function':td.reformat.concat_us,'columns':(22,30,),'defaults':{'type':'county_council'}}
+        'id_long':{'function':td.reformat.ed_concat,'columns':(22,30,),'defaults':{'type':'county_council'}}
         },
     })
 
@@ -186,7 +206,7 @@ COUNTY_IMPORT.update({
     'columns':{
         #'id':{'key':'county_council'},
         'name':22,
-        'id_long':{'function':td.reformat.concat_us,'columns':(22,),'defaults':{'type':'county'}}
+        'id_long':{'function':td.reformat.ed_concat,'columns':(22,),'defaults':{'type':'county'}}
         },
     })
 
@@ -207,7 +227,7 @@ STATE_IMPORT.update({
     'columns':{
         #'id':{'key':'county_council'},
         'name':20,
-        'id_long':{'function':td.reformat.concat_us,'columns':(20,),'defaults':{'type':'state'}}
+        'id_long':{'function':td.reformat.ed_concat,'columns':(20,),'defaults':{'type':'state'}}
         },
     })
 
@@ -226,7 +246,7 @@ CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT.update({
     'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'congressional_district'},
-        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(23,),'defaults':{'type':'congressional_district'}},
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(23,),'defaults':{'type':'congressional_district'}},
         'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
@@ -254,7 +274,7 @@ JUDICIAL_DISTRICT__PRECINCT_IMPORT.update({
     'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #        'electoral_district_id':{'key':'judicial_district'},
-        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(34,),'defaults':{'type':'judicial_district'}},
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(34,),'defaults':{'type':'judicial_district'}},
         'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
@@ -276,13 +296,39 @@ JUDICIAL_DISTRICT__PRECINCT_ACTUAL.update({
         ),
     })
 
+SCHOOL_DISTRICT__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
+SCHOOL_DISTRICT__PRECINCT_IMPORT.update({
+    'table':'electoral_district__precinct_schd_import',
+    'filename':ss.VOTER_FILE_LOCATION,
+    'columns':{
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(33,),'defaults':{'type':'school_district'}},
+        'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
+        },
+    })
+
+SCHOOL_DISTRICT__PRECINCT_ACTUAL = dict(td.DEFAULT_ACTUAL_TABLE)
+SCHOOL_DISTRICT__PRECINCT_ACTUAL.update({
+    'schema_table':'electoral_district__precinct',
+    'import_table':SCHOOL_DISTRICT__PRECINCT_IMPORT,
+    'long_fields':({'long':'electoral_district_id_long','real':'electoral_district_id'},{'long':'precinct_id_long','real':'precinct_id'},),
+    'distinct_on':('precinct_id_long','electoral_district_id_long',),
+    'long_to':(
+        {
+            'to_table':'electoral_district_schd_import',
+            'local_key':'electoral_district_id_long',
+            'to_key':'id_long',
+            'real_to_key':'id',
+            },
+        ),
+    })
+
 STATE_REP_DISTRICT__PRECINCT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 STATE_REP_DISTRICT__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_srd_import',
     'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'state_rep_district'},
-        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(25,),'defaults':{'type':'state_rep_district'}},
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(25,),'defaults':{'type':'state_rep_district'}},
         'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
@@ -310,7 +356,7 @@ STATE_SENATE_DISTRICT__PRECINCT_IMPORT.update({
     'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'state_senate_district'},
-        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(24,),'defaults':{'type':'state_senate_district'}},
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(24,),'defaults':{'type':'state_senate_district'}},
         'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
@@ -338,7 +384,7 @@ COUNTY_COUNCIL__PRECINCT_IMPORT.update({
     'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'county_council'},
-        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(22,30,),'defaults':{'type':'county_council'}},
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(22,30,),'defaults':{'type':'county_council'}},
         'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
@@ -366,7 +412,7 @@ COUNTY__PRECINCT_IMPORT.update({
     'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'county_council'},
-        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(22,),'defaults':{'type':'county'}},
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(22,),'defaults':{'type':'county'}},
         'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
@@ -394,7 +440,7 @@ STATE__PRECINCT_IMPORT.update({
     'filename':ss.VOTER_FILE_LOCATION,
     'columns':{
         #'electoral_district_id':{'key':'county_council'},
-        'electoral_district_id_long':{'function':td.reformat.concat_us,'columns':(20,),'defaults':{'type':'state'}},
+        'electoral_district_id_long':{'function':td.reformat.ed_concat,'columns':(20,),'defaults':{'type':'state'}},
         'precinct_id_long':{'function':td.reformat.concat_us,'columns':(22,29,28)},
         #'precinct_id':{'key':'precinct'},
         },
@@ -421,6 +467,7 @@ ELECTORAL_DISTRICT_UNION = {
         'components':(
             'electoral_district_cd_import',
             'electoral_district_jd_import',
+            'electoral_district_schd_import',
             'electoral_district_srd_import',
             'electoral_district_ssd_import',
             'electoral_district_cc_import',
@@ -528,12 +575,14 @@ TABLE_GROUP = {
         CONGRESSIONAL_DISTRICT_ACTUAL,
         STATE_REP_DISTRICT_ACTUAL,
         JUDICIAL_DISTRICT_ACTUAL,
+        SCHOOL_DISTRICT_ACTUAL,
         COUNTY_COUNCIL_ACTUAL,
         COUNTY_ACTUAL,
         STATE_SENATE_DISTRICT_ACTUAL,
         CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL,
         STATE_REP_DISTRICT__PRECINCT_ACTUAL,
         JUDICIAL_DISTRICT__PRECINCT_ACTUAL,
+        SCHOOL_DISTRICT__PRECINCT_ACTUAL,
         COUNTY_COUNCIL__PRECINCT_ACTUAL,
         COUNTY__PRECINCT_ACTUAL,
         STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,

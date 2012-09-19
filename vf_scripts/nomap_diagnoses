@@ -1,0 +1,907 @@
+PROCESSING ok
+PROCESSING ut
+#DIAGNOSIS: No judicial districts in VF
+ut no map for ut judicial district 2  ed_map result: no entry
+ut no map for ut judicial district 2  ed_map result: no entry
+ut no map for ut judicial district 2  ed_map result: no entry
+ut no map for ut judicial district 6  ed_map result: no entry
+ut no map for ut judicial district 3  ed_map result: no entry
+ut no map for ut judicial district 3  ed_map result: no entry
+ut no map for ut judicial district 8  ed_map result: no entry
+ut no map for ut judicial district 8  ed_map result: no entry
+ut no map for ut judicial district 5  ed_map result: no entry
+ut no map for ut judicial district 4  ed_map result: no entry
+ut no map for ut judicial district 4  ed_map result: no entry
+ut no map for ut judicial district 1  ed_map result: no entry
+PROCESSING ct
+PROCESSING wa
+#DIAGNOSIS: HOW DO YOU MAP MULTIPLE COUNTIES COME ON
+#'old congressional district' not a recognized designation
+wa no map for klickitat, skamania county  ed_map result: no entry
+wa no map for pacific, wahkiakum county  ed_map result: no entry
+wa no map for asotin, columbia, garfield county  ed_map result: no entry
+wa no map for ferry, pend oreille, stevens county  ed_map result: no entry
+wa no map for ferry, pend oreille, stevens county  ed_map result: no entry
+wa no map for wa old congressional district 1  ed_map result: no entry
+PROCESSING in
+#DIAGNOSIS: in VF as st joseph
+in no map for st. joseph county  ed_map result: no entry
+PROCESSING id
+#DIAGNOSIS: these districts are missing from the VF
+id no map for id state house district 4  ed_map result: no entry
+id no map for id state house district 4  ed_map result: no entry
+id no map for id state house district 4  ed_map result: no entry
+id no map for id state senate district 10  ed_map result: no entry
+id no map for id state senate district 2  ed_map result: no entry
+id no map for id state senate district 4  ed_map result: no entry
+id no map for id state senate district 13  ed_map result: no entry
+id no map for id state house district 1  ed_map result: no entry
+id no map for id state house district 1  ed_map result: no entry
+id no map for id state house district 6  ed_map result: no entry
+id no map for id state house district 6  ed_map result: no entry
+id no map for id state house district 6  ed_map result: no entry
+id no map for id state house district 25  ed_map result: no entry
+id no map for id state house district 25  ed_map result: no entry
+id no map for id state senate district 1  ed_map result: no entry
+id no map for id state senate district 5  ed_map result: no entry
+id no map for id state house district 2  ed_map result: no entry
+id no map for id state house district 2  ed_map result: no entry
+id no map for id state house district 2  ed_map result: no entry
+id no map for id state senate district 6  ed_map result: no entry
+id no map for id state senate district 23  ed_map result: no entry
+id no map for id state house district 7  ed_map result: no entry
+id no map for id state house district 7  ed_map result: no entry
+id no map for id state house district 7  ed_map result: no entry
+id no map for id state senate district 25  ed_map result: no entry
+id no map for id state house district 3  ed_map result: no entry
+id no map for id state house district 3  ed_map result: no entry
+id no map for id state house district 3  ed_map result: no entry
+id no map for id state house district 9  ed_map result: no entry
+id no map for id state house district 9  ed_map result: no entry
+id no map for id state house district 10  ed_map result: no entry
+id no map for id state house district 10  ed_map result: no entry
+id no map for id state senate district 7  ed_map result: no entry
+id no map for id state senate district 24  ed_map result: no entry
+id no map for id state senate district 3  ed_map result: no entry
+id no map for id state senate district 9  ed_map result: no entry
+id no map for id state house district 13  ed_map result: no entry
+id no map for id state house district 13  ed_map result: no entry
+id no map for id state house district 5  ed_map result: no entry
+id no map for id state house district 5  ed_map result: no entry
+id no map for id state house district 5  ed_map result: no entry
+id no map for id state house district 24  ed_map result: no entry
+id no map for id state house district 24  ed_map result: no entry
+id no map for id state house district 23  ed_map result: no entry
+id no map for id state house district 23  ed_map result: no entry
+PROCESSING la
+PROCESSING wi
+PROCESSING ri
+PROCESSING ne
+#DIAGNOSIS:no communinity college board of gov, public service commissioner, university of nebraska board of regents, learning community coordinating council, or school districts in VF
+ne no map for ne western community college board of governors - district 2  ed_map result: no entry
+ne no map for ne public service commissioner district 3  ed_map result: no entry
+ne no map for ne southeast community college board of governors - district 3  ed_map result: no entry
+ne no map for ne university of nebraska board of regents - district 5  ed_map result: no entry
+ne no map for ne university of nebraska board of regents - district 4  ed_map result: no entry
+ne no map for ne mid plains community college board of governors - district 4  ed_map result: no entry
+ne no map for ne western community college board of governors - district 3  ed_map result: no entry
+ne no map for ne university of nebraska board of regents - district 3  ed_map result: no entry
+ne no map for ne douglas-sarpy learning community coordinating council - district 4  ed_map result: no entry
+ne no map for ne board of education district 1  ed_map result: no entry
+ne no map for ne northeast community college board of governors - distrct 2  ed_map result: no entry
+ne no map for ne university of nebraska board of regents - district 8  ed_map result: no entry
+ne no map for ne central community college board of governors - district 3  ed_map result: no entry
+ne no map for ne metropolitan community college board of governors - district 5  ed_map result: no entry
+ne no map for ne board of education district 2  ed_map result: no entry
+ne no map for ne northeast community college board of governors - district 4  ed_map result: no entry
+ne no map for ne southeast community college board of governors - district 5  ed_map result: no entry
+ne no map for ne metropolitan community college board of governors - district 2  ed_map result: no entry
+ne no map for ne southeast community college board of governors - district 2  ed_map result: no entry
+ne no map for ne metropolitan community college board of governors - district 1  ed_map result: no entry
+ne no map for ne mid plains community college board of governors - district 5  ed_map result: no entry
+ne no map for ne northeast community college board of governors - district 1  ed_map result: no entry
+ne no map for ne northeast community college board of governors - district 5  ed_map result: no entry
+ne no map for ne board of education district 3  ed_map result: no entry
+ne no map for ne central community college board of governors - district 1  ed_map result: no entry
+ne no map for ne western community college board of governors - district 4  ed_map result: no entry
+ne no map for ne public service commissioner district 1  ed_map result: no entry
+ne no map for ne metropolitan community college board of governors - district 4  ed_map result: no entry
+ne no map for ne northeast community college board of governors - district 3  ed_map result: no entry
+ne no map for ne central community college board of governors - district 5  ed_map result: no entry
+ne no map for ne central community college board of governors - district 4  ed_map result: no entry
+ne no map for ne metropolitan community college board of governors - district 3  ed_map result: no entry
+ne no map for ne douglas-sarpy learning community coordinating council - district 6  ed_map result: no entry
+ne no map for ne douglas-sarpy learning community coordinating council - district 2  ed_map result: no entry
+ne no map for ne mid plains community college board of governors - district 1  ed_map result: no entry
+ne no map for ne central community college board of governors - district 2  ed_map result: no entry
+ne no map for ne mid plains community college board of governors - district 2  ed_map result: no entry
+ne no map for ne western community college board of governors - district 5  ed_map result: no entry
+ne no map for ne mid plains community college board of governors - district 3  ed_map result: no entry
+ne no map for ne board of education district 4  ed_map result: no entry
+ne no map for ne western community college board of governors - district 1  ed_map result: no entry
+ne no map for ne southeast community college board of governors - district 1  ed_map result: no entry
+ne no map for ne southeast community college board of governors - district 4  ed_map result: no entry
+PROCESSING az
+PROCESSING ga
+#DIAGNOSIS: judicial districts are in VF as numbers, not county names. Yes, I checked if the county numbers matched. They don't, and each judicial district in the VF has multiple counties in it
+ga no map for ga judicial - brunswick circuit  ed_map result: no entry
+ga no map for ga judicial - alapaha circuit  ed_map result: no entry
+ga no map for ga judicial - dougherty circuit  ed_map result: no entry
+ga no map for ga judicial - appalachian circuit  ed_map result: no entry
+ga no map for ga judicial - chattahoochee circuit  ed_map result: no entry
+ga no map for ga judicial - eastern circuit  ed_map result: no entry
+ga no map for ga judicial - lookout mountain circuit  ed_map result: no entry
+ga no map for ga judicial - blue ridge circuit  ed_map result: no entry
+ga no map for ga judicial - augusta circuit  ed_map result: no entry
+ga no map for ga judicial - dublin circuit  ed_map result: no entry
+ga no map for ga judicial - ogeechee circuit  ed_map result: no entry
+ga no map for ga judicial - ocmulgee circuit  ed_map result: no entry
+ga no map for ga judicial - flint circuit  ed_map result: no entry
+ga no map for ga public service commission district 3  ed_map result: no entry
+ga no map for ga judicial - tifton circuit  ed_map result: no entry
+ga no map for ga judicial - mountain circuit  ed_map result: no entry
+ga no map for ga judicial - macon circuit  ed_map result: no entry
+ga no map for ga judicial - western circuit  ed_map result: no entry
+ga no map for ga judicial - coweta circuit  ed_map result: no entry
+ga no map for ga judicial - griffin circuit  ed_map result: no entry
+ga no map for ga public service commission district 5  ed_map result: no entry
+ga no map for ga judicial - oconee circuit  ed_map result: no entry
+ga no map for ga judicial - alcovy circuit  ed_map result: no entry
+ga no map for ga judicial - clayton circuit  ed_map result: no entry
+ga no map for ga judicial - middle circuit  ed_map result: no entry
+ga no map for ga judicial - northern circuit  ed_map result: no entry
+ga no map for ga judicial - atlanta circuit  ed_map result: no entry
+ga no map for ga judicial - tallapoosa circuit  ed_map result: no entry
+ga no map for ga judicial - towaliga circuit  ed_map result: no entry
+ga no map for ga judicial - toombs circuit  ed_map result: no entry
+ga no map for ga judicial - piedmont circuit  ed_map result: no entry
+ga no map for ga judicial - stone mountain circuit  ed_map result: no entry
+ga no map for ga judicial - pataula circuit  ed_map result: no entry
+ga no map for ga judicial - southern circuit  ed_map result: no entry
+ga no map for ga judicial - southwestern circuit  ed_map result: no entry
+ga no map for ga judicial - houston circuit  ed_map result: no entry
+ga no map for ga judicial - cherokee circuit  ed_map result: no entry
+ga no map for ga judicial - rome circuit  ed_map result: no entry
+ga no map for ga judicial - bell forsyth circuit  ed_map result: no entry
+ga no map for ga judicial - conasauga circuit  ed_map result: no entry
+ga no map for ga judicial - gwinnett circuit  ed_map result: no entry
+ga no map for ga judicial - cobb circuit  ed_map result: no entry
+ga no map for ga judicial - south georgia circuit  ed_map result: no entry
+PROCESSING ak
+PROCESSING il
+PROCESSING ms
+#DIAGNOSIS: no judicial districts in VF
+ms no map for ms judicial district 3  ed_map result: no entry
+ms no map for ms judicial district 2  ed_map result: no entry
+ms no map for ms judicial district 1  ed_map result: no entry
+ms no map for ms judicial district 1  ed_map result: no entry
+PROCESSING sd
+#DIAGNOSIS: No conservation districts in VF
+#The specific state rep districts (26, 28) that are missing are in the VF as 26A,26B,28A,28B
+#mellette districts 1-3 are there, but no 4s
+sd no map for sd state house district 28  ed_map result: no entry
+sd no map for sd state house district 28  ed_map result: no entry
+sd no map for sd conservation district 48  ed_map result: no entry
+sd no map for sd conservation district 48  ed_map result: no entry
+sd no map for sd conservation district 55  ed_map result: no entry
+sd no map for sd conservation district 55  ed_map result: no entry
+sd no map for sd conservation district 55  ed_map result: no entry
+sd no map for sd conservation district 24  ed_map result: no entry
+sd no map for sd james river water development district 4  ed_map result: no entry
+sd no map for sd heartland consumers power district district 3  ed_map result: no entry
+sd no map for sd vermillion basin water development district 5  ed_map result: no entry
+sd no map for sd conservation district 70  ed_map result: no entry
+sd no map for sd west dakota water development district 7  ed_map result: no entry
+sd no map for sd conservation district 1  ed_map result: no entry
+sd no map for sd conservation district 1  ed_map result: no entry
+sd no map for sd heartland consumers power district district 2  ed_map result: no entry
+sd no map for sd west dakota water development district 8  ed_map result: no entry
+sd no map for sd conservation district 29  ed_map result: no entry
+sd no map for sd conservation district 29  ed_map result: no entry
+sd no map for sd conservation district 29  ed_map result: no entry
+sd no map for sd james river water development district 6  ed_map result: no entry
+sd no map for sd conservation district 16  ed_map result: no entry
+sd no map for sd james river water development district 5  ed_map result: no entry
+sd no map for sd conservation district 49  ed_map result: no entry
+sd no map for sd conservation district 49  ed_map result: no entry
+sd no map for sd conservation district 13  ed_map result: no entry
+sd no map for sd conservation district 13  ed_map result: no entry
+sd no map for sd conservation district 13  ed_map result: no entry
+sd no map for sd conservation district 52  ed_map result: no entry
+sd no map for sd conservation district 69  ed_map result: no entry
+sd no map for sd conservation district 69  ed_map result: no entry
+sd no map for sd west dakota water development district 2  ed_map result: no entry
+sd no map for sd east dakota water development district 6  ed_map result: no entry
+sd no map for sd conservation district 38  ed_map result: no entry
+sd no map for sd conservation district 38  ed_map result: no entry
+sd no map for sd east dakota water development district 8  ed_map result: no entry
+sd no map for sd east dakota water development district 2  ed_map result: no entry
+sd no map for sd west dakota water development district 4  ed_map result: no entry
+sd no map for sd conservation district 4  ed_map result: no entry
+sd no map for sd conservation district 4  ed_map result: no entry
+sd no map for sd conservation district 4  ed_map result: no entry
+sd no map for sd conservation district 6  ed_map result: no entry
+sd no map for sd conservation district 6  ed_map result: no entry
+sd no map for sd conservation district 6  ed_map result: no entry
+sd no map for sd south central water development district 2  ed_map result: no entry
+sd no map for sd state house district 26  ed_map result: no entry
+sd no map for sd state house district 26  ed_map result: no entry
+sd no map for mellette county - commissioner district 4  ed_map result: no entry
+sd no map for sd vermillion basin water development district 1  ed_map result: no entry
+sd no map for sd conservation district 2  ed_map result: no entry
+sd no map for sd conservation district 2  ed_map result: no entry
+sd no map for sd conservation district 2  ed_map result: no entry
+sd no map for sd east dakota water development district 4  ed_map result: no entry
+sd no map for sd conservation district 51  ed_map result: no entry
+sd no map for sd conservation district 51  ed_map result: no entry
+sd no map for sd conservation district 51  ed_map result: no entry
+sd no map for sd heartland consumers power district district 10  ed_map result: no entry
+sd no map for sd conservation district 68  ed_map result: no entry
+sd no map for sd heartland consumers power district district 4  ed_map result: no entry
+sd no map for sd conservation district 23  ed_map result: no entry
+sd no map for sd conservation district 23  ed_map result: no entry
+sd no map for sd conservation district 23  ed_map result: no entry
+sd no map for sd conservation district 18  ed_map result: no entry
+sd no map for sd conservation district 43  ed_map result: no entry
+sd no map for sd conservation district 43  ed_map result: no entry
+sd no map for sd south central water development district 6  ed_map result: no entry
+sd no map for sd conservation district 12  ed_map result: no entry
+sd no map for sd conservation district 54  ed_map result: no entry
+sd no map for sd conservation district 54  ed_map result: no entry
+sd no map for sd conservation district 54  ed_map result: no entry
+sd no map for sd conservation district 9  ed_map result: no entry
+sd no map for sd conservation district 9  ed_map result: no entry
+sd no map for sd conservation district 57  ed_map result: no entry
+sd no map for sd conservation district 57  ed_map result: no entry
+sd no map for sd conservation district 57  ed_map result: no entry
+sd no map for sd west river water development district 2  ed_map result: no entry
+sd no map for sd conservation district 20  ed_map result: no entry
+sd no map for sd conservation district 20  ed_map result: no entry
+sd no map for sd conservation district 42  ed_map result: no entry
+sd no map for sd conservation district 42  ed_map result: no entry
+sd no map for sd conservation district 42  ed_map result: no entry
+sd no map for sd east dakota water development district 1  ed_map result: no entry
+sd no map for sd conservation district 35  ed_map result: no entry
+sd no map for sd conservation district 35  ed_map result: no entry
+sd no map for sd conservation district 47  ed_map result: no entry
+sd no map for sd conservation district 47  ed_map result: no entry
+sd no map for sd west river water development district 4  ed_map result: no entry
+sd no map for sd vermillion basin water development district 4  ed_map result: no entry
+sd no map for sd conservation district 34  ed_map result: no entry
+sd no map for sd conservation district 34  ed_map result: no entry
+sd no map for sd conservation district 34  ed_map result: no entry
+sd no map for sd conservation district 45  ed_map result: no entry
+sd no map for sd conservation district 45  ed_map result: no entry
+sd no map for sd conservation district 45  ed_map result: no entry
+sd no map for sd heartland consumers power district district 1  ed_map result: no entry
+sd no map for sd conservation district 32  ed_map result: no entry
+sd no map for sd conservation district 32  ed_map result: no entry
+sd no map for sd conservation district 32  ed_map result: no entry
+PROCESSING ca
+PROCESSING sc
+#DIAGNOSIS: No judicial districts, school districts just in VF as numbers (001-079)
+sc no map for sc judicial circuit district 9  ed_map result: no entry
+sc no map for beaufort county school board district 7  ed_map result: no entry
+sc no map for sc judicial circuit district 11  ed_map result: no entry
+sc no map for lee county school board district 7  ed_map result: no entry
+sc no map for horry county school board district 8  ed_map result: no entry
+sc no map for horry county school board district 5  ed_map result: no entry
+sc no map for sc judicial circuit district 1  ed_map result: no entry
+sc no map for horry county school board district 11  ed_map result: no entry
+sc no map for jasper county pocatoglio township  ed_map result: no entry
+sc no map for sc judicial circuit district 14  ed_map result: no entry
+sc no map for dorchester county school board district 2  ed_map result: no entry
+sc no map for sc judicial circuit district 2  ed_map result: no entry
+sc no map for horry county school board district 9  ed_map result: no entry
+sc no map for lee county school board district 2  ed_map result: no entry
+sc no map for colleton county district 3  ed_map result: no entry
+sc no map for sc judicial circuit district 7  ed_map result: no entry
+sc no map for florence county school board district 5  ed_map result: no entry
+sc no map for jasper county hardeeville township  ed_map result: no entry
+sc no map for horry county school board district 4  ed_map result: no entry
+sc no map for beaufort county school board district 3  ed_map result: no entry
+sc no map for colleton county district 5  ed_map result: no entry
+sc no map for sc judicial circuit district 4  ed_map result: no entry
+sc no map for sc judicial circuit district 16  ed_map result: no entry
+sc no map for sc judicial circuit district 10  ed_map result: no entry
+sc no map for florence county school board district 4  ed_map result: no entry
+sc no map for lee county school board district 3  ed_map result: no entry
+sc no map for lee county school board district 1  ed_map result: no entry
+sc no map for sc judicial circuit district 8  ed_map result: no entry
+sc no map for florence county school board district 2  ed_map result: no entry
+sc no map for florence county school board district 7  ed_map result: no entry
+PROCESSING or
+PROCESSING co
+#DIAGNOSIS: no regional transportation districts or colorado university board of regents districts
+co no map for co regional transportation district f  ed_map result: no entry
+co no map for co colorado university board of regents district 5  ed_map result: no entry
+co no map for co regional transportation district a  ed_map result: no entry
+co no map for co regional transportation district d  ed_map result: no entry
+co no map for co regional transportation district e  ed_map result: no entry
+co no map for co regional transportation district i  ed_map result: no entry
+co no map for co colorado university board of regents district 7  ed_map result: no entry
+co no map for co colorado university board of regents district 3  ed_map result: no entry
+co no map for co regional transportation district h  ed_map result: no entry
+co no map for co regional transportation district g  ed_map result: no entry
+PROCESSING va
+#DIAGNOSIS: No county council districts in VF. We are not doing municipalities, though they may be in there
+va no map for bedford county- district 3  ed_map result: no entry
+va no map for alberta (muni)  ed_map result: no entry
+va no map for alberta (muni)  ed_map result: no entry
+va no map for stuart (muni)  ed_map result: no entry
+va no map for stuart (muni)  ed_map result: no entry
+va no map for suffolk city  ed_map result: no entry
+va no map for richmond city - district 6  ed_map result: no entry
+va no map for richmond city - district 6  ed_map result: no entry
+va no map for bridgewater (muni)  ed_map result: no entry
+va no map for bridgewater (muni)  ed_map result: no entry
+va no map for urbanna (muni)  ed_map result: no entry
+va no map for urbanna (muni)  ed_map result: no entry
+va no map for dayton (muni)  ed_map result: no entry
+va no map for dayton (muni)  ed_map result: no entry
+va no map for harrisonburg city - west district  ed_map result: no entry
+va no map for emporia city - district 6  ed_map result: no entry
+va no map for richmond city - district 3  ed_map result: no entry
+va no map for richmond city - district 3  ed_map result: no entry
+va no map for gordonsville (muni)  ed_map result: no entry
+va no map for gordonsville (muni)  ed_map result: no entry
+va no map for phenix (muni)  ed_map result: no entry
+va no map for phenix (muni)  ed_map result: no entry
+va no map for richmond city- district 5  ed_map result: no entry
+va no map for chatham (muni)  ed_map result: no entry
+va no map for chatham (muni)  ed_map result: no entry
+va no map for lexington city  ed_map result: no entry
+va no map for lexington city  ed_map result: no entry
+va no map for fluvanna county- rivanna district  ed_map result: no entry
+va no map for winchester city - third ward  ed_map result: no entry
+va no map for narrows (muni)  ed_map result: no entry
+va no map for narrows (muni)  ed_map result: no entry
+va no map for bluefield (muni)  ed_map result: no entry
+va no map for bluefield (muni)  ed_map result: no entry
+va no map for portsmouth city  ed_map result: no entry
+va no map for portsmouth city  ed_map result: no entry
+va no map for portsmouth city  ed_map result: no entry
+va no map for mt crawford (muni)  ed_map result: no entry
+va no map for mt crawford (muni)  ed_map result: no entry
+va no map for suffolk city- sleepy hole borough  ed_map result: no entry
+va no map for stephens city (muni)  ed_map result: no entry
+va no map for timberville (muni)  ed_map result: no entry
+va no map for timberville (muni)  ed_map result: no entry
+va no map for richmond city - district 1  ed_map result: no entry
+va no map for richmond city - district 1  ed_map result: no entry
+va no map for poquoson city - western  ed_map result: no entry
+va no map for fincastle (muni)  ed_map result: no entry
+va no map for hopewell city - ward 2  ed_map result: no entry
+va no map for poquoson city  ed_map result: no entry
+va no map for tazewell (muni)  ed_map result: no entry
+va no map for tazewell (muni)  ed_map result: no entry
+va no map for virginia beach city - rose hall  ed_map result: no entry
+va no map for virginia beach city - rose hall  ed_map result: no entry
+va no map for winchester city - fourth ward  ed_map result: no entry
+va no map for glasgow (muni)  ed_map result: no entry
+va no map for virgilina (muni)  ed_map result: no entry
+va no map for virgilina (muni)  ed_map result: no entry
+va no map for petersburg city - sixth ward  ed_map result: no entry
+va no map for richmond city - district 9  ed_map result: no entry
+va no map for hopewell city - ward 5  ed_map result: no entry
+va no map for colonial beach (muni)  ed_map result: no entry
+va no map for colonial beach (muni)  ed_map result: no entry
+va no map for colonial beach (muni)  ed_map result: no entry
+va no map for hopewell city - ward 6  ed_map result: no entry
+va no map for port royal (muni)  ed_map result: no entry
+va no map for emporia city - district 3  ed_map result: no entry
+va no map for pocahontas (muni)  ed_map result: no entry
+va no map for pocahontas (muni)  ed_map result: no entry
+va no map for middletown (muni)  ed_map result: no entry
+va no map for middletown (muni)  ed_map result: no entry
+va no map for winchester city - second ward  ed_map result: no entry
+va no map for colonial heights city  ed_map result: no entry
+va no map for colonial heights city  ed_map result: no entry
+va no map for richlands (muni)  ed_map result: no entry
+va no map for richlands (muni)  ed_map result: no entry
+va no map for amherst (muni)  ed_map result: no entry
+va no map for amherst (muni)  ed_map result: no entry
+va no map for manassas park city  ed_map result: no entry
+va no map for manassas park city  ed_map result: no entry
+va no map for poquoson city - central  ed_map result: no entry
+va no map for elkton (muni)  ed_map result: no entry
+va no map for elkton (muni)  ed_map result: no entry
+va no map for petersburg city - second ward  ed_map result: no entry
+va no map for emporia city  ed_map result: no entry
+va no map for martinsville city  ed_map result: no entry
+va no map for hopewell city - ward 4  ed_map result: no entry
+va no map for richmond city - district 4  ed_map result: no entry
+va no map for richmond city - district 4  ed_map result: no entry
+va no map for iron gate (muni)  ed_map result: no entry
+va no map for iron gate (muni)  ed_map result: no entry
+va no map for lovettsville (muni)  ed_map result: no entry
+va no map for gretna (muni)  ed_map result: no entry
+va no map for gretna (muni)  ed_map result: no entry
+va no map for alexandria city- district b  ed_map result: no entry
+va no map for suffolk city- whaleyville borough  ed_map result: no entry
+va no map for troutville (muni)  ed_map result: no entry
+va no map for troutville (muni)  ed_map result: no entry
+va no map for petersburg city - fourth ward  ed_map result: no entry
+va no map for craigsville (muni)  ed_map result: no entry
+va no map for craigsville (muni)  ed_map result: no entry
+va no map for alexandria city  ed_map result: no entry
+va no map for alexandria city  ed_map result: no entry
+va no map for goshen (muni)  ed_map result: no entry
+va no map for richmond city- district 2  ed_map result: no entry
+va no map for halifax (muni)  ed_map result: no entry
+va no map for bedford city  ed_map result: no entry
+va no map for suffolk city - nansemond borough  ed_map result: no entry
+va no map for richmond city - district 2  ed_map result: no entry
+va no map for richmond city - district 2  ed_map result: no entry
+va no map for king william county - west point  ed_map result: no entry
+va no map for richmond city  ed_map result: no entry
+va no map for winchester city - first ward  ed_map result: no entry
+va no map for alexandria city- district c  ed_map result: no entry
+va no map for culpeper county - salem district  ed_map result: no entry
+va no map for leesburg (muni)  ed_map result: no entry
+va no map for leesburg (muni)  ed_map result: no entry
+va no map for fluvanna county- cunningham district  ed_map result: no entry
+va no map for norton city  ed_map result: no entry
+va no map for norton city  ed_map result: no entry
+va no map for grottoes (muni)  ed_map result: no entry
+va no map for grottoes (muni)  ed_map result: no entry
+va no map for glen lyn (muni)  ed_map result: no entry
+va no map for glen lyn (muni)  ed_map result: no entry
+va no map for alexandria city- district a  ed_map result: no entry
+va no map for richmond city- district 7  ed_map result: no entry
+va no map for virginia beach city  ed_map result: no entry
+va no map for virginia beach city  ed_map result: no entry
+va no map for virginia beach city  ed_map result: no entry
+va no map for james city county - jamestown district  ed_map result: no entry
+va no map for brookneal (muni)  ed_map result: no entry
+va no map for brookneal (muni)  ed_map result: no entry
+va no map for richmond city - district 5  ed_map result: no entry
+va no map for richmond city - district 5  ed_map result: no entry
+va no map for suffolk city - whaleyville borough  ed_map result: no entry
+va no map for richmond city- district 3  ed_map result: no entry
+va no map for harrisonburg city  ed_map result: no entry
+va no map for suffolk city - sleepy hole borough  ed_map result: no entry
+va no map for cedar bluff (muni)  ed_map result: no entry
+va no map for cedar bluff (muni)  ed_map result: no entry
+va no map for richmond city - district 7  ed_map result: no entry
+va no map for harrisonburg city - east district  ed_map result: no entry
+va no map for james city county- jamestown district  ed_map result: no entry
+va no map for bedford county- district 2  ed_map result: no entry
+va no map for hurt (muni)  ed_map result: no entry
+va no map for hurt (muni)  ed_map result: no entry
+va no map for stanley (muni)  ed_map result: no entry
+va no map for stanley (muni)  ed_map result: no entry
+va no map for bowling green (muni)  ed_map result: no entry
+va no map for clifton forge (muni)  ed_map result: no entry
+va no map for poquoson city - eastern  ed_map result: no entry
+va no map for richmond city - district 8  ed_map result: no entry
+va no map for richmond city - district 8  ed_map result: no entry
+va no map for west point (muni)  ed_map result: no entry
+va no map for petersburg city- sixth ward  ed_map result: no entry
+va no map for virginia beach city - centerville  ed_map result: no entry
+va no map for virginia beach city - centerville  ed_map result: no entry
+va no map for altavista (muni)  ed_map result: no entry
+va no map for altavista (muni)  ed_map result: no entry
+va no map for virginia beach city - kempsville  ed_map result: no entry
+va no map for virginia beach city - kempsville  ed_map result: no entry
+va no map for winchester city  ed_map result: no entry
+va no map for suffolk city- nansemond borough  ed_map result: no entry
+PROCESSING ky
+#DIAGNOSIS: No school districts in VF. Judicial districts are just in as numbers 1-7, if that is even what 'magistrate district' and 'constable district' mean. Magistrate and constable? At least KY doesn't have to fear from robin hoods or frankensteins
+ky no map for bullitt county - magistrate district 2  ed_map result: no entry
+ky no map for muhlenberg county - constable district 2  ed_map result: no entry
+ky no map for grant county - constable district 3  ed_map result: no entry
+ky no map for menifee county - school board district 5  ed_map result: no entry
+ky no map for bath county - school board district 5  ed_map result: no entry
+ky no map for scott county - school board district 1  ed_map result: no entry
+ky no map for taylor county - school board district 4  ed_map result: no entry
+ky no map for pike county - school board district 5  ed_map result: no entry
+ky no map for clay county - school board district 4  ed_map result: no entry
+ky no map for bullitt county - school board district 1  ed_map result: no entry
+ky no map for green county - school board district 2  ed_map result: no entry
+ky no map for barren county - school board district 4  ed_map result: no entry
+ky no map for powell county - school board district 4  ed_map result: no entry
+ky no map for union county - constable district 2  ed_map result: no entry
+ky no map for russell county - school board district 3  ed_map result: no entry
+ky no map for mason county - school board district 3  ed_map result: no entry
+ky no map for boyd county - ashland independent school district  ed_map result: no entry
+ky no map for floyd county - school board district 5  ed_map result: no entry
+ky no map for pike county - school board district 2  ed_map result: no entry
+ky no map for madison county - school board district 1  ed_map result: no entry
+ky no map for clay county - school board district 2  ed_map result: no entry
+ky no map for fayette county - school board district 3  ed_map result: no entry
+ky no map for meade county - school board district 1  ed_map result: no entry
+ky no map for oldham county - school board district 3  ed_map result: no entry
+ky no map for boone county - school board district 2  ed_map result: no entry
+ky no map for knott county - school board district 4  ed_map result: no entry
+ky no map for campbell county - ft. thomas independent school district  ed_map result: no entry
+ky no map for muhlenberg county - constable district 5  ed_map result: no entry
+ky no map for bath county - school board district 3  ed_map result: no entry
+ky no map for hancock county - soil and water district 4  ed_map result: no entry
+ky no map for henry county - eminence independent school district  ed_map result: no entry
+ky no map for greenup county - school board district 5  ed_map result: no entry
+ky no map for allen county - constable district 1  ed_map result: no entry
+ky no map for clark county - school board district 2  ed_map result: no entry
+ky no map for floyd county - school board district 4  ed_map result: no entry
+ky no map for madison county - school board district 5  ed_map result: no entry
+ky no map for robertson county - school board district 4  ed_map result: no entry
+ky no map for monroe county - school board district 3  ed_map result: no entry
+ky no map for greenup county - russell independent school district  ed_map result: no entry
+ky no map for calloway county - murray independent school district  ed_map result: no entry
+ky no map for green county - school board district 1  ed_map result: no entry
+ky no map for fayette county - school board district 5  ed_map result: no entry
+ky no map for ohio county - school board district 4  ed_map result: no entry
+ky no map for monroe county - school board district 4  ed_map result: no entry
+ky no map for henry county - school board district 4  ed_map result: no entry
+ky no map for knott county - school board district 3  ed_map result: no entry
+ky no map for hickman county - school board district 3  ed_map result: no entry
+ky no map for green county - school board district 4  ed_map result: no entry
+ky no map for meade county - school board district 5  ed_map result: no entry
+ky no map for bell county - middlesboro independent school district  ed_map result: no entry
+ky no map for nelson county - school board district 2  ed_map result: no entry
+ky no map for knox county - barbourville independent school district  ed_map result: no entry
+ky no map for floyd county - school board district 3  ed_map result: no entry
+ky no map for oldham county - school board district 1  ed_map result: no entry
+ky no map for warren county - constable district 2  ed_map result: no entry
+ky no map for clay county - magistrate district 1  ed_map result: no entry
+ky no map for knott county - school board district 1  ed_map result: no entry
+ky no map for simpson county - school board district 4  ed_map result: no entry
+ky no map for livingston county - school board district 4  ed_map result: no entry
+ky no map for laurel county - school board district 5  ed_map result: no entry
+ky no map for harlan county - magistrate district 5  ed_map result: no entry
+ky no map for mercer county - burgin independent school district  ed_map result: no entry
+ky no map for nelson county - school board district 5  ed_map result: no entry
+ky no map for pike county - school board district 3  ed_map result: no entry
+ky no map for jefferson county - school board district 7  ed_map result: no entry
+ky no map for oldham county - school board district 4  ed_map result: no entry
+ky no map for carter county - school board district 4  ed_map result: no entry
+ky no map for muhlenberg county - school board district 5  ed_map result: no entry
+ky no map for russell county - school board district 1  ed_map result: no entry
+ky no map for livingston county - school board district 2  ed_map result: no entry
+ky no map for hardin county - school board district 5  ed_map result: no entry
+ky no map for knox county - school board district 4  ed_map result: no entry
+ky no map for muhlenberg county - school board district 3  ed_map result: no entry
+ky no map for jefferson county - commission district c  ed_map result: no entry
+ky no map for breathitt county - school board district 2  ed_map result: no entry
+ky no map for clark county - school board district 3  ed_map result: no entry
+ky no map for muhlenberg county - school board district 2  ed_map result: no entry
+ky no map for kenton county - covington independent school district  ed_map result: no entry
+ky no map for oldham county - constable district 8  ed_map result: no entry
+ky no map for jefferson county - commission district b  ed_map result: no entry
+ky no map for scott county - school board district 3  ed_map result: no entry
+ky no map for taylor county - school board district 5  ed_map result: no entry
+ky no map for carroll county - school board district 2  ed_map result: no entry
+PROCESSING ny
+PROCESSING tn
+PROCESSING nh
+#DIAGNOSIS: The school districts in the VF are 001-009 and 100,200,...,700
+#st. mary's and queen anne's are in the VF as saint marys and queen annes
+#we aren't doing municipality
+PROCESSING md
+md no map for talbot county - board of education district 5  ed_map result: no entry
+md no map for caroline county - board of education district 2  ed_map result: no entry
+md no map for montgomery county - board of education district 7  ed_map result: no entry
+md no map for montgomery county - board of education district 8  ed_map result: no entry
+md no map for montgomery county - board of education district 4  ed_map result: no entry
+md no map for talbot county - board of education district 6  ed_map result: no entry
+md no map for talbot county - board of education district 2  ed_map result: no entry
+md no map for st. mary's county - commssion district 2  ed_map result: no entry
+md no map for st. mary's county - commssion district 4  ed_map result: no entry
+md no map for queen anne's county - commission district 3  ed_map result: no entry
+md no map for hagerstown (muni)  ed_map result: no entry
+md no map for hagerstown (muni)  ed_map result: no entry
+md no map for caroline county - board of education district 3  ed_map result: no entry
+md no map for caroline county - board of education district 1  ed_map result: no entry
+md no map for montgomery county - board of education district 2  ed_map result: no entry
+md no map for cumberland (muni)  ed_map result: no entry
+md no map for montgomery county - board of education district 1  ed_map result: no entry
+md no map for montgomery county - board of education district 5  ed_map result: no entry
+md no map for st. mary's county  ed_map result: no entry
+md no map for queen anne's county - commission district 4  ed_map result: no entry
+PROCESSING hi
+PROCESSING ar
+#DIAGNOSIS: judicial districts in VF are numbers with occasional E/W designations. No mention of circuits or court of appeals associates
+ar no map for ar circuit judge district 4  ed_map result: no entry
+ar no map for ar circuit judge district 6  ed_map result: no entry
+ar no map for ar court of appeals associate judge district 1  ed_map result: no entry
+PROCESSING ks
+PROCESSING mt
+#DIAGNOSIS: VF has no judicial districts
+mt no map for mt judicial district 3  ed_map result: no entry
+mt no map for mt judicial district 22  ed_map result: no entry
+mt no map for mt judicial district 2  ed_map result: no entry
+mt no map for mt judicial district 2  ed_map result: no entry
+mt no map for mt judicial district 10  ed_map result: no entry
+mt no map for mt judicial district 12  ed_map result: no entry
+mt no map for mt judicial district 1  ed_map result: no entry
+mt no map for mt judicial district 1  ed_map result: no entry
+mt no map for mt judicial district 8  ed_map result: no entry
+mt no map for mt judicial district 8  ed_map result: no entry
+mt no map for mt judicial district 8  ed_map result: no entry
+mt no map for mt judicial district 15  ed_map result: no entry
+mt no map for mt judicial district 20  ed_map result: no entry
+mt no map for mt judicial district 14  ed_map result: no entry
+mt no map for mt judicial district 17  ed_map result: no entry
+mt no map for mt judicial district 16  ed_map result: no entry
+mt no map for mt judicial district 16  ed_map result: no entry
+mt no map for mt judicial district 13  ed_map result: no entry
+mt no map for mt judicial district 13  ed_map result: no entry
+mt no map for mt judicial district 13  ed_map result: no entry
+mt no map for mt judicial district 11  ed_map result: no entry
+mt no map for mt judicial district 11  ed_map result: no entry
+mt no map for mt judicial district 11  ed_map result: no entry
+mt no map for mt judicial district 18  ed_map result: no entry
+mt no map for mt judicial district 18  ed_map result: no entry
+mt no map for mt judicial district 9  ed_map result: no entry
+mt no map for mt judicial district 7  ed_map result: no entry
+mt no map for mt judicial district 5  ed_map result: no entry
+mt no map for mt judicial district 6  ed_map result: no entry
+mt no map for mt judicial district 4  ed_map result: no entry
+mt no map for mt judicial district 4  ed_map result: no entry
+mt no map for mt judicial district 4  ed_map result: no entry
+PROCESSING wy
+PROCESSING nv
+PROCESSING nm
+#DIAGNOSIS: A fascinating departure from your usual naming scheme
+#county districts are in candidate file as just COUNTYNAME_DISTRICTNUMBER
+#except when they are in as "sante fe county commissioner district DISTRICTNUMBER" which is presumably the home district of the magical being Sante Fe who brings presents to all the artists communes in the New Mexico Desert. I would allow this as a typo except that 'sante fe county' is also in here
+#or when they are in as "colfax county commissioner district" with no district number
+#no public education commissions. school districts in the VF as SB and then either a number or a number-number (ex: SB87 or SB86-7)
+#no union county commissioner district 3
+nm no map for VALENCIA_5  ed_map result: no entry
+nm no map for DE BACA_3  ed_map result: no entry
+nm no map for LEA_4  ed_map result: no entry
+nm no map for VALENCIA_4  ed_map result: no entry
+nm no map for VALENCIA_2  ed_map result: no entry
+nm no map for DONA ANA_5  ed_map result: no entry
+nm no map for TORRANCE_3  ed_map result: no entry
+nm no map for ROOSEVELT_2  ed_map result: no entry
+nm no map for CIBOLA_02  ed_map result: no entry
+nm no map for ROOSEVELT_1  ed_map result: no entry
+nm no map for DONA ANA_4  ed_map result: no entry
+nm no map for GUADALUPE_3  ed_map result: no entry
+nm no map for QUAY_1  ed_map result: no entry
+nm no map for nm public education commission district 8  ed_map result: no entry
+nm no map for CURRY_2  ed_map result: no entry
+nm no map for SIERRA_3  ed_map result: no entry
+nm no map for LINCOLN_1  ed_map result: no entry
+nm no map for TAOS_3  ed_map result: no entry
+nm no map for TAOS_4  ed_map result: no entry
+nm no map for sante fe county commissioner district 2  ed_map result: no entry
+nm no map for nm public education commission district 10  ed_map result: no entry
+nm no map for EDDY_5  ed_map result: no entry
+nm no map for sante fe county  ed_map result: no entry
+nm no map for sante fe county  ed_map result: no entry
+nm no map for GRANT_3  ed_map result: no entry
+nm no map for SAN MIGUEL_5  ed_map result: no entry
+nm no map for SANDOVAL_4  ed_map result: no entry
+nm no map for CATRON_3  ed_map result: no entry
+nm no map for 0  ed_map result: no entry
+nm no map for HARDING_3  ed_map result: no entry
+nm no map for BERNALILLO_02  ed_map result: no entry
+nm no map for CURRY_4  ed_map result: no entry
+nm no map for sante fe county commissioner district 4  ed_map result: no entry
+nm no map for LEA_5  ed_map result: no entry
+nm no map for colfax county commissioner district  ed_map result: no entry
+nm no map for nm public regulation commission district 3  ed_map result: no entry
+nm no map for OTERO_3  ed_map result: no entry
+nm no map for MORA_003  ed_map result: no entry
+nm no map for CIBOLA_05  ed_map result: no entry
+nm no map for DONA ANA_2  ed_map result: no entry
+nm no map for SAN MIGUEL_2  ed_map result: no entry
+nm no map for CURRY_5  ed_map result: no entry
+nm no map for BERNALILLO_3  ed_map result: no entry
+nm no map for CIBOLA_04  ed_map result: no entry
+nm no map for SANDOVAL_5  ed_map result: no entry
+nm no map for EDDY_3  ed_map result: no entry
+nm no map for SAN JUAN_5  ed_map result: no entry
+nm no map for union county commissioner district 3  ed_map result: no entry
+nm no map for EDDY_2  ed_map result: no entry
+nm no map for SOCORRO_5  ed_map result: no entry
+nm no map for SAN MIGUEL_4  ed_map result: no entry
+nm no map for QUAY_2  ed_map result: no entry
+nm no map for SAN JUAN_4  ed_map result: no entry
+nm no map for nm public regulation commission district 1  ed_map result: no entry
+nm no map for SAN JUAN_3  ed_map result: no entry
+nm no map for LUNA_03  ed_map result: no entry
+nm no map for SOCORRO_4  ed_map result: no entry
+nm no map for SANDOVAL_2  ed_map result: no entry
+nm no map for SOCORRO_2  ed_map result: no entry
+nm no map for nm public education commission district 3  ed_map result: no entry
+nm no map for CHAVES_02  ed_map result: no entry
+nm no map for LEA_1  ed_map result: no entry
+nm no map for CHAVES_03  ed_map result: no entry
+nm no map for nm public education commission district 9  ed_map result: no entry
+nm no map for sante fe county commissioner district 5  ed_map result: no entry
+nm no map for BERNALILLO_04  ed_map result: no entry
+nm no map for CHAVES_04  ed_map result: no entry
+nm no map for RIO ARRIBA_3  ed_map result: no entry
+nm no map for nm public education commission district 5  ed_map result: no entry
+nm no map for MCKINLEY_03  ed_map result: no entry
+nm no map for LINCOLN_3  ed_map result: no entry
+PROCESSING mo
+PROCESSING mi
+PROCESSING wv
+PROCESSING pa
+PROCESSING oh
+#DIAGNOSIS: no county council districts in VF
+oh no map for cuyahoga county - commission district 10  ed_map result: no entry
+oh no map for cuyahoga county - commission district 8  ed_map result: no entry
+oh no map for cuyahoga county - commission district 6  ed_map result: no entry
+oh no map for summit county - commission district 5  ed_map result: no entry
+oh no map for cuyahoga county - commission district 2  ed_map result: no entry
+oh no map for summit county - commission district 2  ed_map result: no entry
+oh no map for cuyahoga county - commission district 4  ed_map result: no entry
+oh no map for summit county - commission district 3  ed_map result: no entry
+oh no map for summit county - commission district 7  ed_map result: no entry
+oh no map for summit county - commission district 1  ed_map result: no entry
+oh no map for summit county - commission district 6  ed_map result: no entry
+oh no map for summit county - commission district 8  ed_map result: no entry
+oh no map for summit county - commission district 4  ed_map result: no entry
+PROCESSING nj
+PROCESSING de
+PROCESSING nd
+#DIAGNOSIS: no county council or judicial districts in VF
+nd no map for towner county - commissioner district 1  ed_map result: no entry
+nd no map for mclean county - commissioner district 2  ed_map result: no entry
+nd no map for nelson county - commissioner district 4  ed_map result: no entry
+nd no map for billings county - commissioner district 3  ed_map result: no entry
+nd no map for oliver county - commissioner district 1  ed_map result: no entry
+nd no map for billings county - commissioner district 1  ed_map result: no entry
+nd no map for benson county - commissioner district 2  ed_map result: no entry
+nd no map for benson county - commissioner district 4  ed_map result: no entry
+nd no map for burke county - commissioner district 1  ed_map result: no entry
+nd no map for griggs county - commissioner district 4  ed_map result: no entry
+nd no map for steele county - commissioner district 2  ed_map result: no entry
+nd no map for lamoure (muni)  ed_map result: no entry
+nd no map for pierce county - commissioner district 4  ed_map result: no entry
+nd no map for mountrail county - commissioner district 1  ed_map result: no entry
+nd no map for barnes county - commissioner district 1  ed_map result: no entry
+nd no map for pierce county - commissioner district 2  ed_map result: no entry
+nd no map for towner county - commissioner district 3  ed_map result: no entry
+nd no map for slope county - commissioner district 2  ed_map result: no entry
+nd no map for nd judicial district northwest  ed_map result: no entry
+nd no map for nd judicial district northwest  ed_map result: no entry
+nd no map for nd judicial district northwest  ed_map result: no entry
+nd no map for stark county - commissioner district 3  ed_map result: no entry
+nd no map for lamoure county - commissioner district 1  ed_map result: no entry
+nd no map for nd judicial district northeast central  ed_map result: no entry
+nd no map for cass county - comm district 1  ed_map result: no entry
+nd no map for nd judicial district south central  ed_map result: no entry
+nd no map for nd judicial district south central  ed_map result: no entry
+nd no map for nd judicial district northeast  ed_map result: no entry
+nd no map for nd judicial district northeast  ed_map result: no entry
+nd no map for nelson county - commissioner district 2  ed_map result: no entry
+nd no map for traill county - commissioner district 2  ed_map result: no entry
+nd no map for wells county - commissioner district 3  ed_map result: no entry
+nd no map for sioux county - commissioner district 2  ed_map result: no entry
+nd no map for cass county - comm district 5  ed_map result: no entry
+nd no map for lamoure county - commissioner district 5  ed_map result: no entry
+nd no map for barnes county - commissioner district 5  ed_map result: no entry
+nd no map for hettinger county - commissioner district 3  ed_map result: no entry
+nd no map for hettinger county - commissioner district 1  ed_map result: no entry
+nd no map for pembina county - commissioner district 2  ed_map result: no entry
+nd no map for nd judicial district southeast  ed_map result: no entry
+nd no map for nd judicial district southeast  ed_map result: no entry
+nd no map for nd judicial district southeast  ed_map result: no entry
+nd no map for traill county - commissioner district 5  ed_map result: no entry
+nd no map for nd judicial district east central  ed_map result: no entry
+nd no map for nd judicial district east central  ed_map result: no entry
+nd no map for burke county - commissioner district 3  ed_map result: no entry
+nd no map for griggs county - commissioner district 2  ed_map result: no entry
+nd no map for emmons county - commissioner district 3  ed_map result: no entry
+nd no map for grant county - commissioner district 2  ed_map result: no entry
+nd no map for stark county - commissioner district 1  ed_map result: no entry
+nd no map for bottineau county - commissioner district 4  ed_map result: no entry
+nd no map for pembina county - commissioner district 4  ed_map result: no entry
+nd no map for dickey county - commissioner district 2  ed_map result: no entry
+nd no map for towner county - commissioner district 5  ed_map result: no entry
+nd no map for bottineau county - commissioner district 2  ed_map result: no entry
+nd no map for wells county - commissioner district 5  ed_map result: no entry
+nd no map for golden valley county - commissioner district 2  ed_map result: no entry
+nd no map for nd judicial district southwest  ed_map result: no entry
+nd no map for nd judicial district southwest  ed_map result: no entry
+nd no map for emmons county - commissioner district 1  ed_map result: no entry
+nd no map for dickey county - commissioner district 4  ed_map result: no entry
+nd no map for emmons county - commissioner district 5  ed_map result: no entry
+nd no map for mchenry county - commissioner district 4  ed_map result: no entry
+nd no map for mchenry county - commissioner district 2  ed_map result: no entry
+nd no map for cass county - comm district 3  ed_map result: no entry
+nd no map for wells county - commissioner district 1  ed_map result: no entry
+nd no map for stark county - commissioner district 5  ed_map result: no entry
+nd no map for traill county - commissioner district 4  ed_map result: no entry
+nd no map for williams county - commissioner district 4  ed_map result: no entry
+nd no map for grant county - commissioner district 1  ed_map result: no entry
+nd no map for renville county - commissioner district 2  ed_map result: no entry
+nd no map for steele county - commissioner district 4  ed_map result: no entry
+nd no map for oliver county - commissioner district 3  ed_map result: no entry
+nd no map for southwest water authority (muni)  ed_map result: no entry
+nd no map for lamoure county - commissioner district 3  ed_map result: no entry
+nd no map for sheridan county - commissioner district 2  ed_map result: no entry
+nd no map for williams county - commissioner district 2  ed_map result: no entry
+PROCESSING me
+#DIAGNOSIS: comerset county specifically missing from VF. SOMERSET. No judicial districts either
+me no map for comerset county - commission district 2  ed_map result: no entry
+me no map for comerset county - commission district 1  ed_map result: no entry
+me no map for comerset county - commission district 1  ed_map result: no entry
+me no map for me prosecutorial district 4  ed_map result: no entry
+me no map for me prosecutorial district 4  ed_map result: no entry
+me no map for comerset county  ed_map result: no entry
+me no map for comerset county  ed_map result: no entry
+me no map for aroostook county - register district south  ed_map result: no entry
+PROCESSING ia
+PROCESSING vt
+PROCESSING dc
+#DIAGNOSiS: We are not doing wards, we should be for DC, make an exception config
+dc no map for dc - ward 4  ed_map result: no entry
+dc no map for dc - ward 2  ed_map result: no entry
+dc no map for dc - ward 7  ed_map result: no entry
+dc no map for dc - ward 8  ed_map result: no entry
+PROCESSING nc
+#DIAGNOSIS: These judicial districts have letter suffixes in the VF. Ex: 15A, 15B
+nc no map for nc judicial district 15  ed_map result: no entry
+nc no map for nc judicial district 15  ed_map result: no entry
+nc no map for nc judicial district 15  ed_map result: no entry
+nc no map for nc judicial district 15  ed_map result: no entry
+nc no map for nc judicial district 15  ed_map result: no entry
+nc no map for nc judicial district 15  ed_map result: no entry
+nc no map for nc judicial district 15  ed_map result: no entry
+nc no map for nc judicial district 22  ed_map result: no entry
+nc no map for nc judicial district 22  ed_map result: no entry
+nc no map for nc judicial district 22  ed_map result: no entry
+nc no map for nc judicial district 22  ed_map result: no entry
+nc no map for nc judicial district 22  ed_map result: no entry
+nc no map for nc judicial district 22  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 27  ed_map result: no entry
+nc no map for nc judicial district 20  ed_map result: no entry
+nc no map for nc judicial district 20  ed_map result: no entry
+nc no map for nc judicial district 20  ed_map result: no entry
+nc no map for nc judicial district 20  ed_map result: no entry
+nc no map for nc judicial district 20  ed_map result: no entry
+nc no map for nc judicial district 20  ed_map result: no entry
+nc no map for nc judicial district 20  ed_map result: no entry
+nc no map for nc judicial district 6  ed_map result: no entry
+nc no map for nc judicial district 6  ed_map result: no entry
+nc no map for nc judicial district 6  ed_map result: no entry
+nc no map for nc judicial district 6  ed_map result: no entry
+nc no map for nc judicial district 6  ed_map result: no entry
+nc no map for nc judicial district 6  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 3  ed_map result: no entry
+nc no map for nc judicial district 19  ed_map result: no entry
+nc no map for nc judicial district 19  ed_map result: no entry
+nc no map for nc judicial district 19  ed_map result: no entry
+nc no map for nc judicial district 19  ed_map result: no entry
+nc no map for nc judicial district 19  ed_map result: no entry
+nc no map for nc judicial district 19  ed_map result: no entry
+nc no map for nc judicial district 16  ed_map result: no entry
+nc no map for nc judicial district 16  ed_map result: no entry
+nc no map for nc judicial district 16  ed_map result: no entry
+nc no map for nc judicial district 16  ed_map result: no entry
+nc no map for nc judicial district 16  ed_map result: no entry
+nc no map for nc judicial district 17  ed_map result: no entry
+nc no map for nc judicial district 17  ed_map result: no entry
+nc no map for nc judicial district 29  ed_map result: no entry
+nc no map for nc judicial district 29  ed_map result: no entry
+nc no map for nc judicial district 29  ed_map result: no entry
+nc no map for nc judicial district 29  ed_map result: no entry
+nc no map for nc judicial district 29  ed_map result: no entry
+PROCESSING al
+PROCESSING mn
+PROCESSING fl

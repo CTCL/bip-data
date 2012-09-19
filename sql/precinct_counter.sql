@@ -1,0 +1,5 @@
+copy (select l.name, p.precinct_count from locality_cavf as l join (select count(name) as precinct_count, locality_id from precinct_cavf group by locality_id) as p on l.id=p.locality_id) to '/home/gaertner/bip-data/data/ca_precinct_counts.csv' CSV HEADER;
+copy (select l.name, p.precinct_count from locality_ncvf as l join (select count(name) as precinct_count, locality_id from precinct_ncvf group by locality_id) as p on l.id=p.locality_id) to '/home/gaertner/bip-data/data/nc_precinct_counts.csv' CSV HEADER;
+copy (select l.name, p.precinct_count from locality_flvf as l join (select count(name) as precinct_count, locality_id from precinct_flvf group by locality_id) as p on l.id=p.locality_id) to '/home/gaertner/bip-data/data/fl_precinct_counts.csv' CSV HEADER;
+
+copy (select substr(l.source,1,2) as state, l.name, p.precinct_count from locality as l left join (select count(name) as precinct_count, locality_id from precinct group by locality_id) as p on l.id=p.locality_id where l.name is not null) to '/home/gaertner/bip-data/data/precinct_counts.csv' CSV HEADER;

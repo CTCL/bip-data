@@ -23,24 +23,73 @@ from data import candidate_defaults as cd
 cd = reload(cd)
 VOTER_FILE = tsd.VOTER_FILE
 VOTER_FILE_DISTRICTS = tsd.VOTER_FILE_DISTRICTS
+
+LEGISLATIVE_DISTRICT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+LEGISLATIVE_DISTRICT_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
+LEGISLATIVE_DISTRICT_IMPORT['udcs'].update({'type':'legislative_district'})
+LEGISLATIVE_DISTRICT_IMPORT.update({
+    'table':'electoral_district_ld_import',
+    'columns':{
+        #'id':{'key':'congressional_district'},
+        'name':25,
+        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(25,),'defaults':{'type':'legislative_district'}}
+        },
+    })
+
+LEGISLATIVE_DISTRICT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+LEGISLATIVE_DISTRICT_ACTUAL.update({
+    'schema_table':'electoral_district',
+    'import_table':LEGISLATIVE_DISTRICT_IMPORT,
+    'long_fields':({'long':'id_long','real':'id'},),
+    'long_from':('id_long',),
+    'distinct_on':('id_long',),
+    })
+
+LEGISLATIVE_DISTRICT__PRECINCT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+LEGISLATIVE_DISTRICT__PRECINCT_IMPORT.update({
+    'table':'electoral_district__precinct_ld_import',
+    'filename':state_specific.VOTER_FILE_LOCATION,
+    'columns':{
+        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(25,),'defaults':{'type':'legislative_district'}},
+        'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(22,29,28)},
+        },
+    })
+
+LEGISLATIVE_DISTRICT__PRECINCT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+LEGISLATIVE_DISTRICT__PRECINCT_ACTUAL.update({
+    'schema_table':'electoral_district__precinct',
+    'import_table':LEGISLATIVE_DISTRICT__PRECINCT_IMPORT,
+    'long_fields':({'long':'electoral_district_id_long','real':'electoral_district_id'},{'long':'precinct_id_long','real':'precinct_id'},),
+    'distinct_on':('precinct_id_long','electoral_district_id_long',),
+    'long_to':(
+        {
+            'to_table':'electoral_district_ld_import',
+            'local_key':'electoral_district_id_long',
+            'to_key':'id_long',
+            'real_to_key':'id',
+            },
+        ),
+    })
+
+
 ACTUAL_TABLES = (
         tsd.PRECINCT_ACTUAL,
         tsd.LOCALITY_ACTUAL,
         tsd.CONGRESSIONAL_DISTRICT_ACTUAL,
-        tsd.STATE_REP_DISTRICT_ACTUAL,
+        LEGISLATIVE_DISTRICT_ACTUAL,
         tsd.JUDICIAL_DISTRICT_ACTUAL,
         tsd.SCHOOL_DISTRICT_ACTUAL, 
         tsd.COUNTY_COUNCIL_ACTUAL,
         tsd.COUNTY_ACTUAL,
         tsd.STATE_ACTUAL,
-        tsd.STATE_SENATE_DISTRICT_ACTUAL,
+        #tsd.STATE_SENATE_DISTRICT_ACTUAL,
         tsd.CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL,
-        tsd.STATE_REP_DISTRICT__PRECINCT_ACTUAL,
+        LEGISLATIVE_DISTRICT__PRECINCT_ACTUAL,
         tsd.JUDICIAL_DISTRICT__PRECINCT_ACTUAL,
         tsd.SCHOOL_DISTRICT__PRECINCT_ACTUAL,
         tsd.COUNTY_COUNCIL__PRECINCT_ACTUAL,
         tsd.COUNTY__PRECINCT_ACTUAL,
-        tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
+        #tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE__PRECINCT_ACTUAL,
         cd.CANDIDATE_ACTUAL,
         cd.CONTEST_ACTUAL,
@@ -50,9 +99,18 @@ ACTUAL_TABLES = (
 GROUPS = {
         #        'vf_group':TABLE_GROUP,
         }
-
+ELECTORAL_DISTRICT_UNION = dict(tsd.ELECTORAL_DISTRICT_UNION)
+ELECTORAL_DISTRICT_UNION['components'] = (
+            'electoral_district_cd_import',
+            'electoral_district_jd_import',
+            'electoral_district_schd_import',
+            'electoral_district_ld_import',
+            'electoral_district_cc_import',
+            'electoral_district_c_import',
+            'electoral_district_s_import',
+            )
 UNIONS = (
-        tsd.ELECTORAL_DISTRICT_UNION,
+        ELECTORAL_DISTRICT_UNION,
         )
 ERSATZPG_CONFIG = dict(univ_settings.ERSATZPG_CONFIG)
 ERSATZPG_CONFIG.update({
@@ -62,16 +120,16 @@ ERSATZPG_CONFIG.update({
         'precinct':tsd.PRECINCT_IMPORT,
         'locality':tsd.LOCALITY_IMPORT,
         'congressional_district':tsd.CONGRESSIONAL_DISTRICT_IMPORT,
-        'state_rep_district':tsd.STATE_REP_DISTRICT_IMPORT,
+        'legislative_district':LEGISLATIVE_DISTRICT_IMPORT,
         'judicial_district':tsd.JUDICIAL_DISTRICT_IMPORT,
         'school_district':tsd.SCHOOL_DISTRICT_IMPORT,
         'county_council':tsd.COUNTY_COUNCIL_IMPORT,
         'county':tsd.COUNTY_IMPORT,
         'state':tsd.STATE_IMPORT,
-        'state_senate_district':tsd.STATE_SENATE_DISTRICT_IMPORT,
+        #'state_senate_district':tsd.STATE_SENATE_DISTRICT_IMPORT,
+        'legislative_district__precinct':LEGISLATIVE_DISTRICT__PRECINCT_IMPORT,
         'congressional_district__precinct':tsd.CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT,
-        'state_rep_district__precinct':tsd.STATE_REP_DISTRICT__PRECINCT_IMPORT,
-        'state_senate_district__precinct':tsd.STATE_SENATE_DISTRICT__PRECINCT_IMPORT,
+        #'state_senate_district__precinct':tsd.STATE_SENATE_DISTRICT__PRECINCT_IMPORT,
         'judicial_district__precinct':tsd.JUDICIAL_DISTRICT__PRECINCT_IMPORT,
         'school_district__precinct':tsd.SCHOOL_DISTRICT__PRECINCT_IMPORT,
         'county_council__precinct':tsd.COUNTY_COUNCIL__PRECINCT_IMPORT,
@@ -87,6 +145,6 @@ ERSATZPG_CONFIG.update({
             #'locality':1,
             },
         'parallel_load':(
-            {'tables':('precinct','locality','congressional_district','state_rep_district','state_senate_district','judicial_district','school_district','county_council','county','state','congressional_district__precinct','state_rep_district__precinct','state_senate_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct'),'keys':{}},
+            {'tables':('precinct','locality','legislative_district','congressional_district','judicial_district','school_district','county_council','county','state','legislative_district__precinct','congressional_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct'),'keys':{}},
             )
         })

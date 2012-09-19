@@ -1,0 +1,1 @@
+select lo.name, pr.name from precinct_cavf as pr join locality_cavf as lo on pr.locality_id = lo.id where pr.name in (select p.name from precinct_cavf as p join locality_cavf as l on l.id = p.locality_id where l.name='NEVADA');

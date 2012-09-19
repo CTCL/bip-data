@@ -1,9 +1,10 @@
 import os, re, sys
+import script_settings as ss
 if '-strict' in sys.argv:
     strict = True
 else:
     strict = False
-os.chdir('../voterfiles')
+os.chdir(ss.voterfiles)
 l = [d for d in os.listdir('.') if re.match(r'^\w\w$',d)]
 cands = [re.match(r'(?P<state>\w\w) Candidates.csv', d).groupdict()['state'].lower() for d in os.listdir('/home/gaertner/Dropbox/BIP Production') if re.match(r'\w\w Candidates.csv',d)]
 has_data = []

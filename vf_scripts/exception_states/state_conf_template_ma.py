@@ -42,9 +42,9 @@ ACTUAL_TABLES = (
         tsd.COUNTY__PRECINCT_ACTUAL,
         tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE__PRECINCT_ACTUAL,
-        cd.CANDIDATE_ACTUAL,
-        cd.CONTEST_ACTUAL,
-        cd.CANDIDATE_IN_CONTEST_ACTUAL,
+        #cd.CANDIDATE_ACTUAL,
+        #cd.CONTEST_ACTUAL,
+        #cd.CANDIDATE_IN_CONTEST_ACTUAL,
         )
 
 GROUPS = {
@@ -77,9 +77,9 @@ ERSATZPG_CONFIG.update({
         'county_council__precinct':tsd.COUNTY_COUNCIL__PRECINCT_IMPORT,
         'county__precinct':tsd.COUNTY__PRECINCT_IMPORT,
         'state__precinct':tsd.STATE__PRECINCT_IMPORT,
-        'candidate':cd.CANDIDATE_IMPORT,
-        'contest':cd.CONTEST_IMPORT,
-        'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,
+        #'candidate':cd.CANDIDATE_IMPORT,
+        #'contest':cd.CONTEST_IMPORT,
+        #'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,
         },
         'key_sources':{
             #'precinct':1,

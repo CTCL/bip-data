@@ -1,7 +1,7 @@
-
+from collections import OrderedDict
 
 def create_discrete_partitions(table_names, partition_values, cursor, prev_children=[], prev_values=[]):
-    pv = dict(partition_values)
+    pv = OrderedDict(partition_values)
     if len(pv) == 0:
         return
     else:
@@ -15,7 +15,7 @@ def create_discrete_partitions(table_names, partition_values, cursor, prev_child
                 print create_sql
                 cursor.execute(drop_sql)
                 cursor.execute(create_sql)
-                create_discrete_partitions([t+'_'+v], pv, cursor, prev_children + [k], prev_values + [v])
+                create_discrete_partitions([t+'_'+str(v)], pv, cursor, prev_children + [k], prev_values + [v])
             function_sql = ("CREATE OR REPLACE FUNCTION {parent}_insert_trigger() RETURNS TRIGGER AS $$ BEGIN IF "+ ' ELSEIF '.join("NEW.{child} = '{value}' THEN INSERT INTO {parent}_{value} VALUES (NEW.*);".format(parent=t,child=k, value=v) for v in v_list) + " ELSE RAISE EXCEPTION 'NO SUCH {child} IN DATABASE'; END IF; RETURN NULL; END; $$ LANGUAGE plpgsql;").format(parent=t, child=k)
             print function_sql
             cursor.execute(function_sql)

@@ -1,5 +1,6 @@
 from state_abbr import states
 from data import univ_settings
+univ_settings = reload(univ_settings)
 reformat = univ_settings.table_functions
 try:
     ss = reload(state_specific)
