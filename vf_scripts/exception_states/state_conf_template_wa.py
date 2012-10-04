@@ -32,6 +32,7 @@ LEGISLATIVE_DISTRICT_IMPORT.update({
     'columns':{
         #'id':{'key':'congressional_district'},
         'name':25,
+        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(25,),'defaults':{'type':'legislative_district'}},
         'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(25,),'defaults':{'type':'legislative_district'}}
         },
     })

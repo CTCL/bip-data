@@ -10,7 +10,7 @@ state_specific.CANDIDATE_SOURCE = state_specific.STATE+'Candidates'
 state_specific.VIP_FEED_LOCATION = '/tmp/temp'
 state_specific.ED_MAP_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{state}/ed_map.py'.format(state=state_specific.STATE.lower())
 #state_specific.ED_MAP_CSV_LOCATION = '/home/gaertner/bip-data/data/voterfiles/nj/ed_map.csv'
-state_specific.CANDIDATE_FILE_LOCATION = '/home/gaertner/Dropbox/BIP Production/{state} Candidates.csv'.format(state=state_specific.STATE)
+state_specific.CANDIDATE_FILE_LOCATION = '/home/gaertner/Dropbox/BIP Production/{state} Candidates-P.csv'.format(state=state_specific.STATE)
 state_specific.UNCOMPRESSED_VOTER_FILE_LOCATION = 'example' 
 state_specific.VOTER_FILE_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{state}/vf_compressed'.format(state=state_specific.STATE.lower())
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
@@ -42,9 +42,9 @@ ACTUAL_TABLES = (
         tsd.COUNTY__PRECINCT_ACTUAL,
         tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE__PRECINCT_ACTUAL,
-        #cd.CANDIDATE_ACTUAL,
-        #cd.CONTEST_ACTUAL,
-        #cd.CANDIDATE_IN_CONTEST_ACTUAL,
+        cd.CANDIDATE_ACTUAL,
+        cd.CONTEST_ACTUAL,
+        cd.CANDIDATE_IN_CONTEST_ACTUAL,
         )
 
 GROUPS = {
@@ -77,9 +77,9 @@ ERSATZPG_CONFIG.update({
         'county_council__precinct':tsd.COUNTY_COUNCIL__PRECINCT_IMPORT,
         'county__precinct':tsd.COUNTY__PRECINCT_IMPORT,
         'state__precinct':tsd.STATE__PRECINCT_IMPORT,
-        #'candidate':cd.CANDIDATE_IMPORT,
-        #'contest':cd.CONTEST_IMPORT,
-        #'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,
+        'candidate':cd.CANDIDATE_IMPORT,
+        'contest':cd.CONTEST_IMPORT,
+        'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,
         },
         'key_sources':{
             #'precinct':1,

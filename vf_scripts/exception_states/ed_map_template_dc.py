@@ -55,7 +55,7 @@ county_council_dicts = []
 for county in county_council:
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())
     county = county.replace("'",'')
-    m =  re.match(r'(?P<county_name>\D+)\s(?P<prefixed>(?:CC)?(?P<district_number>\d+)?)', county)
+    m =  re.match(r'(?P<county_name>\D+)\s(?P<prefixed>(?:[Cc][Cc])?(?P<district_number>\d+)?)', county)
     if m and  m.groupdict()['district_number']:
         county_council_dicts.append(('{county_name} County District {district_number}'.format(**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
 

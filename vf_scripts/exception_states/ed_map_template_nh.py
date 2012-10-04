@@ -13,36 +13,56 @@ state_senate_district = d_dict['state_senate_district']
 state_representative_district = d_dict['state_representative_district']
 school_district = d_dict['school_district']
 county_id = d_dict['county_id']
+township = d_dict['township']
 state = districts.state
 
-intpat = re.compile(r'^\d+$')
+intpat = re.compile(r'^(?P<number>\d+)(?P<extra>\D?)$')
 jdpat = re.compile(r'^(?:JD)?(?P<number>\d+)$')
 sdpat = re.compile(r'^(?:S[DS])?(?P<number>\d+)$')
+def numberclean(n):
+    m = intpat.match(n)
+    if m:
+        return str(int(m.groupdict()['number'])) + m.groupdict()['extra']
+    else:
+        return n
+
+srpat = re.compile(r'^(?P<name>\D+)(?P<number>\d+)$')
+def staterepclean(n):
+    n = n.replace('HILLSBORO','HILLSBOROUGH')
+    m = srpat.match(n)
+    return m.groupdict()
 
 ed_map = {}
 ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})
 
-ed_map.update(dict([('{state} Congressional District {number}'.format(state=state[0], number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
-ed_map.update(dict([('{state} State Senate District {number}'.format(state=state[0], number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
-ed_map.update(dict([('{state} State House District {number}'.format(state=state[0], number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
-ed_map.update(dict([('{state} State Representative District {number}'.format(state=state[0], number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
-ed_map.update(dict([('{state} State Legislature District {number}'.format(state=state[0], number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'legislative_district'}) for n in state_representative_district]))
-ed_map.update(dict([('{state} Legislative District {number}'.format(state=state[0], number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'legislative_district'}) for n in state_representative_district]))
+
+ed_map.update(dict([('{state} State House -{name} district {number}'.format(state=state[0], **staterepclean(n)).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+
+ed_map.update(dict([('{state} Congressional District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
+ed_map.update(dict([('{state} State Senate District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
+ed_map.update(dict([('{state} State House District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('{state} State House of Representatives - District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('{state} State Representative District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('{state} State Legislature District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('{state} Legislative District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
 ed_map.update(dict([('{state} Judicial District {number}'.format(state=state[0], number=(int(jdpat.match(n).groupdict()['number']) if jdpat.match(n) else n)).lower(),{'name':n,'type':'judicial_district'}) for n in judicial_district]))
 ed_map.update(dict([('{state} State School Board District {number}'.format(state=state[0], number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 ed_map.update(dict([('{state} Board of Education District {number}'.format(state=state[0], number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 ed_map.update(dict([('{state} State Board of Education District {number}'.format(state=state[0], number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 
-ed_map.update(dict([('Congressional District {number}'.format(number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
-ed_map.update(dict([('State Senate District {number}'.format(number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
-ed_map.update(dict([('State House District {number}'.format(number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
-ed_map.update(dict([('State Representative District {number}'.format(number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
-ed_map.update(dict([('State Legislature District {number}'.format(number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'legislative_district'}) for n in state_representative_district]))
-ed_map.update(dict([('Legislative District {number}'.format(number=(int(n) if intpat.match(n) else n)).lower(),{'name':n,'type':'legislative_district'}) for n in state_representative_district]))
+ed_map.update(dict([('Congressional District {number}'.format(number=(numberclean(n))).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
+ed_map.update(dict([('State Senate District {number}'.format(number=(numberclean(n))).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
+ed_map.update(dict([('State House District {number}'.format(number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('{state} State House of Representatives - District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('State Representative District {number}'.format(number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('State Legislature District {number}'.format(number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
+ed_map.update(dict([('Legislative District {number}'.format(number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
 ed_map.update(dict([('Judicial District {number}'.format(number=(int(jdpat.match(n).groupdict()['number']) if jdpat.match(n) else n)).lower(),{'name':n,'type':'judicial_district'}) for n in judicial_district]))
 ed_map.update(dict([('State School Board District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 ed_map.update(dict([('Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 ed_map.update(dict([('State Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
+
+ed_map.update(dict([('{name} township'.format(name=n).lower(), {'name':n,'type':'township'}) for n in township]))
 
 for county in county_id:
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())

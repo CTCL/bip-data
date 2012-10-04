@@ -1,6 +1,6 @@
 from data import univ_settings
 univ_settings = reload(univ_settings)
-import os, imp
+import os, imp, re
 from data import state_specific
 state_specific.STATE = 'NJ'
 state_specific.ELECTION = 2012
@@ -23,61 +23,60 @@ from data import candidate_defaults as cd
 cd = reload(cd)
 VOTER_FILE = tsd.VOTER_FILE
 VOTER_FILE_DISTRICTS = (
-        'state',
-        'county_id',
-        'county_council',
-        #'city_council',
-        #'municipal_district',
-        'school_district',
-        'judicial_district',
-        'congressional_district',
-        'state_representative_district',
-        'state_senate_district',
-        #'township',
-        'ward'
-        )
+'state',
+'county_id',
+'county_council',
+#'city_council',
+#'municipal_district',
+'school_district',
+'judicial_district',
+'congressional_district',
+'state_representative_district',
+'state_senate_district',
+'township',
+#'ward'
+)
 
-WARD_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
-WARD_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
-WARD_IMPORT['udcs'].update({'type':'ward'})
-WARD_IMPORT.update({
-    'table':'electoral_district_w_import',
+TOWNSHIP_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+TOWNSHIP_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
+TOWNSHIP_IMPORT['udcs'].update({'type':'township'})
+TOWNSHIP_IMPORT.update({
+    'table':'electoral_district_t_import',
     'columns':{
-        #'id':{'key':'congressional_district'},
-        'name':27,
-        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(27,),'defaults':{'type':'ward'}},
-        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(27,),'defaults':{'type':'ward'}}
+        'name':26,
+        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'township'}},
+        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'township'}}
         },
     })
 
-WARD_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
-WARD_ACTUAL.update({
+TOWNSHIP_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+TOWNSHIP_ACTUAL.update({
     'schema_table':'electoral_district',
-    'import_table':WARD_IMPORT,
+    'import_table':TOWNSHIP_IMPORT,
     'long_fields':({'long':'id_long','real':'id'},),
     'long_from':('id_long',),
     'distinct_on':('id_long',),
     })
 
-WARD__PRECINCT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
-WARD__PRECINCT_IMPORT.update({
-    'table':'electoral_district__precinct_w_import',
+TOWNSHIP__PRECINCT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+TOWNSHIP__PRECINCT_IMPORT.update({
+    'table':'electoral_district__precinct_t_import',
     'filename':state_specific.VOTER_FILE_LOCATION,
     'columns':{
-        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(27,),'defaults':{'type':'ward'}},
+        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'state'}},
         'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(22,29,28)},
         },
     })
 
-WARD__PRECINCT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
-WARD__PRECINCT_ACTUAL.update({
+TOWNSHIP__PRECINCT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+TOWNSHIP__PRECINCT_ACTUAL.update({
     'schema_table':'electoral_district__precinct',
-    'import_table':WARD__PRECINCT_IMPORT,
+    'import_table':TOWNSHIP__PRECINCT_IMPORT,
     'long_fields':({'long':'electoral_district_id_long','real':'electoral_district_id'},{'long':'precinct_id_long','real':'precinct_id'},),
     'distinct_on':('precinct_id_long','electoral_district_id_long',),
     'long_to':(
         {
-            'to_table':'electoral_district_w_import',
+            'to_table':'electoral_district_t_import',
             'local_key':'electoral_district_id_long',
             'to_key':'id_long',
             'real_to_key':'id',
@@ -85,6 +84,51 @@ WARD__PRECINCT_ACTUAL.update({
         ),
     })
 
+shpatt = re.compile(r'VT State House District (?P<name>(?:[A-Za-z ]+-?)+)(?:$|[ -](?P<numbers>(?:\d+-?)*))')
+sspatt = re.compile(r'VT State Senate District (?P<name>.+)')
+
+shexceptions = {'essex':'esx','windham':'wdh','windsor':'wdr','grand isle':'gi'}
+def edmapwrapper(ed):
+    m = shpatt.match(ed)
+    n = sspatt.match(ed)
+    if m:
+        names = '-'.join((n[0:3] if n.lower() not in shexceptions else shexceptions[n.lower()]) for n in m.groupdict()['name'].split('-'))
+        numbers = ('-' + m.groupdict()['numbers']) if  m.groupdict()['numbers'] != None else ''
+        ed = 'VT State House District ' + names + numbers
+    elif n:
+        name = n.groupdict()['name']
+        if name.lower() == 'grand isle':
+            ed = 'VT State Senate District Chittenden-Grand Isle'
+    return state_specific.STATE_EDMAP(ed)
+
+CONTEST_IMPORT = dict(tsd.td.DEFAULT_CANDIDATE_TABLE)
+CONTEST_IMPORT.update({
+    'table':'contest_import',
+    'columns':{
+        'identifier':{'function':tsd.td.reformat.contest_id,'columns':(2,4,5)},
+        'id_long':{'function':tsd.td.reformat.contest_id,'columns':(2,4,5)},
+        'state':2,
+        'office':5,
+        ('electoral_district_name', 'electoral_district_type','electoral_district_id_long'):{'function': edmapwrapper, 'columns':(4,)},
+        }
+    })
+
+CONTEST_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+CONTEST_ACTUAL.update({
+    'schema_table':'contest',
+    'import_table':CONTEST_IMPORT,
+    'long_fields':({'long':'id_long','real':'id'},{'long':'electoral_district_id_long','real':'electoral_district_id'}),
+    'distinct_on':('id_long',),
+    'long_from':('id_long',),
+    'long_to':(
+        {
+            'to_table':'electoral_district_import',
+            'local_key':'electoral_district_id_long',
+            'to_key':'id_long',
+            'real_to_key':'id',
+            },
+        ),
+    })
 
 ACTUAL_TABLES = (
         tsd.PRECINCT_ACTUAL,
@@ -96,8 +140,8 @@ ACTUAL_TABLES = (
         tsd.COUNTY_COUNCIL_ACTUAL,
         tsd.COUNTY_ACTUAL,
         tsd.STATE_ACTUAL,
+        TOWNSHIP_ACTUAL,
         tsd.STATE_SENATE_DISTRICT_ACTUAL,
-        WARD_ACTUAL,
         tsd.CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE_REP_DISTRICT__PRECINCT_ACTUAL,
         tsd.JUDICIAL_DISTRICT__PRECINCT_ACTUAL,
@@ -106,31 +150,33 @@ ACTUAL_TABLES = (
         tsd.COUNTY__PRECINCT_ACTUAL,
         tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE__PRECINCT_ACTUAL,
-        WARD__PRECINCT_ACTUAL,
+        TOWNSHIP__PRECINCT_ACTUAL,
         cd.CANDIDATE_ACTUAL,
-        cd.CONTEST_ACTUAL,
+        CONTEST_ACTUAL,
         cd.CANDIDATE_IN_CONTEST_ACTUAL,
         )
 
 GROUPS = {
         #        'vf_group':TABLE_GROUP,
         }
-
-ELECTORAL_DISTRICT_UNION = dict(tsd.ELECTORAL_DISTRICT_UNION)
-ELECTORAL_DISTRICT_UNION['components'] = (
+ELECTORAL_DISTRICT_UNION = {
+        'name':'electoral_district_import',
+        'components':(
             'electoral_district_cd_import',
             'electoral_district_jd_import',
             'electoral_district_schd_import',
             'electoral_district_srd_import',
             'electoral_district_ssd_import',
-            'electoral_district_w_import',
             'electoral_district_cc_import',
             'electoral_district_c_import',
             'electoral_district_s_import',
+            'electoral_district_t_import',
             )
+        }
 UNIONS = (
         ELECTORAL_DISTRICT_UNION,
         )
+
 ERSATZPG_CONFIG = dict(univ_settings.ERSATZPG_CONFIG)
 ERSATZPG_CONFIG.update({
     'use_utf':True,
@@ -145,8 +191,8 @@ ERSATZPG_CONFIG.update({
         'county_council':tsd.COUNTY_COUNCIL_IMPORT,
         'county':tsd.COUNTY_IMPORT,
         'state':tsd.STATE_IMPORT,
+        'township':TOWNSHIP_IMPORT,
         'state_senate_district':tsd.STATE_SENATE_DISTRICT_IMPORT,
-        'ward':WARD_IMPORT,
         'congressional_district__precinct':tsd.CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT,
         'state_rep_district__precinct':tsd.STATE_REP_DISTRICT__PRECINCT_IMPORT,
         'state_senate_district__precinct':tsd.STATE_SENATE_DISTRICT__PRECINCT_IMPORT,
@@ -155,9 +201,9 @@ ERSATZPG_CONFIG.update({
         'county_council__precinct':tsd.COUNTY_COUNCIL__PRECINCT_IMPORT,
         'county__precinct':tsd.COUNTY__PRECINCT_IMPORT,
         'state__precinct':tsd.STATE__PRECINCT_IMPORT,
-        'ward__precinct':WARD_IMPORT,
+        'township__precinct':TOWNSHIP__PRECINCT_IMPORT,
         'candidate':cd.CANDIDATE_IMPORT,
-        'contest':cd.CONTEST_IMPORT,
+        'contest':CONTEST_IMPORT,
         'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,
         },
         'key_sources':{
@@ -166,6 +212,6 @@ ERSATZPG_CONFIG.update({
             #'locality':1,
             },
         'parallel_load':(
-            {'tables':('precinct','locality','congressional_district','state_rep_district','state_senate_district','judicial_district','school_district','county_council','county','state','ward','congressional_district__precinct','state_rep_district__precinct','state_senate_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct','ward__precinct'),'keys':{}},
+            {'tables':('precinct','locality','congressional_district','state_rep_district','state_senate_district','judicial_district','school_district','county_council','county','state','township','congressional_district__precinct','state_rep_district__precinct','state_senate_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct','township__precinct'),'keys':{}},
             )
         })
