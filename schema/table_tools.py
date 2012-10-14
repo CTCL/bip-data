@@ -1,4 +1,4 @@
-
+import os
 def define_long_tables(table_dict, fks):
     for fk in fks:
         for fro, to in fk.reference_fields.iteritems():
@@ -85,9 +85,9 @@ def distinct_imports(actual_tables, connection):
             connection.cursor().execute('DROP TABLE {import_table}'.format(import_table=table['import_table']['table']))
             table['rekey_table_name'] = table['import_table']['table']+'_distinct'
 
-def rekey_imports(actual_tables, unions, table_dict, connection, split_names):
+def rekey_imports(actual_tables, unions, table_dict, connection, split_names, special_tables):
     actual_table_dict = dict([(a['import_table']['table'],a) for a in actual_tables])
-    rekey_table_dict = dict([(a['import_table']['table'],a['import_table']['table']+('_distinct' if a.has_key('distinct_on') else '')) for a in actual_tables] +[(u['name'],u['name']) for u in unions])
+    rekey_table_dict = dict([(a['import_table']['table'],a['import_table']['table']+('_distinct' if a.has_key('distinct_on') else '')) for a in actual_tables] +[(u['name'],u['name']) for u in unions] + [(s,s) for s in special_tables])
     cleared_tables = set()
     for table in actual_tables:
         if table.has_key('distinct_on'):
@@ -109,8 +109,20 @@ def rekey_imports(actual_tables, unions, table_dict, connection, split_names):
             print sql
             connection.cursor().execute(sql)
 
+def export_referenda_tables(election, out_dir, connection):
+    sql = "COPY {table}_referenda_{election} TO '{out_dir}{ossep}{table}.csv' CSV HEADER;"
+    connection.cursor().execute(sql.format(table='contest', out_dir=out_dir, election=election, ossep = os.sep))
+    connection.cursor().execute(sql.format(table='referendum', out_dir=out_dir, election=election, ossep = os.sep))
+    connection.cursor().execute(sql.format(table='ballot_response', out_dir=out_dir, election=election, ossep = os.sep))
+
+def export_presidential_tables(election, out_dir, connection):
+    state = 'presidential'
+    sql = "COPY {table}_{source}_{election} TO '{out_dir}{ossep}{table}.csv' CSV HEADER;"
+    connection.cursor().execute(sql.format(table='candidate', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
+    connection.cursor().execute(sql.format(table='candidate_in_contest', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
+    connection.cursor().execute(sql.format(table='contest', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
+
 def export_candidate_tables(state, election, out_dir, connection):
-    import os
     sql = "COPY {table}_{source}_{election} TO '{out_dir}{ossep}{table}.csv' CSV HEADER;"
     connection.cursor().execute(sql.format(table='candidate', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
     connection.cursor().execute(sql.format(table='candidate_in_contest', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
@@ -136,6 +148,38 @@ def create_tables(table_dict, connection):
 def delete_tables(table_dict, connection):
     for t in table_dict:
         connection.cursor().execute('DROP TABLE IF EXISTS %s CASCADE;'%(t,))
+
+def delete_pksq(connection):
+    connection.cursor().execute('DROP SEQUENCE IF EXISTS PKSQ CASCADE;')
+
+def create_pksq(connection):
+    connection.cursor().execute('CREATE SEQUENCE PKSQ START 1;')
+
+def delete_enums(connection):
+    sql = """
+    DROP TYPE IF EXISTS contestenum CASCADE;
+    DROP TYPE IF EXISTS cfenum CASCADE;
+    DROP TYPE IF EXISTS electionenum CASCADE;
+    DROP TYPE IF EXISTS oddevenenum CASCADE;
+    DROP TYPE IF EXISTS usstate CASCADE;
+    """
+    connection.cursor().execute(sql)
+
+def create_enums(connection):
+    sql = """
+    CREATE TYPE contestenum AS ENUM ('candidate','referendum','custom');
+    CREATE TYPE cfenum AS ENUM ('candidate','referendum ');
+    CREATE TYPE electionenum AS ENUM ('primary','general','state','Primary','General','State');
+    CREATE TYPE oddevenenum AS ENUM ('odd','even','both','BOTH','EVEN','ODD');
+    CREATE TYPE usstate AS ENUM ('AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MH', 'MA', 'MI', 'FM', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'VI', 'WA', 'WV', 'WI', 'WY');
+    """
+    connection.cursor().execute(sql)
+
+def create_faux_ed_import_states(connection):
+    sql = 'DROP TABLE IF EXISTS electoral_district_import CASCADE;'
+    connection.cursor().execute(sql)
+    sql = 'CREATE TABLE electoral_district_import as select identifier as id_long, id from electoral_district;'
+    connection.cursor().execute(sql)
 
 def pk_tables(table_dict, connection):
     for t in table_dict.values():

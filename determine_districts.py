@@ -5,20 +5,22 @@ def main(state, remove = False):
     minim = 20
     maxim = 34
     shift = minim - 1
+    default_state_stuff = os.path.join(*['data','default_state_stuff.py'])
+    default_state_stuff = imp.load_source('default_state_stuff', default_state_stuff)
     state_conf = os.path.join(*['data','voterfiles',state,'state_conf.py'])
     state_conf = imp.load_source('state_conf', state_conf)
-    vf_districts = dict([(k,v-1 - shift) for k,v in state_conf.VOTER_FILE['columns'].iteritems() if k in state_conf.VOTER_FILE_DISTRICTS])
+    vf_districts = dict([(k,v-1 - shift) for k,v in default_state_stuff.VOTER_FILE['columns'].iteritems() if k in state_conf.VOTER_FILE_DISTRICTS])
     precincts = defaultdict(lambda:dict((k,defaultdict(lambda:0)) for k in vf_districts.keys()))
     district_entries = defaultdict(lambda:set())
     district_lists = defaultdict(lambda:[])
     vf_precincts = (
-            ('county_number',state_conf.VOTER_FILE['columns']['county_number']-1 - shift),
+            ('county_number',default_state_stuff.VOTER_FILE['columns']['county_number']-1 - shift),
             #('county_id',VOTER_FILE['columns']['county_id']-1),
             #('residential_city',VOTER_FILE['columns']['residential_city']-1),
             #('township', VOTER_FILE['columns']['township']-1),
-            ('precinct_code',state_conf.VOTER_FILE['columns']['precinct_code']-1 - shift),
-            ('precinct_name',state_conf.VOTER_FILE['columns']['precinct_name']-1 - shift))
-    county_idx = state_conf.VOTER_FILE['columns']['county_id']-1 - shift
+            ('precinct_code',default_state_stuff.VOTER_FILE['columns']['precinct_code']-1 - shift),
+            ('precinct_name',default_state_stuff.VOTER_FILE['columns']['precinct_name']-1 - shift))
+    county_idx = default_state_stuff.VOTER_FILE['columns']['county_id']-1 - shift
     if not os.path.exists(state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION):
         pipe = subprocess.Popen(['unzip',state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION.replace('.txt','.zip'), '-d', os.path.split(os.path.abspath(state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION))[0]],stdin=subprocess.PIPE)
         pipe.wait()
@@ -30,8 +32,8 @@ def main(state, remove = False):
     print 'cutting time: {t}'.format(t=(time.time() - t))
 
     with open(cut_location,'r') as f, open(os.path.join(*[state_conf.VOTER_FILE_LOCATION]),'w') as g:
-        csvr = csv.reader(f, delimiter=state_conf.VOTER_FILE['field_sep'])
-        csvw = csv.writer(g, delimiter=state_conf.VOTER_FILE['field_sep'])
+        csvr = csv.reader(f, delimiter=default_state_stuff.VOTER_FILE['field_sep'])
+        csvw = csv.writer(g, delimiter=default_state_stuff.VOTER_FILE['field_sep'])
         csvw.writerow(csvr.next())
         x = 1
         t = time.time()
@@ -48,7 +50,10 @@ def main(state, remove = False):
                 if val == '':
                     continue
                 if k == 'county_council':
-                    ed = line[county_idx] + ' ' + val
+                    if val.startswith(line[county_idx]):
+                        ed = val
+                    else:
+                        ed = line[county_idx] + ' ' + val
                     district_entries[k].add(ed)
                 else:
                     ed = val

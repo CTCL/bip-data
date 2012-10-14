@@ -44,41 +44,34 @@ ed_map.update(dict([('State School Board District {number}'.format(number=(int(s
 ed_map.update(dict([('Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 ed_map.update(dict([('State Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 
+
 for county in county_id:
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())
     county = county.replace("'",'')
     ed_map.update({'{name} County'.format(name=county).lower():{'name':county,'type':'county'}})
 
 county_council_dicts = []
+fillers = ('County Comissioner District','Commissioner District', 'County Commissioner', 'CO Commission District','CO Commissioner District','County District','County Commissioner District','County - Commission District','County Commission District','County Committee District','County - Commissioner District','County - Comm District','County - Council District','County Council District','County - County Commissioner District',)
 for county in county_council:
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())
     county = county.replace("'",'')
-    m =  re.match(r'(?P<county_name>\D+)\s(?P<prefixed>(?:[Cc][Cc])?(?P<district_number>\d+)?)', county)
+    m =  re.match(r'(?P<county_name>[A-Za-z ]+)\s(?P<prefixed>(?:[A-Za-z]*#?\s?)?(?P<district_number>\d+)?(?:\.(?P<number_decimal>\d+))?)', county)
     if m and  m.groupdict()['district_number']:
-        county_council_dicts.append(('{county_name} County District {district_number}'.format(**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
+        for f in fillers:
+            county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
 
-        county_council_dicts.append(('{county_name} County District {district_number}'.format(county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County Commissioner District {district_number}'.format(**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County Commissioner District {district_number}'.format(county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Commission District {district_number}'.format(**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Commission District {district_number}'.format(county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Commissioner District {district_number}'.format(**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Commissioner District {district_number}'.format(county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Comm District {district_number}'.format(**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Comm District {district_number}'.format(county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Council District {district_number}'.format(**m.groupdict()).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
-
-        county_council_dicts.append(('{county_name} County - Council District {district_number}'.format(county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
+            county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name} {prefixed}'.format(**m.groupdict()),'type':'county_council'}))
 ed_map.update(dict(county_council_dicts))
+for county in county_council:
+    county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())
+    county = county.replace("'",'')
+    m =  re.match(r'(?P<county_name>[A-Za-z ]+)\sLRG', county)
+    if m:
+        county_name = m.groupdict()['county_name']
+        for f in filler:
+            key = '{county_name} {filler}'.format(filler=f,county_name=county_name).lower()
+            if not ed_map.has_key(key):
+                ed_map.update({key:{'name':'{county_name}_LRG'.format(**m.groupdict()),'type':'county_council'}})
 
 if __name__ == '__main__':
     print ed_map

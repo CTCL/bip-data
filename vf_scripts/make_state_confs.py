@@ -3,7 +3,6 @@ import script_settings
 os.chdir(script_settings.voterfiles)
 l = [d for d in os.listdir('.') if re.match(r'^\w\w$',d)]
 cands = [re.match(r'(?P<state>\w\w) Candidates.csv', d).groupdict()['state'].lower() for d in os.listdir(script_settings.candidates) if re.match(r'\w\w Candidates.csv',d)]
-print cands
 has_data = set()
 for d in l:
     q = os.listdir(d)

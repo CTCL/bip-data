@@ -2,8 +2,8 @@ import imp
 table_functions = imp.load_module('reformat', *imp.find_module('reformat', ['data']))
 DATABASE_CONFIG = {
         'user':'postgres',
-        'db':'bip3',
-        'pw':'postgrespw'
+        'db':'bip4',
+        'pw':'|-|3lp3rb34r'
         }
 ERSATZPG_CONFIG = {
         'debug':True

@@ -27,6 +27,9 @@ def ed_concat(*args, **kwargs):
     name = name.replace("'",'')
     return name,
 
+def referendum_id(state, referendum_title):
+    return '{state}_{referendum_title}'.format(state=state.strip(), referendum_title=referendum_title.strip()).lower(),
+
 def contest_id(state, district, office_name):
     return '{state}_{district}_{office_name}'.format(state=state.strip(), district=district.strip(), office_name=office_name.strip()).lower(),
 
@@ -43,16 +46,19 @@ def get_edmap(map_location):
         def __missing__(self,key):
             return {'name':key,'type':''}
     ed_map = passdict(ed_map.ed_map)
-    patt = re.compile(r'(?P<name>\D+)(?P<number>\d+)')
+    patt = re.compile(r'(?P<name>\D+)(?P<number>\d+)(?P<extra>\D?)$')
 
     def edmap(electoral_district):
         electoral_district = ' '.join(re.split(r'\s+',electoral_district.strip()))
+        print electoral_district
         m = patt.match(electoral_district)
         if m:
-            electoral_district = '{name}{number}'.format(name=m.groupdict()['name'], number=int(m.groupdict()['number']))
+            electoral_district = '{name}{number}{extra}'.format(name=m.groupdict()['name'], number=int(m.groupdict()['number']), extra=m.groupdict()['extra'])
         #TODO this regex has problems with 2 saints next to each other
         electoral_district = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, electoral_district.lower().strip())
         electoral_district = electoral_district.replace("'",'')
+        print electoral_district
         t = ed_map[electoral_district]
+        print t
         return t['name'],t['type'], '{name}_{type}'.format(**t)
     return edmap

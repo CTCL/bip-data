@@ -13,15 +13,17 @@ state_specific.ED_MAP_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{state
 state_specific.CANDIDATE_FILE_LOCATION = '/home/gaertner/Dropbox/BIP Production/{state} Candidates.csv'.format(state=state_specific.STATE)
 state_specific.UNCOMPRESSED_VOTER_FILE_LOCATION = 'example' 
 state_specific.VOTER_FILE_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{state}/vf_compressed'.format(state=state_specific.STATE.lower())
+state_specific.HOME = '/home/gaertner/bip-data/data/voterfiles/{state}'.format(state=state_specific.STATE.lower())
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
 state_specific.districts = imp.load_source('districts',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'districts.py'))
+state_specific.ttod = imp.load_source('township_to_district',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'township_to_district.py'))
 state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
 from data.state_specific import *
 from data import target_smart_defaults as tsd
 tsd = reload(tsd)
 from data import candidate_defaults as cd
 cd = reload(cd)
-VOTER_FILE = tsd.VOTER_FILE
+#VOTER_FILE = tsd.VOTER_FILE
 VOTER_FILE_DISTRICTS = (
 'state',
 'county_id',
@@ -63,7 +65,7 @@ TOWNSHIP__PRECINCT_IMPORT.update({
     'table':'electoral_district__precinct_t_import',
     'filename':state_specific.VOTER_FILE_LOCATION,
     'columns':{
-        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'state'}},
+        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'township'}},
         'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(22,29,28)},
         },
     })
@@ -84,6 +86,55 @@ TOWNSHIP__PRECINCT_ACTUAL.update({
         ),
     })
 
+SPECIAL_STATE_REP_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+SPECIAL_STATE_REP_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
+SPECIAL_STATE_REP_IMPORT['udcs'].update({'type':'state_representative_district'})
+SPECIAL_STATE_REP_IMPORT.update({
+    'filename':os.path.join(state_specific.HOME,'voterbase_to_special_district_compressed.csv'),
+    'field_sep':',',
+    'table':'electoral_district_ssr_import',
+    'columns':{
+        'name':1,
+        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_rep_district'}},
+        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_rep_district'}}
+        },
+    })
+
+SPECIAL_STATE_REP_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+SPECIAL_STATE_REP_ACTUAL.update({
+    'schema_table':'electoral_district',
+    'import_table':SPECIAL_STATE_REP_IMPORT,
+    'long_fields':({'long':'id_long','real':'id'},),
+    'long_from':('id_long',),
+    'distinct_on':('id_long',),
+    })
+
+SPECIAL_STATE_REP__PRECINCT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+SPECIAL_STATE_REP__PRECINCT_IMPORT.update({
+    'table':'electoral_district__precinct_ssr_import',
+    'filename':os.path.join(state_specific.HOME,'voterbase_to_special_district_compressed.csv'),
+    'field_sep':',',
+    'columns':{
+        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_rep_district'}},
+        'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(3,5,4)},
+        },
+    })
+
+SPECIAL_STATE_REP__PRECINCT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+SPECIAL_STATE_REP__PRECINCT_ACTUAL.update({
+    'schema_table':'electoral_district__precinct',
+    'import_table':SPECIAL_STATE_REP__PRECINCT_IMPORT,
+    'long_fields':({'long':'electoral_district_id_long','real':'electoral_district_id'},{'long':'precinct_id_long','real':'precinct_id'},),
+    'distinct_on':('precinct_id_long','electoral_district_id_long',),
+    'long_to':(
+        {
+            'to_table':'electoral_district_ssr_import',
+            'local_key':'electoral_district_id_long',
+            'to_key':'id_long',
+            'real_to_key':'id',
+            },
+        ),
+    })
 ACTUAL_TABLES = (
         tsd.PRECINCT_ACTUAL,
         tsd.LOCALITY_ACTUAL,
@@ -95,6 +146,7 @@ ACTUAL_TABLES = (
         tsd.COUNTY_ACTUAL,
         tsd.STATE_ACTUAL,
         TOWNSHIP_ACTUAL,
+        SPECIAL_STATE_REP_ACTUAL,
         tsd.STATE_SENATE_DISTRICT_ACTUAL,
         tsd.CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE_REP_DISTRICT__PRECINCT_ACTUAL,
@@ -105,6 +157,7 @@ ACTUAL_TABLES = (
         tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE__PRECINCT_ACTUAL,
         TOWNSHIP__PRECINCT_ACTUAL,
+        SPECIAL_STATE_REP__PRECINCT_ACTUAL,
         cd.CANDIDATE_ACTUAL,
         cd.CONTEST_ACTUAL,
         cd.CANDIDATE_IN_CONTEST_ACTUAL,
@@ -126,6 +179,7 @@ ELECTORAL_DISTRICT_UNION = {
             'electoral_district_c_import',
             'electoral_district_s_import',
             'electoral_district_t_import',
+            'electoral_district_ssr_import',
             )
         }
 UNIONS = (
@@ -146,6 +200,7 @@ ERSATZPG_CONFIG.update({
         'county':tsd.COUNTY_IMPORT,
         'state':tsd.STATE_IMPORT,
         'township':TOWNSHIP_IMPORT,
+        'special_state_rep':SPECIAL_STATE_REP_IMPORT,
         'state_senate_district':tsd.STATE_SENATE_DISTRICT_IMPORT,
         'congressional_district__precinct':tsd.CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT,
         'state_rep_district__precinct':tsd.STATE_REP_DISTRICT__PRECINCT_IMPORT,
@@ -156,6 +211,7 @@ ERSATZPG_CONFIG.update({
         'county__precinct':tsd.COUNTY__PRECINCT_IMPORT,
         'state__precinct':tsd.STATE__PRECINCT_IMPORT,
         'township__precinct':TOWNSHIP__PRECINCT_IMPORT,
+        'special_state_rep__precinct':SPECIAL_STATE_REP__PRECINCT_IMPORT,
         'candidate':cd.CANDIDATE_IMPORT,
         'contest':cd.CONTEST_IMPORT,
         'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,

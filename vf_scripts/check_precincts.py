@@ -49,8 +49,6 @@ with open(os.path.join(ss.script_home,'precinct_report.csv'),'w') as pre_rep:
                 if any([len(l) > 1 for l in v.values()]):
                     for l,m in v.iteritems():
                         if len(m) > 1:
-                            if state=='wa':
-                                import pdb;pdb.set_trace()
                             max_frac[l][0] += max(m.values())
                             max_frac[l][1] += sum(m.values())
                             num_undet[l] += 1

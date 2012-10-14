@@ -45,6 +45,7 @@ CREATE TABLE "contest" (
 "custom_ballot_heading" text,
 "election_key" int4,
 "state" varchar(5),
+"identifier" text,
 PRIMARY KEY ("id") 
 );
 
@@ -67,15 +68,16 @@ CREATE TABLE "candidate" (
 "wiki_word" varchar(255),
 "youtube" text,
 "election_key" int4,
+"identifier" text,
 PRIMARY KEY ("id") 
 );
 
 CREATE TABLE "referendum" (
 "id" int4 DEFAULT nextval('pksq'),
 "source" text,
-"title" varchar(255),
-"subtitle" varchar(255),
-"brief" varchar(255),
+"title" text,
+"subtitle" text,
+"brief" text,
 "text" varchar(255),
 "pro_statement" varchar(255),
 "con_statement" varchar(255),
@@ -83,16 +85,18 @@ CREATE TABLE "referendum" (
 "passage_threshold" varchar(255),
 "effect_of_abstain" varchar(255),
 "election_key" int4,
+"identifier" text,
 PRIMARY KEY ("id") 
 );
 
 CREATE TABLE "ballot_response" (
 "id" int4 DEFAULT nextval('pksq'),
 "source" text,
-"contest_id" int4,
+"referendum_id" int4,
 "sort_order" varchar(255),
-"text" varchar(255),
+"text" text,
 "election_key" int4,
+"identifier" text,
 PRIMARY KEY ("id") 
 );
 
@@ -140,6 +144,7 @@ CREATE TABLE "precinct" (
 "election_administration_id" int4,
 "state_id" int4,
 "election_key" int4,
+"identifier" text,
 PRIMARY KEY ("id") 
 );
 
@@ -160,6 +165,7 @@ CREATE TABLE "electoral_district" (
 "number" int4,
 "state_id" int4,
 "election_key" int4,
+"identifier" text,
 PRIMARY KEY ("id") 
 );
 
@@ -338,7 +344,7 @@ PRIMARY KEY ("id")
 ALTER TABLE "candidate_in_contest" ADD CONSTRAINT "fk_candidate__contest_contest_1" FOREIGN KEY ("contest_id") REFERENCES "contest" ("id");
 ALTER TABLE "candidate_in_contest" ADD CONSTRAINT "fk_candidate__contest_candidate_1" FOREIGN KEY ("candidate_id") REFERENCES "candidate" ("id");
 --ALTER TABLE "contest" ADD CONSTRAINT "fk_contest_election_1" FOREIGN KEY ("election_id") REFERENCES "election" ("id");
-ALTER TABLE "ballot_response" ADD CONSTRAINT "fk_ballot_response_contest_1" FOREIGN KEY ("contest_id") REFERENCES "contest" ("id");
+ALTER TABLE "ballot_response" ADD CONSTRAINT "fk_ballot_response_referendum_1" FOREIGN KEY ("referendum_id") REFERENCES "referendum" ("id");
 ALTER TABLE "referendum" ADD CONSTRAINT "fk_referendum_contest" FOREIGN KEY ("contest_id") REFERENCES "contest" ("id");
 ALTER TABLE "street_segment" ADD CONSTRAINT "street_segment__fk__precinct_id" FOREIGN KEY ("precinct_id") REFERENCES "precinct" ("id");
 ALTER TABLE "street_segment" ADD CONSTRAINT "street_segment__fk__precinct_split_id" FOREIGN KEY ("precinct_split_id") REFERENCES "precinct" ("id");

@@ -8,7 +8,8 @@ except:
     from data import state_specific as ss
 VIP_SOURCE_POSSIBLES = [s+'VIP' for s in states]
 VF_SOURCE_POSSIBLES = [s+'VF' for s in states]
-CANDIDATE_SOURCE_POSSIBLES = [s+'Candidates' for s in states]
+CANDIDATE_SOURCE_POSSIBLES = [s+'Candidates' for s in states + ['PRESIDENTIAL']]
+REFERENDUM_SOURCE_POSSIBLES = ['referenda']
 ELECTION_POSSIBLES = ['2012']
 DEFAULT_TABLE = {
         'skip_head_lines':1,
@@ -43,6 +44,16 @@ DEFAULT_CANDIDATE_TABLE.update({
         'election_key':ss.ELECTION,
         },
         'sources':CANDIDATE_SOURCE_POSSIBLES,
+    })
+
+DEFAULT_REFERENDUM_TABLE = dict(DEFAULT_TABLE)
+DEFAULT_REFERENDUM_TABLE.update({
+    'filename':ss.REFERENDUM_FILE_LOCATION,
+    'udcs':{
+        'source':'referenda',
+        'election_key':ss.ELECTION,
+        },
+        'sources':REFERENDUM_SOURCE_POSSIBLES,
     })
 
 DEFAULT_ACTUAL_TABLE = {

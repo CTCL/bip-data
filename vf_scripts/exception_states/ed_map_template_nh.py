@@ -3,7 +3,8 @@ import csv
 import data.state_specific as ss
 from data.reformat import _saintrep
 ss = reload(ss)
-districts = ss.districts 
+districts = ss.districts
+township_to_district = ss.ttod
 from collections import defaultdict
 d_dict = defaultdict(lambda:[],districts.__dict__)
 judicial_district = d_dict['judicial_district']
@@ -11,6 +12,7 @@ county_council = d_dict['county_council']
 congressional_district = d_dict['congressional_district']
 state_senate_district = d_dict['state_senate_district']
 state_representative_district = d_dict['state_representative_district']
+state_representative_district += (list(set(township_to_district.t_d.values())))
 school_district = d_dict['school_district']
 county_id = d_dict['county_id']
 township = d_dict['township']
@@ -25,12 +27,16 @@ def numberclean(n):
         return str(int(m.groupdict()['number'])) + m.groupdict()['extra']
     else:
         return n
-
+sr_abbr_dict = dict((cid[:2],cid) for cid in county_id)
 srpat = re.compile(r'^(?P<name>\D+)(?P<number>\d+)$')
 def staterepclean(n):
-    n = n.replace('HILLSBORO','HILLSBOROUGH')
     m = srpat.match(n)
-    return m.groupdict()
+    if sr_abbr_dict.has_key(m.groupdict()['name']):
+        name = sr_abbr_dict[m.groupdict()['name']]
+    else:
+        name = m.groupdict()['name'].strip()
+    number = int(m.groupdict()['number'])
+    return {'name':name,'number':number}
 
 ed_map = {}
 ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})

@@ -13,6 +13,7 @@ state_specific.ED_MAP_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{state
 state_specific.CANDIDATE_FILE_LOCATION = '/home/gaertner/Dropbox/BIP Production/{state} Candidates.csv'.format(state=state_specific.STATE)
 state_specific.UNCOMPRESSED_VOTER_FILE_LOCATION = 'example' 
 state_specific.VOTER_FILE_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{state}/vf_compressed'.format(state=state_specific.STATE.lower())
+state_specific.HOME = '/home/gaertner/bip-data/data/voterfiles/{state}'.format(state=state_specific.STATE.lower())
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
 state_specific.districts = imp.load_source('districts',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'districts.py'))
 state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
@@ -21,7 +22,7 @@ from data import target_smart_defaults as tsd
 tsd = reload(tsd)
 from data import candidate_defaults as cd
 cd = reload(cd)
-VOTER_FILE = tsd.VOTER_FILE
+#VOTER_FILE = tsd.VOTER_FILE
 VOTER_FILE_DISTRICTS = (
         'state',
         'county_id',

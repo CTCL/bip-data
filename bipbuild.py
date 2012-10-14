@@ -18,24 +18,22 @@ if '-all_no_clean' in sys.argv:
     sys.argv = sys.argv[:-1] + do_all_no_clean + [sys.argv[-1]]
 
 state_ins = sys.argv[-1].lower()
-rep_state = random.sample(state_ins.split(','),1)[0]
-print rep_state
-rep_state_conf = os.path.join(*['data','voterfiles',rep_state,'state_conf.py'])
-rep_state_conf = imp.load_source('rep_state_conf', rep_state_conf)
+default_state_stuff = os.path.join(*['data','default_state_stuff.py'])
+default_state_stuff = imp.load_source('default_state_stuff', default_state_stuff)
 tables, enums, fks, seqs = process_schema.rip_schema('schema/bip_model_cleaned.sql')
 table_tools.define_long_tables(tables, fks)
 
 if '-clean' in sys.argv:
     t =time.time()
-    connection = ersatz.db_connect(rep_state_conf.ERSATZPG_CONFIG)
+    connection = ersatz.db_connect(default_state_stuff.ERSATZPG_CONFIG)
     table_tools.delete_pksq(connection)
     table_tools.create_pksq(connection)
     table_tools.delete_enums(connection)
     table_tools.create_enums(connection)
     table_tools.delete_tables(tables, connection)
     table_tools.create_tables(tables, connection)
-    table_tools.delete_import_tables(rep_state_conf.ACTUAL_TABLES, rep_state_conf.UNIONS, connection)
-    table_tools.create_import_tables(rep_state_conf.ACTUAL_TABLES, tables, connection)
+    table_tools.delete_import_tables(default_state_stuff.ACTUAL_TABLES, default_state_stuff.UNIONS, connection)
+    table_tools.create_import_tables(default_state_stuff.ACTUAL_TABLES, tables, connection)
     connection.commit()
     connection.close()
     t = time.time() - t
@@ -43,11 +41,11 @@ if '-clean' in sys.argv:
 if '-partition' in sys.argv:
     from collections import OrderedDict
     t =time.time()
-    connection = ersatz.db_connect(rep_state_conf.ERSATZPG_CONFIG)
+    connection = ersatz.db_connect(default_state_stuff.ERSATZPG_CONFIG)
     #connection.cursor().execute('DROP TABLE IF EXISTS voter_file CASCADE;')
     #connection.cursor().execute(open(state_conf.VOTER_FILE_SCHEMA,'r').read())
     finished_schema_tables = []
-    for table in rep_state_conf.ACTUAL_TABLES:
+    for table in default_state_stuff.ACTUAL_TABLES:
         if table['schema_table'] not in finished_schema_tables:
             finished_schema_tables.append(table['schema_table'])
             od = OrderedDict([('source',table['import_table']['sources']),('election_key',table['import_table']['elections'])])
@@ -58,11 +56,24 @@ if '-partition' in sys.argv:
     connection.close()
     t = time.time() - t
     print "Elapsed: %s" % (t,)
-for state in state_ins.split(','):
+state_ins = state_ins.split(',')
+if 'referenda' in state_ins:
+    state_ins.pop(state_ins.index('referenda'))
+state_ins.append('referenda')
+if 'presidential' in state_ins:
+    state_ins.pop(state_ins.index('presidential'))
+state_ins.append('presidential')
+for state in state_ins:
     print "processing {state} out of {states}".format(state=state, states=state_ins)
     state = state.strip()
     state_conf = os.path.join(*['data','voterfiles',state,'state_conf.py'])
     state_conf = imp.load_source('state_conf', state_conf)
+    #THIS HAS TO BE DONE AFTER OTHER STATES ARE BUILT TO MAP TO STATE ELECTORAL DISTRICTS CORRECTLY
+    if state == 'referenda' or state=='presidential':
+        connection = ersatz.db_connect(state_conf.ERSATZPG_CONFIG)
+        table_tools.create_faux_ed_import_states(connection)
+        connection.commit()
+        connection.close()
 
     if '-t' in sys.argv:
         table_subset = eval(sys.argv[sys.argv.index('-t') + 1])
@@ -81,6 +92,8 @@ for state in state_ins.split(','):
         print "Elapsed: %s" % (t,)
 
     if '-compress' in sys.argv:
+        if state in ['referenda','presidential']:
+            continue
         t = time.time()
         if '-thread' in sys.argv:
             pool.apply_async(determine_districts.main, [state, '-remove' in sys.argv])
@@ -90,19 +103,25 @@ for state in state_ins.split(','):
         print "Elapsed: %s" % (t,)
 
     if '-rebuild_districts' in sys.argv:
+        if state in ['referenda','presidential']:
+            continue
         t =time.time()
         with open(state_conf.VOTER_FILE_LOCATION,'r') as f, open(os.path.join('data','voterfiles',state_conf.STATE.lower(),'districts.py'),'w') as g:
-            csvr = csv.reader(f, delimiter=state_conf.VOTER_FILE['field_sep'])
+            csvr = csv.reader(f, delimiter=default_state_stuff.VOTER_FILE['field_sep'])
             csvr.next()
             district_entries = defaultdict(lambda:set())
-            vf_districts = dict([(k,v-1) for k,v in state_conf.VOTER_FILE['columns'].iteritems() if k in state_conf.VOTER_FILE_DISTRICTS])
+            vf_districts = dict([(k,v-1) for k,v in default_state_stuff.VOTER_FILE['columns'].iteritems() if k in state_conf.VOTER_FILE_DISTRICTS])
             for line in csvr:
                 for k,v in vf_districts.iteritems():
                     if line[v] == '':
                         continue
                     if k == 'county_council':
-                        ed = line[state_conf.VOTER_FILE['columns']['county_id']-1] + ' ' + line[v]
-                        district_entries[k].add(line[state_conf.VOTER_FILE['columns']['county_id']-1] + ' ' + line[v])
+                        county_id = line[default_state_stuff.VOTER_FILE['columns']['county_id']-1]
+                        if line[v].startswith(county_id):
+                            ed = line[v]
+                        else:
+                            ed = line[default_state_stuff.VOTER_FILE['columns']['county_id']-1] + ' ' + line[v]
+                        district_entries[k].add(ed)
                     else:
                         ed = line[v]
                         district_entries[k].add(line[v])
@@ -170,7 +189,11 @@ for state in state_ins.split(','):
     if '-rekey' in sys.argv:
         t =time.time()
         connection = ersatz.db_connect(state_conf.ERSATZPG_CONFIG)
-        table_tools.rekey_imports(state_conf.ACTUAL_TABLES, state_conf.UNIONS, tables, connection, ['source','election_key'])
+        if state_conf.__dict__.has_key('SPECIAL_TABLES'):
+            SPECIAL_TABLES = state_conf.SPECIAL_TABLES
+        else:
+            SPECIAL_TABLES = []
+        table_tools.rekey_imports(state_conf.ACTUAL_TABLES, state_conf.UNIONS, tables, connection, ['source','election_key'], SPECIAL_TABLES)
         connection.commit()
         connection.close()
         t = time.time() - t
@@ -210,7 +233,12 @@ for state in state_ins.split(','):
 
     if '-export' in sys.argv:
         connection = ersatz.db_connect(state_conf.ERSATZPG_CONFIG)
-        table_tools.export_candidate_tables(state, state_conf.ELECTION, os.path.join(*[os.getcwd(),'data','voterfiles',state,'out']), connection)
+        if state=='referenda':
+            table_tools.export_referenda_tables(state_conf.ELECTION, os.path.join(*[os.getcwd(),'data','voterfiles',state,'out']), connection)
+        elif state=='presidential':
+            table_tools.export_presidential_tables(state_conf.ELECTION, os.path.join(*[os.getcwd(),'data','voterfiles',state,'out']), connection)
+        else:
+            table_tools.export_candidate_tables(state, state_conf.ELECTION, os.path.join(*[os.getcwd(),'data','voterfiles',state,'out']), connection)
 
 if '-thread' in sys.argv:
     pool.close()

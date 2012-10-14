@@ -1,5 +1,6 @@
 import subprocess, os, re, sys
-os.chdir('../voterfiles')
+import script_settings as ss
+os.chdir(ss.voterfiles)
 
 dir_list = [f for f in os.listdir('.') if re.match(r'^[a-z][a-z]$',f)]
 state_list = dir_list

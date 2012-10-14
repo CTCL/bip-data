@@ -1,5 +1,6 @@
 import subprocess, os, re
-os.chdir('../voterfiles')
+import script_settings as ss
+os.chdir(ss.voterfiles)
 
 dir_list = [f for f in os.listdir('.') if 'TS_Google' in f]
 
