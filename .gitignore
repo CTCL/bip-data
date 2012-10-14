@@ -3,7 +3,7 @@ _compiled*
 *~
 data/voterfiles
 data/ams
-data/vf_scripts
+#data/vf_scripts
 z4*
 data/vipfeeds
 districts*
