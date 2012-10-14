@@ -60,6 +60,7 @@ for county in county_id:
 county_council_dicts = []
 fillers = ('County Commissioner Precinct','County Commission Precinct','County Comissioner District','Commissioner District', 'County Commissioner', 'CO Commission District','CO Commissioner District','County District','County Commissioner District','County - Commission District','County Commission District','County Committee District','County - Commissioner District','County - Comm District','County - Council District','County Council District','County - County Commissioner District','County - District','County Board District','County Board - District',' - District')
 for county in county_council:
+    county = county.replace('JODAVIESS','JO DAVIESS')
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())
     county = county.replace("'",'')
     m =  re.match(r'(?P<county_name>[A-Za-z ]+)\s(?P<prefixed>(?:[A-Za-z]*#?\s?)?(?P<district_number>\d+)?(?:\.(?P<number_decimal>\d+))?(?:ND|ST|RD)?[A-Za-z ]*)', county)
@@ -70,6 +71,7 @@ for county in county_council:
             county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=m.groupdict()['county_name'],district_number=int(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{prefixed}'.format(**m.groupdict()),'type':'county_council'}))
 ed_map.update(dict(county_council_dicts))
 for county in county_council:
+    county = county.replace('JODAVIESS','JO DAVIESS')
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())
     county = county.replace("'",'')
     m =  re.match(r'(?P<county_name>[A-Za-z ]+)\sLRG', county)

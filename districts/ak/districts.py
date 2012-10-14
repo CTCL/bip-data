@@ -1,0 +1,8 @@
+state_senate_district = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+school_district = []
+state = ['AK']
+judicial_district = []
+congressional_district = ['001']
+county_id = ['ALEUTIANS EAST BOROUGH', 'BRISTOL BAY BOROUGH', 'CITY & BOROUGH OF JUNEAU', 'CITY & BOROUGH OF SITKA', 'CITY & BOROUGH OF YAKUTAT', 'CITY AND BOROUGH OF WRANGELL', 'DENALI BOROUGH', 'FAIRBANKS NORTH STAR BOROUGH', 'HAINES BOROUGH', 'KENAI PENINSULA BOROUGH', 'KETCHIKAN GATEWAY BOROUGH', 'KODIAK ISLAND BOROUGH', 'LAKE & PENINSULA BOROUGH', 'MATANUSKA-SUSITNA BOROUGH', 'MUNICIPALITY OF ANCHORAGE', 'NORTH SLOPE BOROUGH', 'NORTHWEST ARCTIC BOROUGH', 'UNORGANIZED']
+county_council = []
+state_representative_district = ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012', '013', '014', '015', '016', '017', '018', '019', '020', '021', '022', '023', '024', '025', '026', '027', '028', '029', '030', '031', '032', '033', '034', '035', '036', '037', '038', '039', '040']

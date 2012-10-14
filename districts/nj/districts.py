@@ -1,0 +1,8 @@
+state_senate_district = ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012', '013', '014', '015', '016', '017', '018', '019', '020', '021', '022', '023', '024', '025', '026', '027', '028', '029', '030', '031', '032', '033', '034', '035', '036', '037', '038', '039', '040']
+school_district = []
+state = ['NJ']
+judicial_district = []
+congressional_district = ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012']
+county_id = ['ATLANTIC', 'BERGEN', 'BURLINGTON', 'CAMDEN', 'CAPE MAY', 'CUMBERLAND', 'ESSEX', 'GLOUCESTER', 'HUDSON', 'HUNTERDON', 'MERCER', 'MIDDLESEX', 'MONMOUTH', 'MORRIS', 'OCEAN', 'PASSAIC', 'SALEM', 'SOMERSET', 'SUSSEX', 'UNION', 'WARREN']
+county_council = ['ATLANTIC 01', 'ATLANTIC 02', 'ATLANTIC 03', 'ATLANTIC 04', 'ATLANTIC 05', 'ESSEX 01', 'ESSEX 02', 'ESSEX 03', 'ESSEX 04', 'ESSEX 05', 'HUDSON 01', 'HUDSON 02', 'HUDSON 03', 'HUDSON 04', 'HUDSON 05', 'HUDSON 06', 'HUDSON 07', 'HUDSON 08', 'HUDSON 09']
+state_representative_district = ['001', '002', '003', '004', '005', '006', '007', '008', '009', '010', '011', '012', '013', '014', '015', '016', '017', '018', '019', '020', '021', '022', '023', '024', '025', '026', '027', '028', '029', '030', '031', '032', '033', '034', '035', '036', '037', '038', '039', '040']
