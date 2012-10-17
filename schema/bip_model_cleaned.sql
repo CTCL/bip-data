@@ -36,6 +36,7 @@ CREATE TABLE "contest" (
 "electorate_specifications" varchar(255),
 "special" bool,
 "office" varchar(255),
+"office_level" varchar(255),
 "filing_closed_date" date,
 "number_elected" int4,
 "number_voting_for" int4,

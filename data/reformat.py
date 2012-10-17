@@ -23,7 +23,7 @@ def _saintrep(m):
 
 def ed_concat(*args, **kwargs):
     name = concat_us(*args, **kwargs)[0]
-    name = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, name.lower().strip())
+    name = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?te?\.?(?P<suffix>[_\s]|$)', _saintrep, name.lower().strip())
     name = name.replace("'",'')
     return name,
 
@@ -55,9 +55,12 @@ def get_edmap(map_location):
         if m:
             electoral_district = '{name}{number}{extra}'.format(name=m.groupdict()['name'], number=int(m.groupdict()['number']), extra=m.groupdict()['extra'])
         #TODO this regex has problems with 2 saints next to each other
-        electoral_district = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, electoral_district.lower().strip())
+        electoral_district = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?te?\.?(?P<suffix>[_\s]|$)', _saintrep, electoral_district.lower().strip())
         electoral_district = electoral_district.replace("'",'')
         print electoral_district
+        if not ed_map.has_key(electoral_district):
+            #import pdb;pdb.set_trace()
+            pass
         t = ed_map[electoral_district]
         print t
         return t['name'],t['type'], '{name}_{type}'.format(**t)

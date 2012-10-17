@@ -4,14 +4,15 @@ from data import table_defaults as td
 td = reload(td)
 
 CONTEST_IMPORT = dict(td.DEFAULT_CANDIDATE_TABLE)
-CONTEST_IMPORT['udcs'] = dict(td.DEFAULT_CANDIDATE_TABLE['udcs'])
-CONTEST_IMPORT['udcs'].update({'contest_type':'candidate'})
-CONTEST_IMPORT.update({
+CONTEST_IMPORT['udcs'] = dict(td.DEFAULT_CANDIDATE_TABLE['udcs']) 
+CONTEST_IMPORT['udcs'].update({'contest_type':'candidate'}) 
+CONTEST_IMPORT.update({ 
     'sources':td.CANDIDATE_SOURCE_POSSIBLES + td.REFERENDUM_SOURCE_POSSIBLES,
     'table':'contest_import',
     'columns':{
         'identifier':{'function':td.reformat.contest_id,'columns':(2,4,5)},
         'id_long':{'function':td.reformat.contest_id,'columns':(2,4,5)},
+        'office_level':3,
         'state':2,
         'office':5,
         ('electoral_district_name', 'electoral_district_type','electoral_district_id_long'):{'function': ss.STATE_EDMAP, 'columns':(4,)},
@@ -37,7 +38,7 @@ CONTEST_ACTUAL.update({
 
 BALLOT_CONTEST_IMPORT = dict(td.DEFAULT_CANDIDATE_TABLE)
 BALLOT_CONTEST_IMPORT['udcs'] = dict(td.DEFAULT_CANDIDATE_TABLE['udcs'])
-BALLOT_CONTEST_IMPORT['udcs'].update({'contest_type':'referendum','electoral_district_type':'state','office':'statewide referendum','source':'referenda'})
+BALLOT_CONTEST_IMPORT['udcs'].update({'contest_type':'referendum','electoral_district_type':'state','office':'statewide referendum','office_level':'Statewide','source':'referenda'})
 BALLOT_CONTEST_IMPORT.update({
     'sources':td.CANDIDATE_SOURCE_POSSIBLES + td.REFERENDUM_SOURCE_POSSIBLES,
     'filename':ss.REFERENDUM_FILE_LOCATION,

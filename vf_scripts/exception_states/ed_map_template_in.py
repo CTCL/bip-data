@@ -82,7 +82,10 @@ for county in county_council:
             county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=county_name, district_number=clean_county_number(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=county_name, district_stuff=district_stuff),'type':'county_council'}))
     else:
         for f in fillers:
-            county_council_dicts.append(('{county_name} {filler} {district_letters}'.format(filler=f,county_name=county_name, district_letters=district_stuff).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=county_name, district_stuff=district_stuff),'type':'county_council'}))
+            if district_stuff.endswith('LRG'):
+                county_council_dicts.append(('{county_name} {filler}'.format(filler=f,county_name=county_name).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=county_name, district_stuff=district_stuff),'type':'county_council'}))
+            else:
+                county_council_dicts.append(('{county_name} {filler} {district_letters}'.format(filler=f,county_name=county_name, district_letters=district_stuff).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=county_name, district_stuff=district_stuff),'type':'county_council'}))
 
 
 ed_map.update(dict(county_council_dicts))

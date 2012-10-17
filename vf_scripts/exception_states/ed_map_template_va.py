@@ -13,6 +13,7 @@ state_senate_district = d_dict['state_senate_district']
 state_representative_district = d_dict['state_representative_district']
 school_district = d_dict['school_district']
 county_id = d_dict['county_id']
+township = d_dict['township']
 state = districts.state
 
 intpat = re.compile(r'^(?P<number>\d+)(?P<extra>\D*)$')
@@ -27,7 +28,6 @@ def numberclean(n):
 
 ed_map = {}
 ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})
-
 
 ed_map.update(dict([('{state} Congressional District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
 ed_map.update(dict([('{state} State Senate District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
@@ -53,7 +53,7 @@ ed_map.update(dict([('State School Board District {number}'.format(number=(int(s
 ed_map.update(dict([('Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 ed_map.update(dict([('State Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 
-ed_map.update({'NV State Senate District 5a'.lower():{'name':'005','type':'state_senate_district'},'NV State Senate District 7a'.lower():{'name':'007','type':'state_senate_district'}})
+ed_map.update(dict([('{name} (muni)'.format(name=n).lower(), {'name':n,'type':'township'}) for n in township]))
 
 def county_name_clean(county):
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())
