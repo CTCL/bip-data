@@ -10,7 +10,7 @@ def main(state, remove = False):
     state_conf = os.path.join(*['data','voterfiles',state,'state_conf.py'])
     state_conf = imp.load_source('state_conf', state_conf)
     vf_districts = dict([(k,v-1 - shift) for k,v in default_state_stuff.VOTER_FILE['columns'].iteritems() if k in state_conf.VOTER_FILE_DISTRICTS])
-    precincts = defaultdict(lambda:dict((k,defaultdict(lambda:0)) for k in vf_districts.keys()))
+    precincts = defaultdict(lambda:dict((k,defaultdict(lambda:0)) for k in vf_districts.keys() + ['county_school_district','county_judicial_district']))
     district_entries = defaultdict(lambda:set())
     district_lists = defaultdict(lambda:[])
     vf_precincts = (
@@ -18,9 +18,12 @@ def main(state, remove = False):
             #('county_id',VOTER_FILE['columns']['county_id']-1),
             #('residential_city',VOTER_FILE['columns']['residential_city']-1),
             #('township', VOTER_FILE['columns']['township']-1),
+            ('ward',default_state_stuff.VOTER_FILE['columns']['ward']- 1 - shift),
             ('precinct_code',default_state_stuff.VOTER_FILE['columns']['precinct_code']-1 - shift),
             ('precinct_name',default_state_stuff.VOTER_FILE['columns']['precinct_name']-1 - shift))
     county_idx = default_state_stuff.VOTER_FILE['columns']['county_id']-1 - shift
+    sd_idx = default_state_stuff.VOTER_FILE['columns']['school_district']-1 - shift
+    jd_idx = default_state_stuff.VOTER_FILE['columns']['judicial_district']-1 - shift
     if not os.path.exists(state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION):
         pipe = subprocess.Popen(['unzip',state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION.replace('.txt','.zip'), '-d', os.path.split(os.path.abspath(state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION))[0]],stdin=subprocess.PIPE)
         pipe.wait()
@@ -62,6 +65,18 @@ def main(state, remove = False):
                 if not write_flag and precincts[precinct_code][k][ed] == 1:
                     precinct_ed.add(precinct_code + (k,ed))
                     write_flag=True
+            if state_conf.COUNTY_SCHOOL_DISTRICT and line[sd_idx] != '':
+                ed = line[county_idx]+ ' ' + line[sd_idx]
+                district_entries['county_school_district'].add(ed)
+                if not write_flag and precincts[precinct_code]['county_school_district'][ed] == 1:
+                    precinct_ed.add(precinct_code + ('county_school_district',ed))
+                    write_flag=True
+            if state_conf.COUNTY_JUDICIAL_DISTRICT and line[jd_idx] != '':
+                ed = line[county_idx]+ ' ' + line[jd_idx]
+                district_entries['county_judicial_district'].add(ed)
+                if not write_flag and precincts[precinct_code]['county_judicial_district'][ed] == 1:
+                    precinct_ed.add(precinct_code + ('county_judicial_district',ed))
+                    write_flag=True
                 #peds.append(precinct_code + (k,ed))
             #if len(precinct_ed.intersection(peds)) < len(peds):
             #    precinct_ed.update(peds)
@@ -100,7 +115,7 @@ def main(state, remove = False):
                 f.write('\n')
         for k,v in num_undet.iteritems():
             print "NUM PRECINCTS WITH UNDETERMINED {district}: {num}".format(district=k, num=v)
-        for k in vf_districts.keys():
+        for k in set(district_entries.keys()).union(set(vf_districts.keys())):
             v = district_entries[k]
             lv = list(v)
             lv.sort()

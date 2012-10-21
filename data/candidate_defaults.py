@@ -15,7 +15,7 @@ CONTEST_IMPORT.update({
         'office_level':3,
         'state':2,
         'office':5,
-        ('electoral_district_name', 'electoral_district_type','electoral_district_id_long'):{'function': ss.STATE_EDMAP, 'columns':(4,)},
+        ('electoral_district_name', 'electoral_district_type','electoral_district_id_long','ed_matched'):{'function': ss.STATE_EDMAP, 'columns':(4,)},
         }
     })
 

@@ -16,6 +16,8 @@ state_specific.VOTER_FILE_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{s
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
 state_specific.districts = imp.load_source('districts',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'districts.py'))
 state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
+state_specific.COUNTY_SCHOOL_DISTRICT = False
+state_specific.COUNTY_JUDICIAL_DISTRICT = False
 from data.state_specific import *
 from data import target_smart_defaults as tsd
 tsd = reload(tsd)

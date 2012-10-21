@@ -17,7 +17,7 @@ state_specific.HOME = '/home/gaertner/bip-data/data/voterfiles/{state}'.format(s
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
 state_specific.districts = imp.load_source('districts',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'districts.py'))
 state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
-state_specific.COUNTY_SCHOOL_DISTRICT = False
+state_specific.COUNTY_SCHOOL_DISTRICT = True
 state_specific.COUNTY_JUDICIAL_DISTRICT = False
 from data.state_specific import *
 from data import target_smart_defaults as tsd
@@ -26,13 +26,60 @@ from data import candidate_defaults as cd
 cd = reload(cd)
 #VOTER_FILE = tsd.VOTER_FILE
 VOTER_FILE_DISTRICTS = tsd.VOTER_FILE_DISTRICTS
+SCHOOL_DISTRICT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+SCHOOL_DISTRICT_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
+SCHOOL_DISTRICT_IMPORT['udcs'].update({'type':'school_district'})
+SCHOOL_DISTRICT_IMPORT.update({
+    'table':'electoral_district_schd_import',
+    'columns':{
+        'name':{'function':tsd.td.reformat.concat_us, 'columns':(22,33,)},
+        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(22,33,),'defaults':{'type':'school_district'}},
+        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(22,33,),'defaults':{'type':'school_district'}}
+        },
+    })
+
+SCHOOL_DISTRICT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+SCHOOL_DISTRICT_ACTUAL.update({
+    'schema_table':'electoral_district',
+    'import_table':SCHOOL_DISTRICT_IMPORT,
+    'long_fields':({'long':'id_long','real':'id'},),
+    'long_from':('id_long',),
+    'distinct_on':('id_long',),
+    })
+
+SCHOOL_DISTRICT__PRECINCT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+SCHOOL_DISTRICT__PRECINCT_IMPORT.update({
+    'table':'electoral_district__precinct_schd_import',
+    'filename':state_specific.VOTER_FILE_LOCATION,
+    'columns':{
+        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(22,33,),'defaults':{'type':'school_district'}},
+        'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(22,29,28)},
+        },
+    })
+
+SCHOOL_DISTRICT__PRECINCT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+SCHOOL_DISTRICT__PRECINCT_ACTUAL.update({
+    'schema_table':'electoral_district__precinct',
+    'import_table':SCHOOL_DISTRICT__PRECINCT_IMPORT,
+    'long_fields':({'long':'electoral_district_id_long','real':'electoral_district_id'},{'long':'precinct_id_long','real':'precinct_id'},),
+    'distinct_on':('precinct_id_long','electoral_district_id_long',),
+    'long_to':(
+        {
+            'to_table':'electoral_district_schd_import',
+            'local_key':'electoral_district_id_long',
+            'to_key':'id_long',
+            'real_to_key':'id',
+            },
+        ),
+    })
+
 ACTUAL_TABLES = (
         tsd.PRECINCT_ACTUAL,
         tsd.LOCALITY_ACTUAL,
         tsd.CONGRESSIONAL_DISTRICT_ACTUAL,
         tsd.STATE_REP_DISTRICT_ACTUAL,
         tsd.JUDICIAL_DISTRICT_ACTUAL,
-        tsd.SCHOOL_DISTRICT_ACTUAL, 
+        SCHOOL_DISTRICT_ACTUAL, 
         tsd.COUNTY_COUNCIL_ACTUAL,
         tsd.COUNTY_ACTUAL,
         tsd.STATE_ACTUAL,
@@ -40,7 +87,7 @@ ACTUAL_TABLES = (
         tsd.CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE_REP_DISTRICT__PRECINCT_ACTUAL,
         tsd.JUDICIAL_DISTRICT__PRECINCT_ACTUAL,
-        tsd.SCHOOL_DISTRICT__PRECINCT_ACTUAL,
+        SCHOOL_DISTRICT__PRECINCT_ACTUAL,
         tsd.COUNTY_COUNCIL__PRECINCT_ACTUAL,
         tsd.COUNTY__PRECINCT_ACTUAL,
         tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
@@ -67,7 +114,7 @@ ERSATZPG_CONFIG.update({
         'congressional_district':tsd.CONGRESSIONAL_DISTRICT_IMPORT,
         'state_rep_district':tsd.STATE_REP_DISTRICT_IMPORT,
         'judicial_district':tsd.JUDICIAL_DISTRICT_IMPORT,
-        'school_district':tsd.SCHOOL_DISTRICT_IMPORT,
+        'school_district':SCHOOL_DISTRICT_IMPORT,
         'county_council':tsd.COUNTY_COUNCIL_IMPORT,
         'county':tsd.COUNTY_IMPORT,
         'state':tsd.STATE_IMPORT,
@@ -76,7 +123,7 @@ ERSATZPG_CONFIG.update({
         'state_rep_district__precinct':tsd.STATE_REP_DISTRICT__PRECINCT_IMPORT,
         'state_senate_district__precinct':tsd.STATE_SENATE_DISTRICT__PRECINCT_IMPORT,
         'judicial_district__precinct':tsd.JUDICIAL_DISTRICT__PRECINCT_IMPORT,
-        'school_district__precinct':tsd.SCHOOL_DISTRICT__PRECINCT_IMPORT,
+        'school_district__precinct':SCHOOL_DISTRICT__PRECINCT_IMPORT,
         'county_council__precinct':tsd.COUNTY_COUNCIL__PRECINCT_IMPORT,
         'county__precinct':tsd.COUNTY__PRECINCT_IMPORT,
         'state__precinct':tsd.STATE__PRECINCT_IMPORT,

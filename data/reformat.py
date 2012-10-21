@@ -63,5 +63,5 @@ def get_edmap(map_location):
             pass
         t = ed_map[electoral_district]
         print t
-        return t['name'],t['type'], '{name}_{type}'.format(**t)
+        return t['name'],t['type'], ed_concat(t['name'],t['type'])[0], ed_map.has_key(electoral_district)
     return edmap

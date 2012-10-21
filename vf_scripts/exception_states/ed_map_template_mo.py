@@ -61,7 +61,7 @@ def county_name_clean(county):
 
 mo_exceptions = passdict({'de kalb':'dekalb'})
 for county in county_id:
-    old_county = county_name_clean(county)
+    old_county = county
     county = mo_exceptions[county_name_clean(county)]
     ed_map.update({'{name} County'.format(name=county).lower():{'name':old_county,'type':'county'}})
     if county.endswith('city'):
@@ -84,9 +84,11 @@ for county in county_council:
     if county_possibles == []:
         continue
     county_name = max(county_possibles, key=len)
+    old_county = county
     county = county_name_clean(county)
     old_county_name = county_name_clean(county_name)
     county_name = mo_exceptions[county_name_clean(county_name)]
+    old_district_stuff = old_county.replace(old_county_name,'').strip()
     district_stuff = county.replace(county_name,'').strip()
     m = re.match(r'\D*(?P<district_number>[0-9]+)\D*',county)
     if not m:
@@ -96,13 +98,13 @@ for county in county_council:
             m = None
     for f in fillers:
         if m and  m.groupdict()['district_number']:
-            county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=county_name, district_number=clean_county_number(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=district_stuff),'type':'county_council'}))
+            county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=county_name, district_number=clean_county_number(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'county_council'}))
         elif district_stuff.endswith('LRG'):
-            county_council_dicts.append(('{county_name} {filler}'.format(filler=f,county_name=county_name).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=district_stuff),'type':'county_council'}))
+            county_council_dicts.append(('{county_name} {filler}'.format(filler=f,county_name=county_name).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'county_council'}))
         elif re.match(r'\w+\s\w',county):
-            county_council_dicts.append(('{county_name} {filler} {district_letters}'.format(filler=f,county_name=county_name, district_letters=district_stuff.split(' ')[-1]).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=district_stuff),'type':'county_council'}))
+            county_council_dicts.append(('{county_name} {filler} {district_letters}'.format(filler=f,county_name=county_name, district_letters=district_stuff.split(' ')[-1]).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'county_council'}))
         else:
-            county_council_dicts.append(('{county_name} {filler} {district_letters}'.format(filler=f,county_name=county_name, district_letters=district_stuff).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=district_stuff),'type':'county_council'}))
+            county_council_dicts.append(('{county_name} {filler} {district_letters}'.format(filler=f,county_name=county_name, district_letters=district_stuff).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'county_council'}))
 
 
 ed_map.update(dict(county_council_dicts))

@@ -72,7 +72,7 @@ def clean_county_number(district_number):
         return int(district_number)
     except:
         return roman_map[district_number]
-special_ia_bs = {'adair 1':{'cn':'adair','n':'1nw'},'adair 3':{'cn':'adair','n':'3sw'},'adair 5g':{'cn':'adair','n': '5gf'}}
+special_ia_bs = {'adair_1':{'cn':'adair','n':'1nw'},'adair_3':{'cn':'adair','n':'3sw'},'adair_5g':{'cn':'adair','n': '5gf'}}
 for county in county_council:
     county_possibles = []
     for c in county_id:

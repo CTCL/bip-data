@@ -111,21 +111,28 @@ for state in state_ins:
             csvr.next()
             district_entries = defaultdict(lambda:set())
             vf_districts = dict([(k,v-1) for k,v in default_state_stuff.VOTER_FILE['columns'].iteritems() if k in state_conf.VOTER_FILE_DISTRICTS])
+            county_idx = default_state_stuff.VOTER_FILE['columns']['county_id']-1
+            sd_idx = default_state_stuff.VOTER_FILE['columns']['school_district']-1
+            jd_idx = default_state_stuff.VOTER_FILE['columns']['judicial_district']-1
             for line in csvr:
                 for k,v in vf_districts.iteritems():
                     if line[v] == '':
                         continue
                     if k == 'county_council':
-                        county_id = line[default_state_stuff.VOTER_FILE['columns']['county_id']-1]
+                        county_id = line[county_idx]
                         if line[v].startswith(county_id):
                             ed = line[v]
                         else:
-                            ed = line[default_state_stuff.VOTER_FILE['columns']['county_id']-1] + ' ' + line[v]
+                            ed = line[county_idx] + ' ' + line[v]
                         district_entries[k].add(ed)
                     else:
                         ed = line[v]
                         district_entries[k].add(line[v])
-            for k in vf_districts.keys():
+                if state_conf.COUNTY_SCHOOL_DISTRICT and line[sd_idx] != '':
+                    district_entries['county_school_district'].add(line[county_idx]+ ' ' + line[sd_idx])
+                if state_conf.COUNTY_JUDICIAL_DISTRICT and line[jd_idx] != '':
+                    district_entries['county_judicial_district'].add(line[county_idx]+ ' ' + line[jd_idx])
+            for k in set(district_entries.keys()).union(set(vf_districts.keys())):
                 v = district_entries[k]
                 lv = list(v)
                 lv.sort()

@@ -47,6 +47,7 @@ CREATE TABLE "contest" (
 "election_key" int4,
 "state" varchar(5),
 "identifier" text,
+"ed_matched" bool,
 PRIMARY KEY ("id") 
 );
 
