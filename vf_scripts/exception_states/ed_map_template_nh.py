@@ -4,7 +4,7 @@ import data.state_specific as ss
 from data.reformat import _saintrep
 ss = reload(ss)
 districts = ss.districts
-township_to_district = ss.ttod
+#township_to_district = ss.ttod
 from collections import defaultdict
 d_dict = defaultdict(lambda:[],districts.__dict__)
 judicial_district = d_dict['judicial_district']
@@ -12,7 +12,7 @@ county_council = d_dict['county_council']
 congressional_district = d_dict['congressional_district']
 state_senate_district = d_dict['state_senate_district']
 state_representative_district = d_dict['state_representative_district']
-state_representative_district += (list(set(township_to_district.t_d.values())))
+#state_representative_district += (list(set(township_to_district.t_d.values())))
 school_district = d_dict['school_district']
 county_id = d_dict['county_id']
 township = d_dict['township']

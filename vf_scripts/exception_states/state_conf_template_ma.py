@@ -16,9 +16,9 @@ state_specific.VOTER_FILE_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{s
 state_specific.HOME = '/home/gaertner/bip-data/data/voterfiles/{state}'.format(state=state_specific.STATE.lower())
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
 state_specific.districts = imp.load_source('districts',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'districts.py'))
-state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
 state_specific.COUNTY_SCHOOL_DISTRICT = False
 state_specific.COUNTY_JUDICIAL_DISTRICT = False
+state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
 old_ed_map = state_specific.STATE_EDMAP
 sdpat = re.compile(r'^(?:MA State Senate )(?P<names>.+)(?: District)$')
 hdpat = re.compile(r'^(?:MA State House )(?P<names>.+)(?: District)$')
@@ -48,7 +48,7 @@ VOTER_FILE_DISTRICTS = (
 'school_district',
 'judicial_district',
 'congressional_district',
-'state_representative_district',
+'state_rep_district',
 'state_senate_district',
 'township',
 #'ward'

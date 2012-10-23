@@ -83,7 +83,7 @@ VOTER_FILE.update({
             'congressional_district':23,
             'precinct_name':29,
             'precinct_code':28,
-            'state_representative_district':25,
+            'state_rep_district':25,
             'state_senate_district':24,
             'township':26,
             #'village':44,

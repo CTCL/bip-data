@@ -17,9 +17,9 @@ state_specific.HOME = '/home/gaertner/bip-data/data/voterfiles/{state}'.format(s
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
 state_specific.districts = imp.load_source('districts',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'districts.py'))
 state_specific.ttod = imp.load_source('township_to_district',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'township_to_district.py'))
-state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
 state_specific.COUNTY_SCHOOL_DISTRICT = False
 state_specific.COUNTY_JUDICIAL_DISTRICT = False
+state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
 from data.state_specific import *
 from data import target_smart_defaults as tsd
 tsd = reload(tsd)
@@ -35,7 +35,7 @@ VOTER_FILE_DISTRICTS = (
 'school_district',
 'judicial_district',
 'congressional_district',
-'state_representative_district',
+'state_rep_district',
 'state_senate_district',
 'township',
 #'ward'
@@ -90,15 +90,15 @@ TOWNSHIP__PRECINCT_ACTUAL.update({
 
 SPECIAL_STATE_REP_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
 SPECIAL_STATE_REP_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
-SPECIAL_STATE_REP_IMPORT['udcs'].update({'type':'state_representative_district'})
+SPECIAL_STATE_REP_IMPORT['udcs'].update({'type':'state_rep_district'})
 SPECIAL_STATE_REP_IMPORT.update({
     'filename':os.path.join(state_specific.HOME,'voterbase_to_special_district_compressed.csv'),
     'field_sep':',',
     'table':'electoral_district_ssr_import',
     'columns':{
         'name':1,
-        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_representative_district'}},
-        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_representative_district'}}
+        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_rep_district'}},
+        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_rep_district'}}
         },
     })
 
@@ -117,7 +117,7 @@ SPECIAL_STATE_REP__PRECINCT_IMPORT.update({
     'filename':os.path.join(state_specific.HOME,'voterbase_to_special_district_compressed.csv'),
     'field_sep':',',
     'columns':{
-        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_representative_district'}},
+        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(1,),'defaults':{'type':'state_rep_district'}},
         'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(3,5,4)},
         },
     })

@@ -18,7 +18,7 @@ def main(state, remove = False):
             #('county_id',VOTER_FILE['columns']['county_id']-1),
             #('residential_city',VOTER_FILE['columns']['residential_city']-1),
             #('township', VOTER_FILE['columns']['township']-1),
-            ('ward',default_state_stuff.VOTER_FILE['columns']['ward']- 1 - shift),
+            #('ward',default_state_stuff.VOTER_FILE['columns']['ward']- 1 - shift),
             ('precinct_code',default_state_stuff.VOTER_FILE['columns']['precinct_code']-1 - shift),
             ('precinct_name',default_state_stuff.VOTER_FILE['columns']['precinct_name']-1 - shift))
     county_idx = default_state_stuff.VOTER_FILE['columns']['county_id']-1 - shift

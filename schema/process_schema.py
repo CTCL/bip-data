@@ -62,9 +62,9 @@ class table:
         return 'ALTER TABLE {table_name}_{state}_{election} ADD PRIMARY KEY ({pk});', {'table_name':self.name, 'state':state,'election':election, 'pk':','.join(self.primary_keys[0])}
 
 #NOTE ONLY HANDLES SINGLE FIELD FKS RIGHT NOW
-    def rekey_imports(self, actual_table, rekey_table_dict, **split_keys):
+    def rekey_imports(self, actual_table, rekey_table_dict, key_order, **split_keys):
         long_field_dict = dict([(a['long'],a['real']) for a in actual_table['long_fields']])
-        sql = 'INSERT INTO {name}'.format(name=self.name) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_keys).format(**split_keys)
+        sql = 'INSERT INTO {name}'.format(name=self.name) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in key_order).format(**split_keys)
         sql += '(' + ','.join([f.name for f in self.fields.values() if not f.name in long_field_dict.values()] + [long_field_dict[a['local_key']] for a in actual_table['long_to']] + [long_field_dict[a] for a in actual_table['long_from']]) +')'
         sql += ' SELECT ' + ','.join(['fromtable.{name}'.format(name=f.name) for f in self.fields.values() if not f.name in long_field_dict.values()] + ['totable{i}.{to_key} as {from_key}'.format(i=i, to_key=actual_table['long_to'][i]['real_to_key'], from_key=long_field_dict[actual_table['long_to'][i]['local_key']]) for i in range(len(actual_table['long_to']))] + ['fromtable.{name}'.format(name=long_field_dict[a]) for a in actual_table['long_from']])
         sql += ' from {rekey_table_name}'.format(rekey_table_name=actual_table['rekey_table_name'] if actual_table.has_key('rekey_table_name') else actual_table['import_table']['table']) + ' as fromtable '

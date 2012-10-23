@@ -141,7 +141,7 @@ SCHOOL_DISTRICT_ACTUAL.update({
 
 STATE_REP_DISTRICT_IMPORT = dict(td.DEFAULT_VF_TABLE)
 STATE_REP_DISTRICT_IMPORT['udcs'] = dict(td.DEFAULT_VF_TABLE['udcs'])
-STATE_REP_DISTRICT_IMPORT['udcs'].update({'type':'state_representative_district'})
+STATE_REP_DISTRICT_IMPORT['udcs'].update({'type':'state_rep_district'})
 STATE_REP_DISTRICT_IMPORT.update({
     'table':'electoral_district_srd_import',
     'columns':{
@@ -521,7 +521,7 @@ VOTER_FILE.update({
             'congressional_district':23,
             'precinct_name':29,
             'precinct_code':28,
-            'state_representative_district':25,
+            'state_rep_district':25,
             'state_senate_district':24,
             'township':26,
             #'village':44,
@@ -568,7 +568,7 @@ VOTER_FILE_DISTRICTS = (
 'school_district',
 'judicial_district',
 'congressional_district',
-'state_representative_district',
+'state_rep_district',
 'state_senate_district',
 #'township',
 #'ward'

@@ -38,7 +38,7 @@ CONTEST_ACTUAL.update({
 
 BALLOT_CONTEST_IMPORT = dict(td.DEFAULT_CANDIDATE_TABLE)
 BALLOT_CONTEST_IMPORT['udcs'] = dict(td.DEFAULT_CANDIDATE_TABLE['udcs'])
-BALLOT_CONTEST_IMPORT['udcs'].update({'contest_type':'referendum','electoral_district_type':'state','office':'statewide referendum','office_level':'Statewide','source':'referenda'})
+BALLOT_CONTEST_IMPORT['udcs'].update({'contest_type':'referendum','electoral_district_type':'state','office':'statewide referendum','office_level':'Statewide','source':'referenda','ed_matched':'True'})
 BALLOT_CONTEST_IMPORT.update({
     'sources':td.CANDIDATE_SOURCE_POSSIBLES + td.REFERENDUM_SOURCE_POSSIBLES,
     'filename':ss.REFERENDUM_FILE_LOCATION,
@@ -103,6 +103,7 @@ BALLOT_RESPONSE_ONE_IMPORT.update({
     'table':'ballot_response_one_import',
     'columns':{
         'referendum_id_long':{'function':td.reformat.referendum_id,'columns':(2,3)},
+        'identifier':{'function':td.reformat.concat_us,'columns':(2,3,7)},
         'text':7,
         }
     })
@@ -127,6 +128,7 @@ BALLOT_RESPONSE_TWO_IMPORT.update({
     'table':'ballot_response_two_import',
     'columns':{
         'referendum_id_long':{'function':td.reformat.referendum_id,'columns':(2,3)},
+        'identifier':{'function':td.reformat.concat_us,'columns':(2,3,8)},
         'text':8,
         }
     })

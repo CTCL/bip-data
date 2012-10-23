@@ -1,6 +1,7 @@
 import re
 named_zip = re.compile(r'(?P<trash>[A-Z]*)(?P<zip>\d{5})-?(?P<zip4>\d{4})?')
 x=0
+debug = False
 def address_seq():
     global x
     x+=1
@@ -63,5 +64,7 @@ def get_edmap(map_location):
             pass
         t = ed_map[electoral_district]
         print t
+        if debug and not ed_map.has_key(electoral_district):
+            import pdb;pdb.set_trace()
         return t['name'],t['type'], ed_concat(t['name'],t['type'])[0], ed_map.has_key(electoral_district)
     return edmap

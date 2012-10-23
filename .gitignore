@@ -4,6 +4,7 @@ _compiled*
 data/voterfiles
 data/ams
 data/vf_scripts
+data/passwords.py
 z4*
 data/vipfeeds
 precincts*

@@ -100,7 +100,7 @@ def rekey_imports(actual_tables, unions, table_dict, connection, split_names, sp
                 print clear_sql
                 connection.cursor().execute(clear_sql)
                 cleared_tables.add(table['schema_table'])
-            sql = table_dict[table['schema_table']].rekey_imports(table, rekey_table_dict, **split_keys)
+            sql = table_dict[table['schema_table']].rekey_imports(table, rekey_table_dict, split_names, **split_keys)
             print sql
             connection.cursor().execute(sql)
         else:
