@@ -4,6 +4,7 @@ ss = reload(ss)
 from data import table_defaults as td
 td = reload(td)
 import os
+VFMAX=34
 VIP_TABLES = {
         'election_administration':None,
         'election_official':None,

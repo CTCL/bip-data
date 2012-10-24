@@ -2,6 +2,7 @@ import re
 import csv
 import data.state_specific as ss
 from data.reformat import _saintrep
+from data.passdict import passdict
 ss = reload(ss)
 districts = ss.districts 
 from collections import defaultdict
@@ -10,11 +11,12 @@ judicial_district = d_dict['judicial_district']
 county_council = d_dict['county_council']
 congressional_district = d_dict['congressional_district']
 state_senate_district = d_dict['state_senate_district']
-state_representative_district = d_dict['state_representative_district']
+state_representative_district = d_dict['state_rep_district']
 school_district = d_dict['school_district']
 county_id = d_dict['county_id']
 township = d_dict['township']
 state = districts.state
+state_senate_dict = passdict({'chittenden-grand isle':'grand isle'})
 
 intpat = re.compile(r'^(?P<number>\d+)(?P<extra>\D*)$')
 jdpat = re.compile(r'^(?:JD)?(?P<number>\d+)(?P<extra>\D*)$')
@@ -31,6 +33,8 @@ ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})
 
 ed_map.update(dict([('{state} Congressional District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
 ed_map.update(dict([('{state} State Senate District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
+ed_map.update(dict([('{state} State Senate {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
+ed_map.update(dict([('{state} State Senate {number}'.format(state=state[0], number=state_senate_dict[n.lower()]).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
 ed_map.update(dict([('{state} State House District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
 ed_map.update(dict([('{state} State House of Representatives - District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
 ed_map.update(dict([('{state} State Representative District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))

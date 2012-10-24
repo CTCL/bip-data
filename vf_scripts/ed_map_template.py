@@ -10,7 +10,7 @@ judicial_district = d_dict['judicial_district']
 county_council = d_dict['county_council']
 congressional_district = d_dict['congressional_district']
 state_senate_district = d_dict['state_senate_district']
-state_representative_district = d_dict['state_representative_district']
+state_representative_district = d_dict['state_rep_district']
 school_district = d_dict['school_district']
 county_school_district = d_dict['county_school_district']
 county_id = d_dict['county_id']
@@ -72,7 +72,7 @@ def clean_county_number(district_number):
         return int(district_number)
     except:
         return roman_map[district_number]
-sd_fillers = ('county school board district','county school board','school board district', 'school board' 'county school board precinct','school board precinct','school district','school precinct','county - school board district','county - school board', 'county board of education','board of education','county board of education district','board of education district','county - board of education district')
+sd_fillers = ('county school board district','county school board','school board district', 'school board' 'county school board precinct','school board precinct','school district','county school district','school precinct','county - school board district','county - school board', 'county board of education','board of education','county board of education district','board of education district','county - board of education district')
 sd_dicts = []
 if ss.COUNTY_SCHOOL_DISTRICT:
     for sd in county_school_district:
@@ -92,6 +92,8 @@ if ss.COUNTY_SCHOOL_DISTRICT:
         if re.match(r'^\d+$', district_stuff):
             for f in sd_fillers:
                 sd_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=county_name, district_number=clean_county_number(district_stuff)).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'school_district'}))
+        elif district_stuff.endswith('LRG'):
+            sd_dicts.append(('{county_name} {filler}'.format(filler=f,county_name=county_name).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'school_district'}))
 for sd in school_district:
     if re.match(r'^\d+$', sd):
         for f in sd_fillers:

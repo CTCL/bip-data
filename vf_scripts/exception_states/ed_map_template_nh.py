@@ -11,11 +11,12 @@ judicial_district = d_dict['judicial_district']
 county_council = d_dict['county_council']
 congressional_district = d_dict['congressional_district']
 state_senate_district = d_dict['state_senate_district']
-state_representative_district = d_dict['state_representative_district']
+state_representative_district = d_dict['state_rep_district']
 #state_representative_district += (list(set(township_to_district.t_d.values())))
 school_district = d_dict['school_district']
 county_id = d_dict['county_id']
 township = d_dict['township']
+floaterial = d_dict['special_1_state_rep_district']
 state = districts.state
 
 intpat = re.compile(r'^(?P<number>\d+)(?P<extra>\D?)$')
@@ -28,13 +29,18 @@ def numberclean(n):
     else:
         return n
 sr_abbr_dict = dict((cid[:2],cid) for cid in county_id)
-srpat = re.compile(r'^(?P<name>\D+)(?P<number>\d+)$')
+srpat = re.compile(r'^(?P<name>[A-Za-z ]+)-?(?P<number>\d+)(?:\D*)$')
 def staterepclean(n):
     m = srpat.match(n)
-    if sr_abbr_dict.has_key(m.groupdict()['name']):
-        name = sr_abbr_dict[m.groupdict()['name']]
-    else:
-        name = m.groupdict()['name'].strip()
+    matched_counties = []
+    for cid in county_id:
+        if cid.startswith(m.groupdict()['name']):
+            matched_counties.append(cid)
+    name = max(matched_counties, key=len)
+    #if sr_abbr_dict.has_key(m.groupdict()['name']):
+        #name = sr_abbr_dict[m.groupdict()['name']]
+    #else:
+        #name = m.groupdict()['name'].strip()
     number = int(m.groupdict()['number'])
     return {'name':name,'number':number}
 
@@ -42,6 +48,7 @@ ed_map = {}
 ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})
 
 
+ed_map.update(dict([('{state} State House -{name} district {number}'.format(state=state[0], **staterepclean(n)).lower(),{'name':n,'type':'special_1_state_rep_district'}) for n in floaterial]))
 ed_map.update(dict([('{state} State House -{name} district {number}'.format(state=state[0], **staterepclean(n)).lower(),{'name':n,'type':'state_rep_district'}) for n in state_representative_district]))
 
 ed_map.update(dict([('{state} Congressional District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))

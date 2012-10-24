@@ -4,13 +4,12 @@ from collections import defaultdict
 def main(state, remove = False):
     minim = 20
     maxim = 34
-    shift = minim - 1
+    shift = minim - 2
     default_state_stuff = os.path.join(*['data','default_state_stuff.py'])
     default_state_stuff = imp.load_source('default_state_stuff', default_state_stuff)
     state_conf = os.path.join(*['data','voterfiles',state,'state_conf.py'])
     state_conf = imp.load_source('state_conf', state_conf)
     vf_districts = dict([(k,v-1 - shift) for k,v in default_state_stuff.VOTER_FILE['columns'].iteritems() if k in state_conf.VOTER_FILE_DISTRICTS])
-    precincts = defaultdict(lambda:dict((k,defaultdict(lambda:0)) for k in vf_districts.keys() + ['county_school_district','county_judicial_district']))
     district_entries = defaultdict(lambda:set())
     district_lists = defaultdict(lambda:[])
     vf_precincts = (
@@ -28,7 +27,7 @@ def main(state, remove = False):
         pipe = subprocess.Popen(['unzip',state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION.replace('.txt','.zip'), '-d', os.path.split(os.path.abspath(state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION))[0]],stdin=subprocess.PIPE)
         pipe.wait()
     t = time.time()
-    pipe = subprocess.Popen(['cut','-f','{min}-{max}'.format(min=minim,max=maxim),state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION],stdout=subprocess.PIPE)
+    pipe = subprocess.Popen(['cut','-f','1,{min}-{max}'.format(min=minim,max=maxim),state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION],stdout=subprocess.PIPE)
     cut_location = state_conf.UNCOMPRESSED_VOTER_FILE_LOCATION.replace('.txt','.cut')
     with open(cut_location,'w') as f:
         f.writelines(pipe.stdout)
@@ -37,7 +36,19 @@ def main(state, remove = False):
     with open(cut_location,'r') as f, open(os.path.join(*[state_conf.VOTER_FILE_LOCATION]),'w') as g:
         csvr = csv.reader(f, delimiter=default_state_stuff.VOTER_FILE['field_sep'])
         csvw = csv.writer(g, delimiter=default_state_stuff.VOTER_FILE['field_sep'])
-        csvw.writerow(csvr.next())
+        extra_district_dicts = []
+        extra_district_names = []
+        if state_conf.__dict__.has_key('EXTRA_DISTRICTS'):
+            for k,v in state_conf.EXTRA_DISTRICTS.iteritems():
+                extra_district_names.append(k)
+                edfile = os.path.join('data','voterfiles',v['filename'])
+                edcsv = csv.reader(open(edfile),delimiter='\t')
+                edcsv.next()
+                extra_district_dicts.append(dict((l[0],l[v['column']-1]) for l in edcsv))
+        precincts = defaultdict(lambda:dict((k,defaultdict(lambda:0)) for k in vf_districts.keys() + ['county_school_district','county_judicial_district'] + extra_district_names))
+        header = csvr.next() + extra_district_names
+        header.pop(0)
+        csvw.writerow(header)
         x = 1
         t = time.time()
         time1 = 0
@@ -65,6 +76,27 @@ def main(state, remove = False):
                 if not write_flag and precincts[precinct_code][k][ed] == 1:
                     precinct_ed.add(precinct_code + (k,ed))
                     write_flag=True
+            if state_conf.__dict__.has_key('EXTRA_DISTRICTS'):
+                for edd,ed_name,edd_settings in zip(extra_district_dicts,state_conf.EXTRA_DISTRICTS.keys(),state_conf.EXTRA_DISTRICTS.values()):
+                    if not edd.has_key(line[0]):
+                        line.append('')
+                        continue
+                    val = edd[line[0]]
+                    if val == '':
+                        line.append('')
+                        continue
+                    pre_list = []
+                    for pre in edd_settings['prepend']:
+                        pre_idx = default_state_stuff.VOTER_FILE['columns'][pre]-1 - shift
+                        pre_list.append(line[pre_idx])
+                    pre_list.append(val)
+                    ed = '_'.join(pre_list)
+                    district_entries[ed_name].add(ed)
+                    precincts[precinct_code][ed_name][ed] += 1
+                    line.append(ed)
+                    if not write_flag and precincts[precinct_code][ed_name][ed] == 1:
+                        precinct_ed.add(precinct_code + (ed_name,ed))
+                        write_flag=True
             if state_conf.COUNTY_SCHOOL_DISTRICT and line[sd_idx] != '':
                 ed = line[county_idx]+ ' ' + line[sd_idx]
                 district_entries['county_school_district'].add(ed)
@@ -82,6 +114,7 @@ def main(state, remove = False):
             #    precinct_ed.update(peds)
             #    csvw.writerow(line)
             if write_flag:
+                line.pop(0)
                 csvw.writerow(line)
             if x % 100000 == 0:
                 print "{state}, {count}, {time}".format(state=state,count=x, time=time.time() - t)

@@ -17,7 +17,6 @@ state_specific.VOTER_FILE_LOCATION = '/home/gaertner/bip-data/data/voterfiles/{s
 state_specific.HOME = '/home/gaertner/bip-data/data/voterfiles/{state}'.format(state=state_specific.STATE.lower())
 state_specific.VOTER_FILE_SCHEMA = '/home/gaertner/bip-data/schema/ts_voter_file.sql'
 state_specific.districts = imp.load_source('districts',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'districts.py'))
-state_specific.ttod = imp.load_source('township_to_district',os.path.join('data','voterfiles',state_specific.STATE.lower(), 'township_to_district.py'))
 state_specific.COUNTY_SCHOOL_DISTRICT = False
 state_specific.COUNTY_JUDICIAL_DISTRICT = False
 state_specific.STATE_EDMAP = univ_settings.table_functions.get_edmap(state_specific.ED_MAP_LOCATION)
@@ -27,92 +26,32 @@ tsd = reload(tsd)
 from data import candidate_defaults as cd
 cd = reload(cd)
 #VOTER_FILE = tsd.VOTER_FILE
-VOTER_FILE_DISTRICTS = (
-'state',
-'county_id',
-'county_council',
-#'city_council',
-#'municipal_district',
-'school_district',
-'judicial_district',
-'congressional_district',
-'state_rep_district',
-'state_senate_district',
-'township',
-#'ward'
-)
+VOTER_FILE_DISTRICTS = tsd.VOTER_FILE_DISTRICTS
 
-FLOATERIAL_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
-FLOATERIAL_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
-FLOATERIAL_IMPORT['udcs'].update({'source':'NHVF','type':'special_1_state_rep_district'})
-FLOATERIAL_IMPORT.update({
+EDUCATION_COMMISSION_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+EDUCATION_COMMISSION_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
+EDUCATION_COMMISSION_IMPORT['udcs'].update({'source':'NMVF','type':'special_1_school_district'})
+EDUCATION_COMMISSION_IMPORT.update({
     'table':'electoral_district_special_1_import',
     'columns':{
         'name':tsd.VFMAX + 1,
-        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(tsd.VFMAX+1,),'defaults':{'type':'special_1_state_rep_district'}},
-        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(tsd.VFMAX+1,),'defaults':{'type':'special_1_state_rep_district'}}
+        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(tsd.VFMAX+1,),'defaults':{'type':'special_1_school_district'}},
+        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(tsd.VFMAX+1,),'defaults':{'type':'special_1_school_district'}}
         },
     })
 
-FLOATERIAL_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
-FLOATERIAL_ACTUAL.update({
+EDUCATION_COMMISSION_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+EDUCATION_COMMISSION_ACTUAL.update({
     'schema_table':'electoral_district',
-    'import_table':FLOATERIAL_IMPORT,
+    'import_table':EDUCATION_COMMISSION_IMPORT,
     'long_fields':({'long':'id_long','real':'id'},),
     'long_from':('id_long',),
     'distinct_on':('id_long',),
     })
 
 EXTRA_DISTRICTS = OrderedDict({
-        'special_1_state_rep_district':{'filename':'20121022_NH_Floaterial.txt','column':2,'prepend':()},
+        'special_1_school_district':{'filename':'20121022_NM_EducationCommission.txt','column':2,'prepend':()},
         })
-
-TOWNSHIP_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
-TOWNSHIP_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
-TOWNSHIP_IMPORT['udcs'].update({'type':'township'})
-TOWNSHIP_IMPORT.update({
-    'table':'electoral_district_t_import',
-    'columns':{
-        'name':26,
-        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'township'}},
-        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'township'}}
-        },
-    })
-
-TOWNSHIP_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
-TOWNSHIP_ACTUAL.update({
-    'schema_table':'electoral_district',
-    'import_table':TOWNSHIP_IMPORT,
-    'long_fields':({'long':'id_long','real':'id'},),
-    'long_from':('id_long',),
-    'distinct_on':('id_long',),
-    })
-
-TOWNSHIP__PRECINCT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
-TOWNSHIP__PRECINCT_IMPORT.update({
-    'table':'electoral_district__precinct_t_import',
-    'filename':state_specific.VOTER_FILE_LOCATION,
-    'columns':{
-        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(26,),'defaults':{'type':'township'}},
-        'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(22,29,28)},
-        },
-    })
-
-TOWNSHIP__PRECINCT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
-TOWNSHIP__PRECINCT_ACTUAL.update({
-    'schema_table':'electoral_district__precinct',
-    'import_table':TOWNSHIP__PRECINCT_IMPORT,
-    'long_fields':({'long':'electoral_district_id_long','real':'electoral_district_id'},{'long':'precinct_id_long','real':'precinct_id'},),
-    'distinct_on':('precinct_id_long','electoral_district_id_long',),
-    'long_to':(
-        {
-            'to_table':'electoral_district_t_import',
-            'local_key':'electoral_district_id_long',
-            'to_key':'id_long',
-            'real_to_key':'id',
-            },
-        ),
-    })
 
 ACTUAL_TABLES = (
         tsd.PRECINCT_ACTUAL,
@@ -124,9 +63,8 @@ ACTUAL_TABLES = (
         tsd.COUNTY_COUNCIL_ACTUAL,
         tsd.COUNTY_ACTUAL,
         tsd.STATE_ACTUAL,
-        TOWNSHIP_ACTUAL,
-        FLOATERIAL_ACTUAL,
         tsd.STATE_SENATE_DISTRICT_ACTUAL,
+        EDUCATION_COMMISSION_ACTUAL,
         tsd.CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE_REP_DISTRICT__PRECINCT_ACTUAL,
         tsd.JUDICIAL_DISTRICT__PRECINCT_ACTUAL,
@@ -135,7 +73,6 @@ ACTUAL_TABLES = (
         tsd.COUNTY__PRECINCT_ACTUAL,
         tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE__PRECINCT_ACTUAL,
-        TOWNSHIP__PRECINCT_ACTUAL,
         cd.CANDIDATE_ACTUAL,
         cd.CONTEST_ACTUAL,
         cd.CANDIDATE_IN_CONTEST_ACTUAL,
@@ -156,7 +93,6 @@ ELECTORAL_DISTRICT_UNION = {
             'electoral_district_cc_import',
             'electoral_district_c_import',
             'electoral_district_s_import',
-            'electoral_district_t_import',
             'electoral_district_special_1_import',
             )
         }
@@ -177,9 +113,8 @@ ERSATZPG_CONFIG.update({
         'county_council':tsd.COUNTY_COUNCIL_IMPORT,
         'county':tsd.COUNTY_IMPORT,
         'state':tsd.STATE_IMPORT,
-        'township':TOWNSHIP_IMPORT,
-        'floaterial':FLOATERIAL_IMPORT,
         'state_senate_district':tsd.STATE_SENATE_DISTRICT_IMPORT,
+        'special_1_school_district':EDUCATION_COMMISSION_IMPORT,
         'congressional_district__precinct':tsd.CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT,
         'state_rep_district__precinct':tsd.STATE_REP_DISTRICT__PRECINCT_IMPORT,
         'state_senate_district__precinct':tsd.STATE_SENATE_DISTRICT__PRECINCT_IMPORT,
@@ -188,7 +123,6 @@ ERSATZPG_CONFIG.update({
         'county_council__precinct':tsd.COUNTY_COUNCIL__PRECINCT_IMPORT,
         'county__precinct':tsd.COUNTY__PRECINCT_IMPORT,
         'state__precinct':tsd.STATE__PRECINCT_IMPORT,
-        'township__precinct':TOWNSHIP__PRECINCT_IMPORT,
         'candidate':cd.CANDIDATE_IMPORT,
         'contest':cd.CONTEST_IMPORT,
         'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,
@@ -199,6 +133,6 @@ ERSATZPG_CONFIG.update({
             #'locality':1,
             },
         'parallel_load':(
-            {'tables':('precinct','locality','congressional_district','state_rep_district','state_senate_district','judicial_district','school_district','county_council','county','state','township','congressional_district__precinct','state_rep_district__precinct','state_senate_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct','township__precinct','floaterial'),'keys':{}},
+            {'tables':('precinct','locality','congressional_district','state_rep_district','state_senate_district','judicial_district','school_district','county_council','county','state','congressional_district__precinct','state_rep_district__precinct','state_senate_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct','special_1_school_district'),'keys':{}},
             )
         })
