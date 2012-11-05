@@ -66,7 +66,7 @@ CREATE TABLE "candidate" (
 "incumbent" bool,
 "google_plus_url" varchar(255),
 "twitter_name" varchar(255),
-"facebook_url" varchar(255),
+"facebook_url" text,
 "wiki_word" varchar(255),
 "youtube" text,
 "election_key" int4,

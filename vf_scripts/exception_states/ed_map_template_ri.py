@@ -14,11 +14,13 @@ state_representative_district = d_dict['state_rep_district']
 school_district = d_dict['school_district']
 county_id = d_dict['county_id']
 township = d_dict['township']
+ward = d_dict['ward']
 state = districts.state
 
 intpat = re.compile(r'^(?P<number>\d+)(?P<extra>\D*)$')
 jdpat = re.compile(r'^(?:JD)?(?P<number>\d+)(?P<extra>\D*)$')
 sdpat = re.compile(r'^(?:S[DS])?(?P<number>\d+)$')
+wardpat = re.compile(r'^(?P<township>[A-Za-z ]+)\s+(?P<number>\d+)$')
 def numberclean(n):
     m = intpat.match(n)
     if m:
@@ -28,6 +30,10 @@ def numberclean(n):
 
 ed_map = {}
 ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})
+
+
+ed_map.update(dict(('{township} (muni) district {number}'.format(township=wardpat.match(w).groupdict()['township'], number=numberclean(wardpat.match(w).groupdict()['number'])).lower(),{'name':w,'type':'ward'}) for w in ward))
+ed_map.update(dict(('{township} (muni)'.format(township=t).lower(),{'name':t,'type':'township'}) for t in township))
 
 ed_map.update(dict([('{state} Congressional District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
 ed_map.update(dict([('{state} State Senate District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))

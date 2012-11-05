@@ -37,7 +37,7 @@ VOTER_FILE_DISTRICTS = (
 'state_rep_district',
 'state_senate_district',
 'township',
-#'ward'
+'ward'
 )
 
 TOWNSHIP_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
@@ -87,6 +87,53 @@ TOWNSHIP__PRECINCT_ACTUAL.update({
         ),
     })
 
+WARD_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+WARD_IMPORT['udcs'] = dict(tsd.td.DEFAULT_VF_TABLE['udcs'])
+WARD_IMPORT['udcs'].update({'type':'ward'})
+WARD_IMPORT.update({
+    'table':'electoral_district_w_import',
+    'columns':{
+        'name':27,
+        'identifier':{'function':tsd.td.reformat.ed_concat,'columns':(27,),'defaults':{'type':'ward'}},
+        'id_long':{'function':tsd.td.reformat.ed_concat,'columns':(27,),'defaults':{'type':'ward'}}
+        },
+    })
+
+WARD_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+WARD_ACTUAL.update({
+    'schema_table':'electoral_district',
+    'import_table':WARD_IMPORT,
+    'long_fields':({'long':'id_long','real':'id'},),
+    'long_from':('id_long',),
+    'distinct_on':('id_long',),
+    })
+
+WARD__PRECINCT_IMPORT = dict(tsd.td.DEFAULT_VF_TABLE)
+WARD__PRECINCT_IMPORT.update({
+    'table':'electoral_district__precinct_w_import',
+    'filename':state_specific.VOTER_FILE_LOCATION,
+    'columns':{
+        'electoral_district_id_long':{'function':tsd.td.reformat.ed_concat,'columns':(27,),'defaults':{'type':'ward'}},
+        'precinct_id_long':{'function':tsd.td.reformat.concat_us,'columns':(22,29,28)},
+        },
+    })
+
+WARD__PRECINCT_ACTUAL = dict(tsd.td.DEFAULT_ACTUAL_TABLE)
+WARD__PRECINCT_ACTUAL.update({
+    'schema_table':'electoral_district__precinct',
+    'import_table':WARD__PRECINCT_IMPORT,
+    'long_fields':({'long':'electoral_district_id_long','real':'electoral_district_id'},{'long':'precinct_id_long','real':'precinct_id'},),
+    'distinct_on':('precinct_id_long','electoral_district_id_long',),
+    'long_to':(
+        {
+            'to_table':'electoral_district_t_import',
+            'local_key':'electoral_district_id_long',
+            'to_key':'id_long',
+            'real_to_key':'id',
+            },
+        ),
+    })
+
 ACTUAL_TABLES = (
         tsd.PRECINCT_ACTUAL,
         tsd.LOCALITY_ACTUAL,
@@ -98,6 +145,7 @@ ACTUAL_TABLES = (
         tsd.COUNTY_ACTUAL,
         tsd.STATE_ACTUAL,
         TOWNSHIP_ACTUAL,
+        WARD_ACTUAL,
         tsd.STATE_SENATE_DISTRICT_ACTUAL,
         tsd.CONGRESSIONAL_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE_REP_DISTRICT__PRECINCT_ACTUAL,
@@ -108,6 +156,7 @@ ACTUAL_TABLES = (
         tsd.STATE_SENATE_DISTRICT__PRECINCT_ACTUAL,
         tsd.STATE__PRECINCT_ACTUAL,
         TOWNSHIP__PRECINCT_ACTUAL,
+        WARD__PRECINCT_ACTUAL,
         cd.CANDIDATE_ACTUAL,
         cd.CONTEST_ACTUAL,
         cd.CANDIDATE_IN_CONTEST_ACTUAL,
@@ -129,6 +178,7 @@ ELECTORAL_DISTRICT_UNION = {
             'electoral_district_c_import',
             'electoral_district_s_import',
             'electoral_district_t_import',
+            'electoral_district_w_import',
             )
         }
 UNIONS = (
@@ -149,6 +199,7 @@ ERSATZPG_CONFIG.update({
         'county':tsd.COUNTY_IMPORT,
         'state':tsd.STATE_IMPORT,
         'township':TOWNSHIP_IMPORT,
+        'ward':WARD_IMPORT,
         'state_senate_district':tsd.STATE_SENATE_DISTRICT_IMPORT,
         'congressional_district__precinct':tsd.CONGRESSIONAL_DISTRICT__PRECINCT_IMPORT,
         'state_rep_district__precinct':tsd.STATE_REP_DISTRICT__PRECINCT_IMPORT,
@@ -159,6 +210,7 @@ ERSATZPG_CONFIG.update({
         'county__precinct':tsd.COUNTY__PRECINCT_IMPORT,
         'state__precinct':tsd.STATE__PRECINCT_IMPORT,
         'township__precinct':TOWNSHIP__PRECINCT_IMPORT,
+        'ward__precinct':WARD__PRECINCT_IMPORT,
         'candidate':cd.CANDIDATE_IMPORT,
         'contest':cd.CONTEST_IMPORT,
         'candidate_in_contest':cd.CANDIDATE_IN_CONTEST_IMPORT,
@@ -169,6 +221,6 @@ ERSATZPG_CONFIG.update({
             #'locality':1,
             },
         'parallel_load':(
-            {'tables':('precinct','locality','congressional_district','state_rep_district','state_senate_district','judicial_district','school_district','county_council','county','state','township','congressional_district__precinct','state_rep_district__precinct','state_senate_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct','township__precinct'),'keys':{}},
+            {'tables':('precinct','locality','congressional_district','state_rep_district','state_senate_district','judicial_district','school_district','county_council','county','state','township','ward','congressional_district__precinct','state_rep_district__precinct','state_senate_district__precinct','judicial_district__precinct','school_district__precinct','county_council__precinct','county__precinct','state__precinct','township__precinct','ward__precinct'),'keys':{}},
             )
         })

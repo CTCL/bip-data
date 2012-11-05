@@ -15,6 +15,7 @@ school_district = d_dict['school_district']
 county_school_district = d_dict['county_school_district']
 county_id = d_dict['county_id']
 city_council = d_dict['city_council']
+special_judicial_district = d_dict['special_1_judicial_district']
 state = districts.state
 
 intpat = re.compile(r'^(?P<number>\d+)(?P<extra>\D*)$')
@@ -29,6 +30,7 @@ def numberclean(n):
 
 ed_map = {}
 ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})
+ed_map.update(dict([('{state} Judicial District Supreme Court Supreme Court {number}'.format(state=state[0], number=(numberclean(jdpat.match(n).groupdict()['number']+jdpat.match(n).groupdict()['extra']) if jdpat.match(n) else n)).lower(),{'name':n,'type':'special_1_judicial_district'}) for n in special_judicial_district]))
 
 ed_map.update(dict([('{state} Congressional District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'congressional_district'}) for n in congressional_district]))
 ed_map.update(dict([('{state} State Senate District {number}'.format(state=state[0], number=(numberclean(n))).lower(),{'name':n,'type':'state_senate_district'}) for n in state_senate_district]))
@@ -129,6 +131,6 @@ for county in county_council:
 
 ed_map.update(dict(county_council_dicts))
 
-ed_map.update(dict(('wilmington (muni) - city council district {number}'.format(number=numberclean(c)),{'name':c,'type':'city_council'}) for c in city_council))
+ed_map.update(dict(('new york (muni) city council district {number}'.format(number=numberclean(c)),{'name':c,'type':'city_council'}) for c in city_council))
 if __name__ == '__main__':
     print ed_map

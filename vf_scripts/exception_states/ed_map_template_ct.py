@@ -5,6 +5,7 @@ from data.reformat import _saintrep
 ss = reload(ss)
 districts = ss.districts 
 from collections import defaultdict
+from data.passdict import passdict
 d_dict = defaultdict(lambda:[],districts.__dict__)
 judicial_district = d_dict['judicial_district']
 county_council = d_dict['county_council']
@@ -53,7 +54,9 @@ ed_map.update(dict([('State School Board District {number}'.format(number=(int(s
 ed_map.update(dict([('Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 ed_map.update(dict([('State Board of Education District {number}'.format(number=(int(sdpat.match(n).groupdict()['number']) if sdpat.match(n) else n)).lower(),{'name':n,'type':'school_district'}) for n in school_district]))
 
-ed_map.update(dict([('{name} township'.format(name=n).lower(), {'name':n,'type':'township'}) for n in township]))
+towndict = passdict({'PUTMAN':'PUTNAM','KILLLINGWORTH':'KILLINGWORTH'})
+ed_map.update(dict([('{name} township'.format(name=towndict[n]).lower(), {'name':n,'type':'township'}) for n in township]))
+ed_map.update(dict([('{name} (muni)'.format(name=towndict[n]).lower(), {'name':n,'type':'township'}) for n in township]))
 
 for county in county_id:
     county = re.sub(r'(?P<prefix>[_\s]|^)s(?:ain)?t.?(?P<suffix>[_\s]|$)', _saintrep, county.lower().strip())

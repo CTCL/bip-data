@@ -72,7 +72,7 @@ def clean_county_number(district_number):
         return int(district_number)
     except:
         return roman_map[district_number]
-sd_fillers = ('county school board district','county school board','school board district', 'school board' 'county school board precinct','school board precinct','school district','county school district','school precinct','county - school board district','county - school board', 'county board of education','board of education','county board of education district','board of education district','county - board of education district')
+sd_fillers = ('school district','county school board district','county school board','school board district', 'school board' 'county school board precinct','school board precinct','school district','county school district','school precinct','county - school board district','county - school board', 'county board of education','board of education','county board of education district','board of education district','county - board of education district')
 sd_dicts = []
 if ss.COUNTY_SCHOOL_DISTRICT:
     for sd in county_school_district:
@@ -95,9 +95,10 @@ if ss.COUNTY_SCHOOL_DISTRICT:
         elif district_stuff.endswith('LRG'):
             sd_dicts.append(('{county_name} {filler}'.format(filler=f,county_name=county_name).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'school_district'}))
 for sd in school_district:
-    if re.match(r'^\d+$', sd):
-        for f in sd_fillers:
+    for f in sd_fillers:
+        if re.match(r'^\d+$', sd):
             sd_dicts.append(('{filler} {district_number}'.format(filler=f, district_number=clean_county_number(sd)).lower(),{'name':'{district_stuff}'.format(district_stuff=sd),'type':'school_district'}))
+        sd_dicts.append(('{filler} {district_name}'.format(filler=f, district_name=county_name_clean(sd)).lower(),{'name':'{district_stuff}'.format(district_stuff=sd),'type':'school_district'}))
 ed_map.update(dict(sd_dicts))
 county_council_dicts = []
 fillers = ('County Commissioner Precinct','County Commission Precinct','County Comissioner District','Commissioner District', 'County Commissioner', 'CO Commission District','CO Commissioner District','County District','County Commissioner District','County - Commission District','County Commission District','County Committee District','County - Commissioner District','County - Comm District','County - Council District','County Council District','County - County Commissioner District','County - District','County Board District','County Board - District','- District', 'Commission District', '- County Commissioner District', 'County - County Commissioner - District')

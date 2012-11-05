@@ -27,12 +27,12 @@ def numberclean(n):
     else:
         return n
 
-with open(os.path.join(ss.HOME,'MA_SD_Codes.txt')) as f, open(os.path.join(ss.HOME,'MA_HD_Codes.txt')) as g:
-    csvsd = csv.reader(f, delimiter='\t')
+with open(os.path.join(ss.HOME,'MA_SD_Codes.csv')) as f, open(os.path.join(ss.HOME,'MA_HD_Codes.txt')) as g:
+    csvsd = csv.reader(f)
     csvhd = csv.reader(g, delimiter='\t')
     csvsd.next()
     csvhd.next()
-    sd_dict = dict((numberclean(l[0]),' '.join(re.split(r'\s?(?:and|,|&)?\s?',l[1]))) for l in csvsd)
+    sd_dict = dict((numberclean(l[1]),' '.join(re.split(r'\s?(?:and|,|&)?\s?',re.match(r'\d+ (?P<name>.+)',l[0]).groupdict()['name']))) for l in csvsd)
     hd_dict = dict((numberclean(l[0]),' '.join(re.split(r'\s?(?:and|,|&)?\s?',l[1])).replace(' District','')) for l in csvhd)
 ed_map = {}
 ed_map.update({state[0].lower():{'name':state[0].lower(), 'type':'state'}})

@@ -125,6 +125,8 @@ for county in county_council:
         if not (m and all(map(lambda s:p.match(county_name_clean(s)),[c for c in county_council if c.startswith(county_name.upper())]))):
             m = None
     for f in fillers:
+        if county_name == 'pitt':
+            county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=county_name, district_number=district_stuff.split('/')[1]).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'county_council'}))
         if m and  m.groupdict()['district_number']:
             county_council_dicts.append(('{county_name} {filler} {district_number}'.format(filler=f,county_name=county_name, district_number=clean_county_number(m.groupdict()['district_number'])).lower(),{'name':'{county_name}_{district_stuff}'.format(county_name=old_county_name, district_stuff=old_district_stuff),'type':'county_council'}))
         elif district_stuff.endswith('LRG'):
