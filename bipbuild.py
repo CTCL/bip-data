@@ -6,6 +6,8 @@ import time, sys, imp, os, random, csv
 from multiprocessing import Pool
 from collections import defaultdict
 
+all_states = 'ak,al,ar,az,ca,co,ct,dc,de,fl,ga,hi,ia,id,il,in,ks,ky,la,ma,md,me,mi,mn,mo,ms,mt,nc,nd,ne,nh,nj,nm,nv,ny,oh,ok,or,pa,ri,sc,sd,tn,tx,ut,va,vt,wa,wi,wv,wy'
+
 do_all = ['-clean','-partition','-clean_import','-build','-distinct','-unions','-rekey','-export']
 do_all_no_clean =['-clean_import','-build','-distinct','-unions','-rekey','-export']
 if '-thread' in sys.argv:
@@ -18,6 +20,8 @@ if '-all_no_clean' in sys.argv:
     sys.argv = sys.argv[:-1] + do_all_no_clean + [sys.argv[-1]]
 
 state_ins = sys.argv[-1].lower()
+if state_ins == 'all':
+    state_ins = all_states
 default_state_stuff = os.path.join(*['data','default_state_stuff.py'])
 default_state_stuff = imp.load_source('default_state_stuff', default_state_stuff)
 tables, enums, fks, seqs = process_schema.rip_schema('schema/bip_model_cleaned.sql')
