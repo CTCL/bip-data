@@ -1,11 +1,19 @@
 import os
 def define_long_tables(table_dict, fks):
+    """
+    defines which tables have references to and from based on parsed foreign keys.
+    Flips flags on tables to indicate such.
+    """
     for fk in fks:
         for fro, to in fk.reference_fields.iteritems():
             table_dict[fk.table].fields[fro].long_from = True
             table_dict[fk.reference_table].fields[to].long_to = True
 
 def rekey_tables(table_dict, fks, dbconn):
+    """
+    run old rekey that creates tables from long key matches, but doesn't use explicit
+    actual table definitions of relations (builds relations from fks)
+    """
     for k,v in table_dict.iteritems():
         if v.has_long():
             tfks = [fk for fk in fks if fk.table == k]
@@ -14,6 +22,9 @@ def rekey_tables(table_dict, fks, dbconn):
             dbconn.cursor().execute(sql % data)
 
 def rekey_insert_tables(table_dict, fks, dbconn, **split_keys):
+    """
+    the insert (vs table create) version of rekey that builds relations from fks)
+    """
     for k,v in table_dict.iteritems():
         if v.has_long():
             tfks = [fk for fk in fks if fk.table == k]
@@ -22,6 +33,9 @@ def rekey_insert_tables(table_dict, fks, dbconn, **split_keys):
             dbconn.cursor().execute(sql)
 
 def delete_import_tables(actual_tables, unions, connection):
+    """
+    drop import tables and unions of import tables based on import table definitions in actual table list
+    """
     for table in actual_tables:
         sql = 'DROP TABLE IF EXISTS {name} CASCADE;'.format(name=table['import_table']['table'])
         print sql
@@ -35,6 +49,9 @@ def delete_import_tables(actual_tables, unions, connection):
         connection.cursor().execute(sql)
 
 def create_import_tables(actual_tables, table_dict, connection):
+    """
+    use table class' sql_import function to make create table statements for import
+    """
     created_tables = set()
     for table in actual_tables:
         if table['import_table']['table'] in created_tables:
@@ -45,6 +62,9 @@ def create_import_tables(actual_tables, table_dict, connection):
         connection.cursor().execute(sql)
 
 def create_import_group(group_name, group, table_dict, connection):
+    """
+    EXPERIMENTAL create a single import table for a whole file that will later be split into multiple tables via selecting specific columns from this merged table. Grab the list of tables from the group definition, merge their field definitions and run the create statement.
+    """
     sql = 'CREATE TABLE {name} ({fields});'.format(name=group_name, fields=','.join(table_dict[table['schema_table']].sql_fields(table, table['import_table']['table']) for table in group['tables']))
     print sql
     connection.cursor().execute(sql)
@@ -57,12 +77,18 @@ def create_import_group(group_name, group, table_dict, connection):
     return import_table
 
 def split_group_tables(group_name, group, connection):
+    """
+    EXPERIMENTAL. execute sql for selecting columns from merged group table. distinct statement seems to be missing from sql string, but is in format statement.
+    """
     for table in group['tables']:
         sql = 'INSERT INTO {name}({fields}) SELECT {prefix_fields} from {group_table};'.format(name=table['import_table']['table'], group_table=group_name, fields=','.join(k for k in table['import_table']['udcs'].keys() + table['import_table']['columns'].keys()), prefix_fields=','.join('{prefix}_{key}'.format(prefix=table['import_table']['table'], key=k) for k in table['import_table']['udcs'].keys() + table['import_table']['columns'].keys()), distinct_clause = ('DISTINCT ON ({fields})'.format(fields=','.join('{prefix}_{dist}'.format(prefix=table['import_table']['table'],dist = dist) for dist in table['distinct_on'])) if table.has_key('distinct_on') else ''))
         print sql
         connection.cursor().execute(sql)
 
 def create_union_tables(actual_tables, table_dict, unions, connection):
+    """
+    once import tables are created, create a parent table that will be inherited by the child tables. This merges tables that have to be imported in different statements so they can be keyed together to other tables as one statement (i.e. different types of electoral districts can be merged into a single electoral_district_import union)
+    """
     actual_table_dict = dict([(a['import_table']['table'],a) for a in actual_tables])
     for union in unions:
         first_component = union['components'][0]
@@ -77,6 +103,9 @@ def create_union_tables(actual_tables, table_dict, unions, connection):
             connection.cursor().execute(sql)
 
 def distinct_imports(actual_tables, connection):
+    """
+    pull distinct field names from actual table definitions and run create table statements with distinct on clauses
+    """
     for table in actual_tables:
         if table.has_key('distinct_on'):
             sql = 'CREATE TABLE {import_table}_distinct as SELECT DISTINCT ON ({distinct_fields}) * from {import_table};'.format(distinct_fields=','.join(table['distinct_on']), import_table=table['import_table']['table'])
@@ -86,6 +115,9 @@ def distinct_imports(actual_tables, connection):
             table['rekey_table_name'] = table['import_table']['table']+'_distinct'
 
 def rekey_imports(actual_tables, unions, table_dict, connection, split_names, special_tables):
+    """
+    Clear actual schema tables then copy data over from import tables, joining on long keys to populate sequential keys. Use table class' rekey_imports function to write actual sql
+    """
     actual_table_dict = dict([(a['import_table']['table'],a) for a in actual_tables])
     rekey_table_dict = dict([(a['import_table']['table'],a['import_table']['table']+('_distinct' if a.has_key('distinct_on') else '')) for a in actual_tables] +[(u['name'],u['name']) for u in unions] + [(s,s) for s in special_tables])
     cleared_tables = set()
@@ -110,12 +142,18 @@ def rekey_imports(actual_tables, unions, table_dict, connection, split_names, sp
             connection.cursor().execute(sql)
 
 def export_referenda_tables(election, out_dir, connection):
+    """
+    write csv version of referenda
+    """
     sql = "COPY {table}_referenda_{election} TO '{out_dir}{ossep}{table}.csv' CSV HEADER;"
     connection.cursor().execute(sql.format(table='contest', out_dir=out_dir, election=election, ossep = os.sep))
     connection.cursor().execute(sql.format(table='referendum', out_dir=out_dir, election=election, ossep = os.sep))
     connection.cursor().execute(sql.format(table='ballot_response', out_dir=out_dir, election=election, ossep = os.sep))
 
 def export_presidential_tables(election, out_dir, connection):
+    """
+    write csv version of presidential candidates
+    """
     state = 'presidential'
     sql = "COPY {table}_{source}_{election} TO '{out_dir}{ossep}{table}.csv' CSV HEADER;"
     connection.cursor().execute(sql.format(table='candidate', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
@@ -123,6 +161,9 @@ def export_presidential_tables(election, out_dir, connection):
     connection.cursor().execute(sql.format(table='contest', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
 
 def export_candidate_tables(state, election, out_dir, connection):
+    """
+    write csv version of state specific candidates
+    """
     sql = "COPY {table}_{source}_{election} TO '{out_dir}{ossep}{table}.csv' CSV HEADER;"
     connection.cursor().execute(sql.format(table='candidate', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
     connection.cursor().execute(sql.format(table='candidate_in_contest', out_dir=out_dir, source=state+'candidates', election=election, ossep = os.sep))
@@ -130,32 +171,53 @@ def export_candidate_tables(state, election, out_dir, connection):
     connection.cursor().execute(sql.format(table='electoral_district', out_dir=out_dir, source=state+'VF', election=election, ossep = os.sep))
 
 def create_long_tables(table_dict, connection):
+    """
+    DEPRECATED old version of import tables basically
+    """
     for t in table_dict.values():
         sql, data = t.sql_data(True)
         print sql % data
         connection.cursor().execute(sql % data)
 
 def delete_long_tables(table_dict, connection):
+    """
+    DEPRECATED old version of import tables basically
+    """
     for t in table_dict:
         connection.cursor().execute('DROP TABLE IF EXISTS %s_long CASCADE;'% (t,))
 
 def create_tables(table_dict, connection):
+    """
+    create actual schema tables
+    """
     for t in table_dict.values():
         sql, data = t.sql_data(False, True)
         print sql % data
         connection.cursor().execute(sql % data)
 
 def delete_tables(table_dict, connection):
+    """
+    delete actual schema tables
+    """
     for t in table_dict:
         connection.cursor().execute('DROP TABLE IF EXISTS %s CASCADE;'%(t,))
 
 def delete_pksq(connection):
+    """
+    delete key sequence
+    """
     connection.cursor().execute('DROP SEQUENCE IF EXISTS PKSQ CASCADE;')
 
 def create_pksq(connection):
+    """
+    create key sequence
+    """
     connection.cursor().execute('CREATE SEQUENCE PKSQ START 1;')
 
 def delete_enums(connection):
+    """
+    delete enums
+    """
     sql = """
     DROP TYPE IF EXISTS contestenum CASCADE;
     DROP TYPE IF EXISTS cfenum CASCADE;
@@ -166,6 +228,9 @@ def delete_enums(connection):
     connection.cursor().execute(sql)
 
 def create_enums(connection):
+    """
+    create enums
+    """
     sql = """
     CREATE TYPE contestenum AS ENUM ('candidate','referendum','custom');
     CREATE TYPE cfenum AS ENUM ('candidate','referendum ');
@@ -176,12 +241,19 @@ def create_enums(connection):
     connection.cursor().execute(sql)
 
 def create_faux_ed_import_states(connection):
+    """
+    create dummy electoral district import table for importing presidential or referenda tables.
+    TODO remember why this needs to happen. Obviously something expects this to exist
+    """
     sql = 'DROP TABLE IF EXISTS electoral_district_import CASCADE;'
     connection.cursor().execute(sql)
     sql = 'CREATE TABLE electoral_district_import as select identifier as id_long, id from electoral_district;'
     connection.cursor().execute(sql)
 
 def pk_tables(table_dict, connection):
+    """
+    create primary keys for tables
+    """
     for t in table_dict.values():
         sql, data = t.pk_sql_data()
         print sql.format(**data)

@@ -1,3 +1,33 @@
+"""
+classes for representing sql table definitions:
+    field:
+        class representing a column in a sql table. Contains functions to create sql
+        statement for creating the field (for insertion into table create statements). Will
+        create extra field suffixed with "long" if this is a field referenced in a key and
+        we are making short and long reference fields.
+
+    table:
+        class representing a sql table. Contains regexes for parsing a table definition out
+        of sql and functions for creating an import version of the table (one with long keys)
+        and a regular version of the table (one with sequence keys), functions for creating
+        sequence key matches based on long key matches based on explicit actual table
+        definitions in config, and some functions for doing the same based on fks in the
+        schema def
+    fk_constraint:
+        class representing a foreign key contraint defined on a table. Contains regex for
+        parsing a foreign key out of sql
+    unique_constraint:
+        class representing a unique constraint defined on a table. Contains regex for parsing
+        a unique constraint out of sql and functions for creating unique constraint sql.
+    enum:
+        class representing an enum type. Contains regex for parsing out of sql.
+    seq:
+        class representing a sequence. Contains regex for parsing out of sql.
+
+
+
+"""
+
 import re, sys
 
 
@@ -71,6 +101,7 @@ class table:
         sql += ''.join(' left join {name}'.format(name=rekey_table_dict[actual_table['long_to'][i]['to_table']]) + ' as totable{i} on '.format(i=i) + 'lower(fromtable.{from_key}) = lower(totable{i}.{to_key})'.format(i=i,from_key=actual_table['long_to'][i]['local_key'],to_key=actual_table['long_to'][i]['to_key']) for i in range(len(actual_table['long_to'])))+';\n'
         return sql
 
+#DEPRECATED VERSION BASED ON FKS
     def rekey_insert(self, fks, **split_keys):
         fks = [fk for fk in fks if fk.table == self.name]
         sql = 'INSERT INTO {name}'.format(name=self.name) + ''.join('_{{{sk}}}'.format(sk=sk) for sk in split_keys).format(**split_keys) 
@@ -83,6 +114,7 @@ class table:
         data = [self.name] + [f.name for f in self.fields.values() if not f.long_from and not f.long_to] + [a for b in [[i, fks[i].reference_fields[fks[i].reference_fields.keys()[j]], fks[i].reference_fields.keys()[j]] for i in range(len(fks)) for j in range(len(fks[i].reference_fields))] for a in b] + [self.name] + [a for b in [[fks[i].reference_table,i] + [c for d in [[fks[i].reference_fields.keys()[j],i,fks[i].reference_fields[fks[i].reference_fields.keys()[j]]] for j in range(len(fks[i].reference_fields))] for c in d] for i in range(len(fks))] for a in b]
         return sql, tuple(data)
 
+#DEPRECATED VERSION BASED ON CREATING TABLE FROM REKEY. MAY STILL BE VALUABLE
     def rekey(self, fks):
         sql = 'CREATE TABLE %s as SELECT ' + ','.join('fromtable.%s' for f in self.fields.values() if not f.long_from and not f.long_to) +(',' if len(fks) > 0 and len([f for f in self.fields.values() if not f.long_from and not f.long_to]) else '') +','.join('totable%s.%s as %s' for fk in fks for a in fk.reference_fields) + ' from %s_long as fromtable' + ''.join(' left join %s_long as totable%s on ' + ' and '.join('fromtable.%s_long = totable%s.%s_long' for a in fk.reference_fields) for fk in fks)+';\n'
         data = [self.name] + [f.name for f in self.fields.values() if not f.long_from and not f.long_to] + [a for b in [[i, fks[i].reference_fields[fks[i].reference_fields.keys()[j]], fks[i].reference_fields.keys()[j]] for i in range(len(fks)) for j in range(len(fks[i].reference_fields))] for a in b] + [self.name] + [a for b in [[fks[i].reference_table,i] + [c for d in [[fks[i].reference_fields.keys()[j],i,fks[i].reference_fields[fks[i].reference_fields.keys()[j]]] for j in range(len(fks[i].reference_fields))] for c in d] for i in range(len(fks))] for a in b]
@@ -124,6 +156,7 @@ class seq:
 blank_re = re.compile(r'^\s*$')
 choice_re = re.compile(r',?[\'"]?(\w+)[\'"]?')
 
+#split on all delimiters that are not within parens. (parens are basically quotes)
 def split_no_parens(string, delimiter=','):
     split = string.split(',')
     ret_split = []
@@ -140,6 +173,10 @@ def split_no_parens(string, delimiter=','):
     return ret_split
 
 def objectify_statement(statement, tables, enums, fks, seqs):
+    """
+    take a sql statement, turn it into the appropriate class, and add it to the collection of
+    those objects. Boo side effects. Should just return object
+    """
     m = enum.enum_re.match(statement)
     if m:
         e = enum()
@@ -204,6 +241,10 @@ def objectify_statement(statement, tables, enums, fks, seqs):
         return
 
 def rip_schema(schema_file_name):
+    """
+    iterate through schema file, read to the end of each statement, then objectify it and add
+    it to a list. return lists of objects of each type
+    """
     with open(schema_file_name,'r') as schema_file:
         tables = {}
         enums = []

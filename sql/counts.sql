@@ -1,0 +1,13 @@
+copy (select state,office_level,count(*) from candidate_join_contest group by state,office_level order by state, office_level) to '/home/gaertner/bip-data/sql/reports/candidates.csv' CSV HEADER;
+copy (select state,office_level,count(*) from contest group by state, office_level order by state, office_level) to '/home/gaertner/bip-data/sql/reports/contests.csv' CSV HEADER;
+copy (select state, office_level,count(*) from candidate_join_contest where ed_matched='t' group by state, office_level order by state, office_level) to '/home/gaertner/bip-data/sql/reports/candidates_matched.csv' CSV HEADER;
+copy (select state, office_level, count(*) from contest where ed_matched='t' group by state,office_level order by state, office_level) to '/home/gaertner/bip-data/sql/reports/contests_matched.csv' CSV HEADER;
+copy (select substring(source,1,2) as state,type,count(*) from electoral_district group by state,type order by state, type) to '/home/gaertner/bip-data/sql/reports/electoral_districts.csv' CSV HEADER;
+--select count(*) from (select distinct on(electoral_district_id) electoral_district_id from contest) as edi;
+--select count(*) from (select distinct on(electoral_district_id) electoral_district_id from contest where ed_matched='t') as edi;
+drop table if exists edn;
+create temp table edn as select distinct on (state, electoral_district_name, electoral_district_type) trim(lower(state)) as state, trim(lower(electoral_district_name)) as electoral_district_name, trim(lower(electoral_district_type)) as electoral_district_type, electoral_district_id,ed_matched,office_level from contest;
+copy (select state,office_level,count(*) from edn group by state, office_level order by state, office_level) to '/home/gaertner/bip-data/sql/reports/contest_eds.csv' CSV HEADER;
+copy (select state, office_level,count(*) from edn where ed_matched='t' group by state,office_level order by state, office_level) to '/home/gaertner/bip-data/sql/reports/contest_eds_matched.csv' CSV HEADER;
+select count(*) from edn where ed_matched='f';
+select count(*) from referendum;

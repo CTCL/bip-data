@@ -120,6 +120,7 @@ for county in county_council:
     if not m:
         p = re.compile(r'.*\s(?P<district_number>[IViv]+)')
         m = p.match(county)
+        #This is where we check to see if it's *all* roman numeral style to avoid the St Josephs A-I problem
         if not (m and all(map(lambda s:p.match(county_name_clean(s)),[c for c in county_council if c.startswith(county_name.upper())]))):
             m = None
     for f in fillers:
